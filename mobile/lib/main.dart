@@ -34,7 +34,7 @@ class MegaCineApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
@@ -48,6 +48,7 @@ class MegaCineApp extends StatelessWidget {
       ),
       title: appTitle,
       // routerConfig: router,
+
     );
   }
 }
