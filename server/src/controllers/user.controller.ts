@@ -60,6 +60,8 @@ export const updateAvatar = CatchAsyncError(async (req: Request, res: Response, 
 
   user.avatar = await cloudinaryServices.uploadAvatar(req.file.path);
 
+  await user.save();
+
   res.status(HttpStatusCode.OK_200).json({
     status: 'success',
     data: { user }

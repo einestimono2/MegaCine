@@ -1,13 +1,12 @@
 import express, { type NextFunction, type Request, type Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import timeout from 'connect-timeout';
 
 import { Message } from './constants/message.constant';
 import { ErrorMiddleware } from './middlewares';
-import { i18n } from './config'; //! Import sau cookie-parser
+import { i18n, swaggerDocs } from './config'; //! Import sau cookie-parser
 
 // Routes Import
 import { userRouter, authRouter } from './routes';
@@ -26,7 +25,6 @@ app.use(morgan('dev'));
 app.use(cors({ origin: process.env.ORIGIN })); // Cors - Cross Origin Resource Sharing
 app.use(express.json({ limit: '50mb' })); // Read JSON data
 app.use(express.urlencoded({ extended: true })); // Can Read another data
-app.use(cookieParser());
 app.use(i18n.init);
 app.use((req: Request, _res: Response, next: any): void => {
   if (!req.timedout) {
@@ -41,6 +39,9 @@ app.use('/api/v1', userRouter);
 app.get('/test', (req: Request, res: Response) => {
   res.send('OK');
 });
+
+//! Swagger Documentation UI (Trước phần check unkown)
+swaggerDocs(app);
 
 //! Unknown route
 app.get('*', (req: Request, _res: Response, next: NextFunction) => {

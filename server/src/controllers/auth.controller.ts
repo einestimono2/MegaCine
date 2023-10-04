@@ -92,7 +92,7 @@ export const resendActivationToken = CatchAsyncError(async (req: Request, res: R
     template: res.translate(Message.ACTIVATION_EMAIL_TEMPLATE)
   });
 
-  res.status(HttpStatusCode.CREATED_201).json({
+  res.status(HttpStatusCode.OK_200).json({
     status: 'success',
     message: res.translate(Message.REGISTER_CHECK_EMAIL_NOTIFICATION_s, user.email),
     data: { activationToken, otp }

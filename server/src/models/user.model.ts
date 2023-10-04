@@ -40,11 +40,6 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
         `'${Message.PASSWORD_EMPTY}'`
       ]
     },
-    passwordReset: {
-      passwordResetToken: String,
-      passwordResetExpires: Date,
-      passwordResetOTP: String
-    },
     avatar: {
       public_id: String,
       url: {
@@ -105,3 +100,18 @@ userSchema.methods.signRefreshToken = function () {
 };
 
 export const UserModel = mongoose.model<IUser>('Users', userSchema);
+
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    Response:
+ *      type: object
+ *      properties:
+ *        status:
+ *          type: string
+ *        message:
+ *          type: string
+ *        data:
+ *          type: object
+ */
