@@ -14,6 +14,8 @@
     ```
     git add .
 
+    git commit -m "<type>: <description>"
+
     git push --set-upstream origin feature/xxxx
     ```
 
