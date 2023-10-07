@@ -16,7 +16,7 @@
 
     git commit -m "<type>: <description>"
 
-    git push --set-upstream origin feature/xxxx
+    git push origin feature/xxxx
     ```
 
 -   **B4.** Tạo merge-requests từ nhánh `feature/xxxx` vào nhánh `develop` (Không chọn **'Delete source branch when merge request is accepted'**)
