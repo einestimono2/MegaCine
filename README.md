@@ -1,4 +1,4 @@
-# Quy trình làm việc
+## Quy trình làm việc
 
 -   **B1.** Tạo và checkout sang nhánh mới **(Lưu ý: Phải ở nhánh develop trước khi tạo nhánh mới)**
 
@@ -9,7 +9,7 @@
     ```
 
 -   **B2.** CODING ...
--   **B3.** Commit, push code
+-   **B3.** [**Commit**](#conventional-commits), push code
 
     ```
     git add .
@@ -32,7 +32,7 @@
     git pull
     ```
 
-# Conventional Commits
+## Conventional Commits
 
 -   Cấu trúc: `<type>: <description>`
 -   <description\>: mô tả ngắn gọn nội dung commit
