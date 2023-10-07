@@ -66,8 +66,7 @@ export const activateUser = CatchAsyncError(async (req: Request, res: Response, 
 
   res.status(HttpStatusCode.CREATED_201).json({
     status: 'success',
-    message: res.translate(Message.EMAIL_ACTIVATION_SUCCESSFUL),
-    data: null
+    message: res.translate(Message.EMAIL_ACTIVATION_SUCCESSFUL)
   });
 });
 
@@ -156,8 +155,7 @@ export const logout = CatchAsyncError(async (req: Request, res: Response, next: 
 
     res.status(HttpStatusCode.OK_200).json({
       status: 'success',
-      message: res.translate(Message.LOGGED_OUT_SUCCESSFULLY),
-      data: null
+      message: res.translate(Message.LOGGED_OUT_SUCCESSFULLY)
     });
   }
 });
@@ -181,7 +179,6 @@ export const updateAccessToken = CatchAsyncError(async (req: Request, res: Respo
 
   return res.status(HttpStatusCode.OK_200).json({
     status: 'success',
-    message: null,
     data: {
       accessToken
     }
@@ -246,7 +243,6 @@ export const resetPassword = CatchAsyncError(async (req: Request, res: Response,
 
   res.status(HttpStatusCode.CREATED_201).json({
     status: 'success',
-    message: res.translate(Message.PASSWORD_RESET_SUCCESSFUL),
-    data: null
+    message: res.translate(Message.PASSWORD_RESET_SUCCESSFUL)
   });
 });

@@ -74,4 +74,4 @@ const theaterSchema: Schema<ITheater> = new mongoose.Schema(
 
 theaterSchema.index({ location: '2dsphere' });
 
-export const CinemaModel = mongoose.model<ITheater>('Cinemas', theaterSchema);
+export const CinemaModel = mongoose.model<ITheater>('Theaters', theaterSchema);

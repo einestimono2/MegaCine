@@ -1,7 +1,7 @@
 export const enum Roles {
   Admin = 'ADMIN',
   User = 'USER',
-  SuperAdmin = 'SUPER ADMIN'
+  Manager = 'MANAGER'
 }
 
 export const enum EmailProvider {

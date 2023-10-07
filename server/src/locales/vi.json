@@ -43,5 +43,6 @@
   "Account Activated": "Tài khoản đã được kích hoạt!",
   "Bearer Token Empty": "Bearer token không hợp lệ!",
   "Avatar Empty": "Avatar không được để trống!",
-  "Field Empty": "Vui lòng điền đầy đủ thông tin!"
+  "Field Empty": "Vui lòng điền đầy đủ thông tin!",
+  "Person Not Found": "Nghệ sĩ không tồn tại!"
 }
