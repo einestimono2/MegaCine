@@ -20,7 +20,7 @@ const router = express.Router();
 router.post('/register', register);
 
 router.post('/activate', activateUser);
-router.post('/activate/resend', resendActivationToken);
+router.post('/resend-activate', resendActivationToken);
 
 router.post('/login', login);
 router.post('/social-auth', socialAuth);
@@ -29,8 +29,8 @@ router.get('/logout', isAuthenticated, logout);
 
 router.post('/refresh', verifyRefreshToken, updateAccessToken);
 
-router.route('/password/forgot').post(forgotPassword); // Resend - gọi lại forgotPassword
-router.route('/password/reset').put(resetPassword);
+router.route('/forgot-password').post(forgotPassword); // Resend - gọi lại forgotPassword
+router.route('/reset-password').put(resetPassword);
 
 export const authRouter = router;
 
@@ -198,7 +198,7 @@ export const authRouter = router;
 //! Resend Activate
 /**
  * @swagger
- * /api/v1/activate/resend:
+ * /api/v1/resend-activate:
  *  post:
  *    tags: [Auth]
  *    summary: Gửi lại mã OTP kích hoạt tài khoản
@@ -289,7 +289,7 @@ export const authRouter = router;
 //! Forgot
 /**
  * @swagger
- * /api/v1/password/forgot:
+ * /api/v1/forgot-password:
  *  post:
  *    tags: [Auth]
  *    summary: Quên mật khẩu
@@ -323,7 +323,7 @@ export const authRouter = router;
 //! Reset
 /**
  * @swagger
- * /api/v1/password/reset:
+ * /api/v1/reset-password:
  *  put:
  *    tags: [Auth]
  *    summary: Đặt lại mật khẩu

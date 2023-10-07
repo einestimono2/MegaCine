@@ -22,11 +22,9 @@ export interface IUpdateProfileRequest {
   phoneNumber?: string;
 }
 
-export interface IUpdateAvatarRequest {
-  avatar: {
-    public_id: string;
-    url: string;
-  };
+export interface IUpdatePersonRequest {
+  fullName: string;
+  summary?: string;
 }
 
 export interface IOTPRequest {

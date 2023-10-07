@@ -5,6 +5,7 @@ declare global {
     interface Request {
       accessToken?: string;
       userId?: string;
+      userRole?: string;
 
       translate: (phraseOrOptions: string | TranslateOptions, ...replace: string[]) => string;
 

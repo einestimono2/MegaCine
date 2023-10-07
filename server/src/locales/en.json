@@ -43,5 +43,6 @@
   "Account Activated": "Account has been activated!",
   "Bearer Token Empty": "Bearer token invalid!",
   "Avatar Empty": "Please provide an avatar!",
-  "Field Empty": "Please complete all information!"
+  "Field Empty": "Please complete all information!",
+  "Person Not Found": "Person Not Found!"
 }

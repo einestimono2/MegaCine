@@ -51,7 +51,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     role: {
       type: String,
       enum: {
-        values: [Roles.SuperAdmin, Roles.User, Roles.Admin],
+        values: [Roles.Manager, Roles.User, Roles.Admin],
         message: `'${Message.INVALID_ROLE_s}', '{VALUE}'`
       },
       default: Roles.User
@@ -88,13 +88,13 @@ userSchema.methods.comparePassword = async function (_password: string): Promise
 };
 
 userSchema.methods.signAccessToken = function () {
-  return jwt.sign({ id: this._id }, process.env.ACCESS_TOKEN_SECRET as string, {
+  return jwt.sign({ id: this._id, role: this.role }, process.env.ACCESS_TOKEN_SECRET as string, {
     expiresIn: process.env.ACCESS_TOKEN_EXPIRE
   });
 };
 
 userSchema.methods.signRefreshToken = function () {
-  return jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN_SECRET as string, {
+  return jwt.sign({ id: this._id, role: this.role }, process.env.REFRESH_TOKEN_SECRET as string, {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRE
   });
 };

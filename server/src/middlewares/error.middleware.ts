@@ -55,7 +55,6 @@ export function ErrorMiddleware(err: any, req: Request, res: Response, next: Nex
 
   res.status(err.statusCode).json({
     status: 'error',
-    message: err.message,
-    data: null
+    message: err.message
   });
 }

@@ -32,6 +32,7 @@ export enum Message {
   SESSION_EXPIRED = 'Session Expired',
   LOGIN_TO_ACCESS_RESOURCE = 'Login To Access Resource',
   USER_NOT_FOUND = 'User Not Found',
+  PERSON_NOT_FOUND = 'Person Not Found',
   INSUFFICIENT_ACCESS_RIGHTS = 'Insufficient Access Rights',
   INTERNAL_SERVER_ERROR = 'Internal Server Error',
   WRONG_OLD_PASSWORD = 'Wrong Old Password',

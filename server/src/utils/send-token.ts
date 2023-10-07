@@ -25,7 +25,6 @@ export const sendToken = async (user: IUser, statusCode: number, res: Response) 
 
   return res.status(statusCode).json({
     status: 'success',
-    message: null,
     data: {
       user,
       accessToken,

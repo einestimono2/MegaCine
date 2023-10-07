@@ -9,7 +9,7 @@ import { ErrorMiddleware } from './middlewares';
 import { i18n, swaggerDocs } from './config'; //! Import sau cookie-parser
 
 // Routes Import
-import { userRouter, authRouter } from './routes';
+import { userRouter, authRouter, personRouter } from './routes';
 
 //! Khởi tạo
 const app = express();
@@ -35,12 +35,13 @@ app.use((req: Request, _res: Response, next: any): void => {
 //! Routes
 app.use('/api/v1', authRouter);
 app.use('/api/v1', userRouter);
+app.use('/api/v1/person', personRouter);
 
 app.get('/test', (req: Request, res: Response) => {
   res.send('OK');
 });
 
-//! Swagger Documentation UI (Trước phần check unkown)
+//! Swagger Documentation UI (Trước phần check unknown)
 swaggerDocs(app);
 
 //! Unknown route
