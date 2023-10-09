@@ -5,3 +5,4 @@ export * from './send-mail';
 export * from './send-token';
 export * from './api-response';
 export * from './omit';
+export * from './api-request';

@@ -77,6 +77,7 @@ export interface IMovie extends Document {
   reviews: string[];
 }
 
+//
 export interface IPerson extends Document {
   avatar: ICloudinaryFile;
   fullName: string;

@@ -10,6 +10,7 @@ import { i18n, swaggerDocs } from './config'; //! Import sau cookie-parser
 
 // Routes Import
 import { userRouter, authRouter } from './routes';
+import { genreRouter } from './routes/genre.route';
 
 //! Khởi tạo
 const app = express();
@@ -35,7 +36,7 @@ app.use((req: Request, _res: Response, next: any): void => {
 //! Routes
 app.use('/api/v1', authRouter);
 app.use('/api/v1', userRouter);
-
+app.use('/api/v1/genre', genreRouter);
 app.get('/test', (req: Request, res: Response) => {
   res.send('OK');
 });
