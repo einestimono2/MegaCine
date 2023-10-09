@@ -44,5 +44,6 @@
   "Bearer Token Empty": "Bearer token không hợp lệ!",
   "Avatar Empty": "Avatar không được để trống!",
   "Field Empty": "Vui lòng điền đầy đủ thông tin!",
+  "Genre Not Found": "Thể loại không tồn tại!",
   "Person Not Found": "Nghệ sĩ không tồn tại!"
 }

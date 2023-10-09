@@ -45,7 +45,9 @@ export enum Message {
   ACCOUNT_ACTIVATED = 'Account Activated',
   BEARER_TOKEN_EMPTY = 'Bearer Token Empty',
   AVATAR_EMPTY = 'Avatar Empty',
-  FIELDS_EMPTY = 'Field Empty'
+  FIELDS_EMPTY = 'Field Empty',
+  GENRE_NOT_FOUND = 'Genre Not Found',
+  GENRE_ALREADY_EXIT = 'Genre already exit'
 }
 
 /*
