@@ -81,6 +81,7 @@ export interface IMovie extends Document {
 export interface IPerson extends Document {
   avatar: ICloudinaryFile;
   fullName: string;
+  summary: string;
 }
 
 export interface IProduct extends Document {

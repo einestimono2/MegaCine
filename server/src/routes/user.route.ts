@@ -13,7 +13,7 @@ router
 
 router.put('/user/avatar', isAuthenticated, uploadAvatar.single('avatar'), updateAvatar);
 
-router.put('/user/password/update', isAuthenticated, updatePassword);
+router.put('/user/update-password', isAuthenticated, updatePassword);
 
 export const userRouter = router;
 
@@ -41,7 +41,7 @@ export const userRouter = router;
  *              $ref: '#/components/schemas/Response'
  */
 
-// Cập nhật avatar
+//! Cập nhật avatar
 /**
  * @swagger
  * /api/v1/user/avatar:
@@ -77,7 +77,7 @@ export const userRouter = router;
  *              $ref: '#/components/schemas/Response'
  */
 
-// Cập nhật thông tin tài khoản
+//! Cập nhật thông tin tài khoản
 /**
  * @swagger
  * /api/v1/user/me:
@@ -115,10 +115,10 @@ export const userRouter = router;
  *              $ref: '#/components/schemas/Response'
  */
 
-// Đổi mật khẩu
+//! Đổi mật khẩu
 /**
  * @swagger
- * /api/v1/user/password/update:
+ * /api/v1/user/update-password:
  *  put:
  *    tags: [User]
  *    summary: Thay đổi mật khẩu tài khoản

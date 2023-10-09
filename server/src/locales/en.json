@@ -44,5 +44,6 @@
 	"Bearer Token Empty": "Bearer token invalid!",
 	"Avatar Empty": "Please provide an avatar!",
 	"Field Empty": "Please complete all information!",
-	"Genre Not Found": "Genre Not Found"
+	"Genre Not Found": "Genre Not Found",
+  "Person Not Found": "Person Not Found!"
 }

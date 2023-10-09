@@ -97,7 +97,6 @@ export const verifyRefreshToken = CatchAsyncError(async (req: Request, res: Resp
 // Check role
 export const authorizeRoles = (...roles: string[]) => {
   return (req: Request, _res: Response, next: NextFunction) => {
-    console.log(req);
     if (!roles.includes(req.userRole ?? '')) {
       // Role: ${req.user.role} insufficient access rights
       next(new ErrorHandler(Message.INSUFFICIENT_ACCESS_RIGHTS, HttpStatusCode.FORBIDDEN_403));

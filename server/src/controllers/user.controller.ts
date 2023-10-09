@@ -12,7 +12,6 @@ export const getProfile = CatchAsyncError(async (req: Request, res: Response, ne
 
   res.status(HttpStatusCode.OK_200).json({
     status: 'success',
-    message: null,
     data: { user }
   });
 });
@@ -28,12 +27,7 @@ export const updateProfile = CatchAsyncError(async (req: Request, res: Response,
 
   if (name) user.name = name;
   if (phoneNumber) user.phoneNumber = phoneNumber;
-  if (req.file) {
-    const imgID = user.avatar.public_id;
-    if (imgID) await cloudinaryServices.destroy(imgID);
-
-    user.avatar = await cloudinaryServices.uploadAvatar(req.file.path);
-  }
+  if (req.file) user.avatar = await cloudinaryServices.replaceAvatar(user.avatar.public_id, req.file.path);
 
   await user.save();
 
@@ -101,7 +95,6 @@ export const updatePassword = CatchAsyncError(async (req: Request, res: Response
 
   res.status(HttpStatusCode.CREATED_201).json({
     status: 'success',
-    message: null,
     data: { user }
   });
 });
