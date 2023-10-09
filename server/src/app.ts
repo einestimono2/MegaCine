@@ -9,12 +9,7 @@ import { ErrorMiddleware } from './middlewares';
 import { i18n, swaggerDocs } from './config'; //! Import sau cookie-parser
 
 // Routes Import
-<<<<<<< HEAD
-import { userRouter, authRouter } from './routes';
-import { genreRouter } from './routes/genre.route';
-=======
-import { userRouter, authRouter, personRouter } from './routes';
->>>>>>> develop
+import { userRouter, authRouter, genreRouter, personRouter } from './routes';
 
 //! Khởi tạo
 const app = express();
@@ -40,12 +35,9 @@ app.use((req: Request, _res: Response, next: any): void => {
 //! Routes
 app.use('/api/v1', authRouter);
 app.use('/api/v1', userRouter);
-<<<<<<< HEAD
 app.use('/api/v1/genre', genreRouter);
-=======
 app.use('/api/v1/person', personRouter);
 
->>>>>>> develop
 app.get('/test', (req: Request, res: Response) => {
   res.send('OK');
 });
