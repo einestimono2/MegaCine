@@ -1,27 +1,27 @@
 import express from 'express';
-const router = express.Router();
+
 import { updateGenre, createGenre, getGenres, getGenre, deleteGenre } from '../controllers/genre.controller';
 import { isAuthenticated, authorizeRoles } from '../middlewares';
 import { Roles } from '../constants';
 
+const router = express.Router();
 const adminRoles = [Roles.Manager, Roles.Admin];
-const userRole = Roles.User;
 
 // ....api/v1/genre
 
-//[POST] Add Genre
+// [POST] Add Genre
 router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), createGenre);
 
-//[GET] List Genres
+// [GET] List Genres
 router.get('/list_genre', isAuthenticated, getGenres);
 
-//[GET] Genre
+// [GET] Genre
 router.get('/get_genre/:id', isAuthenticated, getGenre);
 
-//[PUT] Update Genre
+// [PUT] Update Genre
 router.put('/update_genre/:id', isAuthenticated, authorizeRoles(...adminRoles), updateGenre);
 
-//[DELETE] Delete Genre
+// [DELETE] Delete Genre
 router.delete('/delete_genre/:id', isAuthenticated, authorizeRoles(...adminRoles), deleteGenre);
 
 export const genreRouter = router;
@@ -60,6 +60,7 @@ export const genreRouter = router;
  *            schema:
  *              $ref: '#/components/schemas/Response'
  */
+
 //! List Genre
 /**
  * @swagger
@@ -125,6 +126,7 @@ export const genreRouter = router;
  *                    genre:
  *                      example: []
  */
+
 //! Lấy tên của thể loại
 /**
  * @swagger
@@ -153,6 +155,7 @@ export const genreRouter = router;
  *            schema:
  *              $ref: '#/components/schemas/Response'
  */
+
 //! Cập nhật tên thể loại
 /**
  * @swagger
@@ -173,6 +176,17 @@ export const genreRouter = router;
  *        type: string
  *        required: true
  *        description: ID của thể loại
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/x-www-form-urlencoded:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - name
+ *            properties:
+ *              name:
+ *                type: string
  *    responses:
  *      200:
  *        description: Success
@@ -181,6 +195,7 @@ export const genreRouter = router;
  *            schema:
  *              $ref: '#/components/schemas/Response'
  */
+
 //! Xóa thể loại
 /**
  * @swagger
@@ -200,7 +215,7 @@ export const genreRouter = router;
  *        name: id
  *        type: string
  *        required: true
- *        description: ID nghệ sỹ
+ *        description: ID thể loại
  *    responses:
  *      200:
  *        description: Success

@@ -46,8 +46,7 @@ export enum Message {
   BEARER_TOKEN_EMPTY = 'Bearer Token Empty',
   AVATAR_EMPTY = 'Avatar Empty',
   FIELDS_EMPTY = 'Field Empty',
-  GENRE_NOT_FOUND = 'Genre Not Found',
-  GENRE_ALREADY_EXIT = 'Genre already exit'
+  GENRE_NOT_FOUND = 'Genre Not Found'
 }
 
 /*

@@ -9,13 +9,13 @@ const adminRoles = [Roles.Manager, Roles.Admin];
 
 //! .../api/v1/person
 router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), uploadAvatar.single('avatar'), createPerson);
-router.get('/list', isAuthenticated, authorizeRoles(...adminRoles), getPersons);
+router.get('/list', isAuthenticated, getPersons);
 
 router
   .route('/details/:id')
   .put(isAuthenticated, authorizeRoles(...adminRoles), uploadAvatar.single('avatar'), updatePerson)
   .delete(isAuthenticated, authorizeRoles(...adminRoles), deletePerson)
-  .get(isAuthenticated, authorizeRoles(...adminRoles), getPerson);
+  .get(isAuthenticated, getPerson);
 
 export const personRouter = router;
 

@@ -7,6 +7,8 @@ const genreSchema: Schema<IGenre> = new mongoose.Schema(
   {
     name: {
       type: String,
+      unique: true,
+      trim: true,
       required: [true, `'${Message.NAME_EMPTY}'`]
     }
   },

@@ -1,3 +1,10 @@
+export const enum LoggerTypes {
+  Debug = 'debug',
+  Info = 'info',
+  Warn = 'warn',
+  Error = 'error'
+}
+
 export const enum Roles {
   Admin = 'ADMIN',
   User = 'USER',
