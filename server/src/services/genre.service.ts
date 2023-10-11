@@ -17,13 +17,16 @@ export const createGenre = async (genre: IGenre) => {
 };
 
 export const getGenres = async (req: Request) => {
-  const options = translateQueryRequest(req, 'name');
+  const options = translateQueryRequest(req, ['name'], ['name']);
 
   return await GenreModel.aggregate(options);
 };
 
-export const getGenreById = async (id: string) => {
-  const genre = await GenreModel.findById(id);
+export const getGenreById = async (id: string, lang?: string) => {
+  let options: any | object = null;
+  if (lang) options = { name: `$name.${lang}` };
+
+  const genre = await GenreModel.findById(id, options);
 
   if (!genre) {
     throw new ErrorHandler(Message.GENRE_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400);

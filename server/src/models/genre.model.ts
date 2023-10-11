@@ -6,10 +6,18 @@ import { Message } from '../constants';
 const genreSchema: Schema<IGenre> = new mongoose.Schema(
   {
     name: {
-      type: String,
-      unique: true,
-      trim: true,
-      required: [true, `'${Message.NAME_EMPTY}'`]
+      en: {
+        type: String,
+        unique: true,
+        trim: true,
+        required: [true, `'${Message.FIELD_s_EMPTY}', 'name.en'`]
+      },
+      vi: {
+        type: String,
+        unique: true,
+        trim: true,
+        required: [true, `'${Message.FIELD_s_EMPTY}', 'name.vi'`]
+      }
     }
   },
   { timestamps: true, versionKey: false }

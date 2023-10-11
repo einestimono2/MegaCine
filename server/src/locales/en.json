@@ -10,6 +10,7 @@
   "Email empty": "Please enter your email!",
   "Invalid email": "Please enter a valid email!",
   "Name empty": "Please enter your name!",
+  "Field %s empty": "Please enter '%s' field!",
   "Name too short %s": "Name should have more than %s characters!",
   "Name too long %s": "Name can not exceed %s characters!",
   "Password empty": "Please enter your password!",
