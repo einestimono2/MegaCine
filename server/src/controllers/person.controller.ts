@@ -9,6 +9,14 @@ import { type IUpdatePersonRequest, type ICloudinaryFile } from '../interfaces';
 export const createPerson = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   let avatar: ICloudinaryFile | null = null;
 
+  if (req.body.summary && typeof req.body.summary === 'string') {
+    try {
+      req.body.summary = JSON.parse(req.body.summary);
+    } catch (_) {
+      req.body.summary = null;
+    }
+  }
+
   // Upload avatar nếu có
   if (req.file) {
     avatar = await cloudinaryServices.uploadAvatar(req.file.path);
@@ -30,7 +38,11 @@ export const updatePerson = CatchAsyncError(async (req: Request, res: Response, 
   const person = await personServices.getPersonById(id);
 
   if (fullName) person.fullName = fullName;
-  if (summary) person.summary = summary;
+  if (summary) {
+    try {
+      person.summary = JSON.parse(summary);
+    } catch (_) {}
+  }
   if (req.file) person.avatar = await cloudinaryServices.replaceAvatar(person.avatar.public_id, req.file.path);
 
   await person.save();
@@ -57,7 +69,7 @@ export const deletePerson = CatchAsyncError(async (req: Request, res: Response, 
 
 //! Get Person Info
 export const getPerson = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const person = await personServices.getPersonById(req.params.id);
+  const person = await personServices.getPersonById(req.params.id, req.getLocale());
 
   res.status(HttpStatusCode.OK_200).json({
     status: 'success',

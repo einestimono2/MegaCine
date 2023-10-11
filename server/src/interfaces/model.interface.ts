@@ -1,5 +1,4 @@
 import { type Document } from 'mongoose';
-// mongoose.Schema.ObjectId;
 
 export interface ICloudinaryFile {
   public_id: string;
@@ -77,11 +76,13 @@ export interface IMovie extends Document {
   reviews: string[];
 }
 
-//
 export interface IPerson extends Document {
   avatar: ICloudinaryFile;
   fullName: string;
-  summary: string;
+  summary: {
+    en: string;
+    vi: string;
+  };
 }
 
 export interface IProduct extends Document {

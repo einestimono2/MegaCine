@@ -5,11 +5,12 @@ import { type Request } from 'express';
  * Chuyển đổi tất cả Query Request để áp dụng vào aggregate
  *
  * @param req - Request
- * @param ...fieldsApplySearch - Các trường trong Database áp dụng cho việc tìm kiếm
+ * @param fieldsApplySearch - Các trường trong Database áp dụng cho việc tìm kiếm
+ * @param localizationFields - Các trường trong Database có đa ngôn ngữ
  * @returns Pipeline Aggregation
  *
  */
-export const translateQueryRequest = (req: Request, ...fieldsApplySearch: string[]) => {
+export const translateQueryRequest = (req: Request, fieldsApplySearch?: string[], localizationFields?: string[]) => {
   const query: any = [];
 
   //! Search
@@ -67,6 +68,21 @@ export const translateQueryRequest = (req: Request, ...fieldsApplySearch: string
     });
   }
 
+  //! Xử lý kết quả trả về của ngôn ngữ hiện tại với các trường có song ngữ
+  // vd: name: {vi : "TV", en: "TA"} --> name: "TV" | Name: "TA"
+  if (localizationFields) {
+    const map = {};
+
+    localizationFields.forEach(
+      // { $project: {MyKey: {$ifNull: ['$A', '$B'] }}}
+      (field: string) => (map[field] = { $ifNull: [`$${field}.${req.getLocale()}`, `$${field}`] })
+    );
+
+    query.push({
+      $project: map
+    });
+  }
+
   //! Pagination
   if (req.query.page && req.query.limit) {
     const page = Number(req.query.page);
@@ -117,9 +133,3 @@ export const translateQueryRequest = (req: Request, ...fieldsApplySearch: string
 
   return query;
 };
-
-// pagination
-//    "totalPage": 0,
-//    "pageIndex": 0,
-//    "pageSize": 0,
-//    "totalCount": 0

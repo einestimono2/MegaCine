@@ -14,8 +14,11 @@ export const findPersonById = async (id: string) => {
   return await PersonModel.findById(id);
 };
 
-export const getPersonById = async (id: string) => {
-  const person = await PersonModel.findById(id);
+export const getPersonById = async (id: string, lang?: string) => {
+  let options: any | object = null;
+  if (lang) options = { summary: `$summary.${lang}` };
+
+  const person = await PersonModel.findById(id, options);
 
   if (!person) {
     throw new ErrorHandler(Message.PERSON_NOT_FOUND, HttpStatusCode.NOT_FOUND_404);
@@ -25,7 +28,7 @@ export const getPersonById = async (id: string) => {
 };
 
 export const getPersons = async (req: Request) => {
-  const options = translateQueryRequest(req, 'fullName');
+  const options = translateQueryRequest(req, ['fullName'], ['summary']);
 
   return await PersonModel.aggregate(options);
 };

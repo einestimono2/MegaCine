@@ -133,6 +133,20 @@ export const userRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - oldPassword
+ *              - newPassword
+ *            properties:
+ *              oldPassword:
+ *                type: string
+ *                default: ''
+ *              newPassword:
+ *                type: string
+ *                default: ''
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object

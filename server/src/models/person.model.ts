@@ -9,7 +9,10 @@ const personSchema: Schema<IPerson> = new mongoose.Schema(
       type: String,
       required: [true, `'${Message.NAME_EMPTY}'`]
     },
-    summary: String,
+    summary: {
+      en: String,
+      vi: String
+    },
     avatar: {
       public_id: String,
       url: {

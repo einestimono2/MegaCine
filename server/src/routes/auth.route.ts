@@ -50,6 +50,20 @@ export const authRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - email
+ *              - password
+ *            properties:
+ *              email:
+ *                type: string
+ *                default: test@gmail.com
+ *              password:
+ *                type: string
+ *                default: 123456
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
@@ -88,6 +102,28 @@ export const authRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - name
+ *              - email
+ *              - provider
+ *            properties:
+ *              name:
+ *                type: string
+ *                default: Tester 00
+ *              email:
+ *                type: string
+ *                default: test@gmail.com
+ *              avatar:
+ *                type: string
+ *                default: ''
+ *              provider:
+ *                type: string
+ *                enum: ['Google', 'Facebook']
+ *                default: Google
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
@@ -133,6 +169,24 @@ export const authRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - name
+ *              - email
+ *              - password
+ *            properties:
+ *              name:
+ *                type: string
+ *                default: Tester 00
+ *              email:
+ *                type: string
+ *                default: test@gmail.com
+ *              password:
+ *                type: string
+ *                default: 123456
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
@@ -175,6 +229,20 @@ export const authRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - activationToken
+ *              - otp
+ *            properties:
+ *              activationToken:
+ *                type: string
+ *                default: ''
+ *              otp:
+ *                type: string
+ *                default: ''
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
@@ -211,6 +279,16 @@ export const authRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - email
+ *            properties:
+ *              email:
+ *                type: string
+ *                default: test@gmail.com
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
@@ -219,7 +297,7 @@ export const authRouter = router;
  *            properties:
  *              email:
  *                type: string
- *                defaukt: test@gmail.com
+ *                default: test@gmail.com
  *    responses:
  *      200:
  *        description: Success
@@ -269,6 +347,16 @@ export const authRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - refreshToken
+ *            properties:
+ *              refreshToken:
+ *                type: string
+ *                default: ''
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
@@ -302,6 +390,16 @@ export const authRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - email
+ *            properties:
+ *              email:
+ *                type: string
+ *                default: test@gmail.com
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
@@ -336,6 +434,24 @@ export const authRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - resetPasswordToken
+ *              - newPassword
+ *              - otp
+ *            properties:
+ *              resetPasswordToken:
+ *                type: string
+ *                default: ''
+ *              newPassword:
+ *                type: string
+ *                default: ''
+ *              otp:
+ *                type: string
+ *                default: ''
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
