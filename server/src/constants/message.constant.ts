@@ -10,6 +10,7 @@ export enum Message {
   EMAIL_EMPTY = 'Email empty',
   INVALID_EMAIL = 'Invalid email',
   NAME_EMPTY = 'Name empty',
+  FIELD_s_EMPTY = 'Field %s empty',
   NAME_TOO_SHORT_s = 'Name too short %s',
   NAME_TOO_LONG_s = 'Name too long %s',
   PASSWORD_EMPTY = 'Password empty',

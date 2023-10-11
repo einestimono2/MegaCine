@@ -6,6 +6,12 @@ import { HttpStatusCode } from '../constants';
 
 // Create a new genre
 export const createGenre = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+  if (req.body.name && typeof req.body.name === 'string') {
+    try {
+      req.body.name = JSON.parse(req.body.name);
+    } catch (_) {}
+  }
+
   const genre = await genreServices.createGenre({ ...req.body });
 
   res.status(HttpStatusCode.OK_200).json({
@@ -31,7 +37,7 @@ export const getGenres = CatchAsyncError(async (req: Request, res: Response, nex
 export const getGenre = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
 
-  const genre = await genreServices.getGenreById(id);
+  const genre = await genreServices.getGenreById(id, req.getLocale());
 
   res.status(HttpStatusCode.OK_200).json({
     status: 'success',
@@ -42,7 +48,13 @@ export const getGenre = CatchAsyncError(async (req: Request, res: Response, next
 // Update Genre
 export const updateGenre = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const id = req.params.id;
-  const name = req.body.name;
+  let name = req.body.name;
+
+  if (name && typeof name === 'string') {
+    try {
+      name = JSON.parse(name);
+    } catch (_) {}
+  }
 
   let genre = await genreServices.getGenreById(id);
 

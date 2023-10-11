@@ -13,16 +13,16 @@ const adminRoles = [Roles.Manager, Roles.Admin];
 router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), createGenre);
 
 // [GET] List Genres
-router.get('/list_genre', isAuthenticated, getGenres);
+router.get('/list', isAuthenticated, getGenres);
 
 // [GET] Genre
-router.get('/get_genre/:id', isAuthenticated, getGenre);
+router.get('/details/:id', isAuthenticated, getGenre);
 
 // [PUT] Update Genre
-router.put('/update_genre/:id', isAuthenticated, authorizeRoles(...adminRoles), updateGenre);
+router.put('/details/:id', isAuthenticated, authorizeRoles(...adminRoles), updateGenre);
 
 // [DELETE] Delete Genre
-router.delete('/delete_genre/:id', isAuthenticated, authorizeRoles(...adminRoles), deleteGenre);
+router.delete('/details/:id', isAuthenticated, authorizeRoles(...adminRoles), deleteGenre);
 
 export const genreRouter = router;
 
@@ -44,14 +44,38 @@ export const genreRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - name
+ *            properties:
+ *              name:
+ *                type: object
+ *                properties:
+ *                  en:
+ *                    type: string
+ *                    example: Action
+ *                  vi:
+ *                    type: string
+ *                    example: Hành động
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
  *            required:
- *              name
+ *              - name
  *            properties:
  *              name:
- *                type: string
+ *                type: object
+ *                properties:
+ *                  en:
+ *                    type: string
+ *                    example: Action
+ *                  vi:
+ *                    type: string
+ *                    example: Hành động
+ *
  *    responses:
  *      200:
  *        description: Success
@@ -64,7 +88,7 @@ export const genreRouter = router;
 //! List Genre
 /**
  * @swagger
- * /api/v1/genre/list_genre:
+ * /api/v1/genre/list:
  *  get:
  *    tags: [Genre]
  *    summary: Lấy danh sách thể loại
@@ -130,7 +154,7 @@ export const genreRouter = router;
 //! Lấy tên của thể loại
 /**
  * @swagger
- * /api/v1/genre/get_genre/{id}:
+ * /api/v1/genre/details/{id}:
  *  get:
  *    tags: [Genre]
  *    summary: Lấy tên của thể loại
@@ -159,7 +183,7 @@ export const genreRouter = router;
 //! Cập nhật tên thể loại
 /**
  * @swagger
- * /api/v1/genre/update_genre/{id}:
+ * /api/v1/genre/details/{id}:
  *  put:
  *    tags: [Genre]
  *    summary: Cập nhật tên thể loại
@@ -179,6 +203,22 @@ export const genreRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - name
+ *            properties:
+ *              name:
+ *                type: object
+ *                properties:
+ *                  en:
+ *                    type: string
+ *                    example: Action
+ *                  vi:
+ *                    type: string
+ *                    example: Hành động
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
@@ -186,7 +226,14 @@ export const genreRouter = router;
  *              - name
  *            properties:
  *              name:
- *                type: string
+ *                type: object
+ *                properties:
+ *                  en:
+ *                    type: string
+ *                    example: Action
+ *                  vi:
+ *                    type: string
+ *                    example: Hành động
  *    responses:
  *      200:
  *        description: Success
@@ -199,7 +246,7 @@ export const genreRouter = router;
 //! Xóa thể loại
 /**
  * @swagger
- * /api/v1/genre/delete_genre/{id}:
+ * /api/v1/genre/details/{id}:
  *  delete:
  *    tags: [Genre]
  *    summary: Xóa thể loại

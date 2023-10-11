@@ -20,7 +20,10 @@ export interface IUser extends Document {
 }
 
 export interface IGenre extends Document {
-  name: string;
+  name: {
+    en: string;
+    vi: string;
+  };
 }
 
 export interface IReview extends Document {
