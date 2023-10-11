@@ -46,7 +46,14 @@ export const personRouter = router;
  *              fullName:
  *                type: string
  *              summary:
- *                type: string
+ *                type: object
+ *                properties:
+ *                  en:
+ *                    type: string
+ *                    example: ''
+ *                  vi:
+ *                    type: string
+ *                    example: ''
  *              avatar:
  *                type: string
  *                format: base64
@@ -157,7 +164,14 @@ export const personRouter = router;
  *              fullName:
  *                type: string
  *              summary:
- *                type: string
+ *                type: object
+ *                properties:
+ *                  en:
+ *                    type: string
+ *                    example: ''
+ *                  vi:
+ *                    type: string
+ *                    example: ''
  *              avatar:
  *                type: string
  *                format: base64
