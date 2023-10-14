@@ -99,7 +99,7 @@ userSchema.methods.signRefreshToken = function () {
   });
 };
 
-export const UserModel = mongoose.model<IUser>('Users', userSchema);
+export const UserModel = mongoose.model<IUser>('User', userSchema);
 
 /**
  * @swagger

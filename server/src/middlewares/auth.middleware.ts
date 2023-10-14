@@ -53,8 +53,7 @@ export const isAuthenticated = CatchAsyncError(async (req: Request, res: Respons
     return;
   }
 
-  req.userId = payload.id;
-  req.userRole = payload.role;
+  req.userPayload = payload;
   req.accessToken = accessToken;
 
   next();
@@ -87,8 +86,7 @@ export const verifyRefreshToken = CatchAsyncError(async (req: Request, res: Resp
     return;
   }
 
-  req.userId = payload.id;
-  req.userRole = payload.role;
+  req.userPayload = payload;
   req.accessToken = user.accessToken;
 
   next();
@@ -97,7 +95,7 @@ export const verifyRefreshToken = CatchAsyncError(async (req: Request, res: Resp
 // Check role
 export const authorizeRoles = (...roles: string[]) => {
   return (req: Request, _res: Response, next: NextFunction) => {
-    if (!roles.includes(req.userRole ?? '')) {
+    if (!roles.includes(req.userPayload?.role ?? '')) {
       // Role: ${req.user.role} insufficient access rights
       next(new ErrorHandler(Message.INSUFFICIENT_ACCESS_RIGHTS, HttpStatusCode.FORBIDDEN_403));
       return;

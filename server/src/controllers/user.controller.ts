@@ -8,7 +8,7 @@ import { HttpStatusCode, Message } from '../constants';
 
 //! Profile
 export const getProfile = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const user = await userServices.findUserById(req.userId!);
+  const user = await userServices.findUserById(req.userPayload!.id);
 
   res.status(HttpStatusCode.OK_200).json({
     status: 'success',
@@ -19,7 +19,7 @@ export const getProfile = CatchAsyncError(async (req: Request, res: Response, ne
 export const updateProfile = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const { name, phoneNumber } = req.body as IUpdateProfileRequest;
 
-  const user = await userServices.findUserById(req.userId!);
+  const user = await userServices.findUserById(req.userPayload!.id);
   if (!user) {
     next(new ErrorHandler(Message.USER_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400));
     return;
@@ -43,7 +43,7 @@ export const updateAvatar = CatchAsyncError(async (req: Request, res: Response, 
     return;
   }
 
-  const user = await userServices.findUserById(req.userId!);
+  const user = await userServices.findUserById(req.userPayload!.id);
   if (!user) {
     next(new ErrorHandler(Message.USER_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400));
     return;
@@ -70,7 +70,7 @@ export const updatePassword = CatchAsyncError(async (req: Request, res: Response
     return;
   }
 
-  const user = await userServices.findUserById(req.userId!, true);
+  const user = await userServices.findUserById(req.userPayload!.id, true);
   if (!user) {
     next(new ErrorHandler(Message.USER_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400));
     return;

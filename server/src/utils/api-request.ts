@@ -16,10 +16,23 @@ export const translateQueryRequest = (req: Request, fieldsApplySearch?: string[]
   //! Search
   if (req.query.keyword && fieldsApplySearch) {
     const map: Array<Record<string, any>> = [];
+    const fields: string[] = [];
 
-    fieldsApplySearch.forEach((field) => {
+    // Chuyển đổi những field song ngữ về dạng en và vi
+    fieldsApplySearch.forEach((e) => {
+      if (localizationFields?.includes(e)) {
+        fields.push(`${e}.en`);
+        fields.push(`${e}.vi`);
+      } else {
+        fields.push(e);
+      }
+    });
+
+    fields.forEach((field) => {
       const record: Record<string, any> = {};
+
       record[field] = { $regex: `${req.query.keyword as string}`, $options: 'i' };
+
       map.push(record);
     });
 

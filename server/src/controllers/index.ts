@@ -1,3 +1,4 @@
 export * from './auth.controller';
 export * from './user.controller';
 export * from './person.controller';
+export * as managerController from './manager.controller';

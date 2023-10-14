@@ -6,7 +6,8 @@
   "Token is invalid, Try again": "Token is invalid, Try again!",
   "Token is invalid": "Token is invalid!",
   "Token is expired, Try again": "Token is expired, Try again!",
-  "Email alread exist": "Email alread exist!",
+  "Email already exist": "Email already exist!",
+  "Code already exist": "Code already exist!",
   "Email empty": "Please enter your email!",
   "Invalid email": "Please enter a valid email!",
   "Name empty": "Please enter your name!",
@@ -25,6 +26,7 @@
   "Reset Password Email Template": "reset-password-mail-template-en.ejs",
   "Invalid OTP Code": "Invalid OTP Code!",
   "Email Activation Successful": "Account has been activated!",
+  "Account Activation Successful": "Account has been activated!",
   "Password Reset Successful": "Password has been reset successfully!",
   "Email Or Password Empty": "Please enter email and password!",
   "Wrong Email": "Email not exist! Please check your email again!",
@@ -44,7 +46,9 @@
   "Account Activated": "Account has been activated!",
   "Bearer Token Empty": "Bearer token invalid!",
   "Avatar Empty": "Please provide an avatar!",
-  "Field Empty": "Please complete all information!",
+  "Fields Empty": "Please complete all information!",
   "Genre Not Found": "Genre Not Found",
-  "Person Not Found": "Person Not Found!"
+  "Person Not Found": "Person Not Found!",
+  "Response timeout": "Response Timeout!",
+  "Wait for registration approval": "Registration successful, please wait for admin approval!"
 }
