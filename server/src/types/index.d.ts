@@ -4,8 +4,7 @@ declare global {
   namespace Express {
     interface Request {
       accessToken?: string;
-      userId?: string;
-      userRole?: string;
+      userPayload?: Record<string, string>;
 
       translate: (phraseOrOptions: string | TranslateOptions, ...replace: string[]) => string;
 

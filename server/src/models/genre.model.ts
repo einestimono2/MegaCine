@@ -23,4 +23,4 @@ const genreSchema: Schema<IGenre> = new mongoose.Schema(
   { timestamps: true, versionKey: false }
 );
 
-export const GenreModel = mongoose.model<IGenre>('Genres', genreSchema);
+export const GenreModel = mongoose.model<IGenre>('Genre', genreSchema);

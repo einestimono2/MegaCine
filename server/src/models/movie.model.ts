@@ -13,4 +13,4 @@ const movieSchema: Schema<IMovie> = new mongoose.Schema(
   { timestamps: true, versionKey: false }
 );
 
-export const MovieModel = mongoose.model<IMovie>('Movies', movieSchema);
+export const MovieModel = mongoose.model<IMovie>('Movie', movieSchema);

@@ -1,9 +1,6 @@
-import { type Express, type Request, type Response } from 'express';
 import swaggerJsdoc from 'swagger-jsdoc';
-import swaggerUi from 'swagger-ui-express';
 
 import { version } from '../../package.json';
-import logger from '../utils';
 
 const options: swaggerJsdoc.Options = {
   definition: {
@@ -39,17 +36,4 @@ const options: swaggerJsdoc.Options = {
   apis: ['**/*.ts']
 };
 
-const swaggerSpec = swaggerJsdoc(options);
-
-export function swaggerDocs(app: Express) {
-  // Swagger page
-  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-  // Docs in JSON format
-  app.get('/api/docs.json', (req: Request, res: Response) => {
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.send(swaggerSpec);
-  });
-
-  logger.info(`Docs available at http://localhost:${process.env.PORT}/api/docs`);
-}
+export const swaggerSpec = swaggerJsdoc(options);

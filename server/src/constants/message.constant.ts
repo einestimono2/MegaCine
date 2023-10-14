@@ -6,7 +6,8 @@ export enum Message {
   TOKEN_IS_INVALID_TRY_AGAIN = 'Token is invalid, Try again',
   TOKEN_IS_INVALID = 'Token is invalid',
   TOKEN_IS_EXPIRED_TRY_AGAIN = 'Token is expired, Try again',
-  EMAIL_ALREAD_EXIST = 'Email alread exist',
+  EMAIL_ALREADY_EXIST = 'Email already exist',
+  CODE_ALREADY_EXIST = 'Code already exist',
   EMAIL_EMPTY = 'Email empty',
   INVALID_EMAIL = 'Invalid email',
   NAME_EMPTY = 'Name empty',
@@ -18,6 +19,7 @@ export enum Message {
   INVALID_ROLE_s = 'Invalid role %s',
   INVALID_LOGIN_METHOD = 'Invalid login method',
   REGISTER_CHECK_EMAIL_NOTIFICATION_s = 'Check email notification %s to verify account',
+  WAIT_FOR_REGISTRATION_APPROVAL = 'Wait for registration approval',
   RESET_PASSWORD_CHECK_EMAIL_NOTIFICATION_s = 'Check email notification %s to reset password',
   ACTIVATION_EMAIL_SUBJECT = 'Activation Email Subject',
   ACTIVATION_EMAIL_TEMPLATE = 'Activation Email Template',
@@ -25,6 +27,7 @@ export enum Message {
   RESET_PASSWORD_EMAIL_TEMPLATE = 'Reset Password Email Template',
   INVALID_OTP_CODE = 'Invalid OTP Code',
   EMAIL_ACTIVATION_SUCCESSFUL = 'Email Activation Successful',
+  ACCOUNT_ACTIVATION_SUCCESSFUL = 'Account Activation Successful',
   PASSWORD_RESET_SUCCESSFUL = 'Password Reset Successful',
   EMAIL_OR_PASSWORD_EMPTY = 'Email Or Password Empty',
   WRONG_EMAIL = 'Wrong Email',
@@ -46,7 +49,7 @@ export enum Message {
   ACCOUNT_ACTIVATED = 'Account Activated',
   BEARER_TOKEN_EMPTY = 'Bearer Token Empty',
   AVATAR_EMPTY = 'Avatar Empty',
-  FIELDS_EMPTY = 'Field Empty',
+  FIELDS_EMPTY = 'Fields Empty',
   GENRE_NOT_FOUND = 'Genre Not Found'
 }
 

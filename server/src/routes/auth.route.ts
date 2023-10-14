@@ -312,7 +312,7 @@ export const authRouter = router;
  * @swagger
  * /api/v1/logout:
  *  get:
- *    tags: [Auth]
+ *    tags: [All]
  *    summary: Đăng xuất
  *    security:
  *      - BearerToken: []
@@ -336,7 +336,7 @@ export const authRouter = router;
  * @swagger
  * /api/v1/refresh:
  *  post:
- *    tags: [Auth]
+ *    tags: [All]
  *    summary: Gia hạn assetToken
  *    parameters:
  *      - in: query

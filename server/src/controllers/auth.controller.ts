@@ -2,7 +2,7 @@ import { type NextFunction, type Request, type Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { userServices } from '../services';
-import { type IActivationToken, type ILoginRequest } from '../interfaces';
+import { type IActivationToken, type IUserLoginRequest } from '../interfaces';
 import { CatchAsyncError } from '../middlewares';
 import { sendToken, ErrorHandler } from '../utils';
 import { HttpStatusCode, Message } from '../constants';
@@ -13,7 +13,7 @@ export const register = CatchAsyncError(async (req: Request, res: Response, next
   // Email đã tồn tại
   const isEmailExist = await userServices.findUserByEmail(req.body.email);
   if (isEmailExist) {
-    next(new ErrorHandler(Message.EMAIL_ALREAD_EXIST, HttpStatusCode.BAD_REQUEST_400));
+    next(new ErrorHandler(Message.EMAIL_ALREADY_EXIST, HttpStatusCode.BAD_REQUEST_400));
     return;
   }
 
@@ -100,7 +100,7 @@ export const resendActivationToken = CatchAsyncError(async (req: Request, res: R
 
 //! Login
 export const login = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const { email, password } = req.body as ILoginRequest;
+  const { email, password } = req.body as IUserLoginRequest;
   if (!email || !password) {
     next(new ErrorHandler(Message.EMAIL_OR_PASSWORD_EMPTY, HttpStatusCode.BAD_REQUEST_400));
     return;
@@ -144,7 +144,7 @@ export const logout = CatchAsyncError(async (req: Request, res: Response, next: 
   // res.clearCookie(ACCESS_TOKEN);
   // res.clearCookie(REFRESH_TOKEN);
 
-  const userId = req.userId;
+  const userId = req.userPayload?.id;
   const accessToken = req.accessToken;
 
   if (userId && accessToken) {
@@ -163,9 +163,9 @@ export const logout = CatchAsyncError(async (req: Request, res: Response, next: 
 //! Update Access Token
 export const updateAccessToken = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   // blacklist current access token
-  if (req.accessToken) await redis.set(`BL_${req.userId}`, req.accessToken);
+  if (req.accessToken) await redis.set(`BL_${req.userPayload?.id}`, req.accessToken);
 
-  const accessToken = jwt.sign({ id: req.userId }, process.env.ACCESS_TOKEN_SECRET as string, {
+  const accessToken = jwt.sign({ id: req.userPayload?.id }, process.env.ACCESS_TOKEN_SECRET as string, {
     expiresIn: process.env.ACCESS_TOKEN_EXPIRE
   });
   const refreshToken = req.body.refreshToken;
@@ -175,7 +175,7 @@ export const updateAccessToken = CatchAsyncError(async (req: Request, res: Respo
   // });
 
   // Cập nhật lại token lên redis
-  await redis.set(req.userId!, JSON.stringify({ accessToken, refreshToken }));
+  await redis.set(req.userPayload?.userId ?? '', JSON.stringify({ accessToken, refreshToken }));
 
   return res.status(HttpStatusCode.OK_200).json({
     status: 'success',

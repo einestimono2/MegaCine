@@ -19,6 +19,16 @@ export interface IUser extends Document {
   signRefreshToken: () => string;
 }
 
+export interface IManager extends Document {
+  code: string;
+  password: string;
+  role: string;
+  isVerified: boolean;
+  comparePassword: (password: string) => Promise<boolean>;
+  signAccessToken: () => string;
+  signRefreshToken: () => string;
+}
+
 export interface IGenre extends Document {
   name: {
     en: string;
@@ -35,9 +45,9 @@ export interface IReview extends Document {
 
 export interface ITheater extends Document {
   name: string;
+  address: string;
   location: {
     type: string;
-    address: string;
     coordinates: [number, number];
   };
   email: string;
@@ -45,15 +55,19 @@ export interface ITheater extends Document {
   hotline: string;
   thumbnail: ICloudinaryFile;
   cover: ICloudinaryFile;
-  roomSummary: string[];
-  rooms: string[];
+  roomSummary: string; // 1 2D, 1 3D (1 phòng loại 2D và 1 phòng loại 3D)
+  rooms: Array<{
+    name: string; // tên phòng
+    type: string; // loại 2D, 3D ...
+  }>;
   isActive: boolean;
   totalFavorites: number;
   ratings: {
     average: number;
     count: number;
   };
-  reviews: string[];
+  reviews: string[]; // type: mongoose.Schema.Types.ObjectId, ref: 'Review'
+  manager: string; // type: mongoose.Schema.Types.ObjectId, ref: 'Manager'
 }
 
 export interface IMovie extends Document {

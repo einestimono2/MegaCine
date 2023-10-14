@@ -55,15 +55,15 @@ const theaterSchema: Schema<ITheater> = new mongoose.Schema(
         }
       }
     },
-    roomSummary: {
-      type: [
-        {
+    rooms: [
+      {
+        name: String,
+        type: {
           type: String,
           enum: [RoomType['2D'], RoomType['3D']]
         }
-      ],
-      default: [RoomType['2D']]
-    },
+      }
+    ],
     isActive: {
       type: Boolean,
       default: true
@@ -74,4 +74,4 @@ const theaterSchema: Schema<ITheater> = new mongoose.Schema(
 
 theaterSchema.index({ location: '2dsphere' });
 
-export const CinemaModel = mongoose.model<ITheater>('Theaters', theaterSchema);
+export const CinemaModel = mongoose.model<ITheater>('Theater', theaterSchema);

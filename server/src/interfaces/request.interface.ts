@@ -1,7 +1,12 @@
 import { type EmailProvider } from '../constants';
 
-export interface ILoginRequest {
+export interface IUserLoginRequest {
   email: string;
+  password: string;
+}
+
+export interface IManagerLoginRequest {
+  code: string;
   password: string;
 }
 
