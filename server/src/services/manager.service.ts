@@ -39,3 +39,9 @@ export const getManagers = async (req: Request) => {
 
   return await ManagerModel.aggregate(options);
 };
+
+export const deleteManager = async (id: string) => {
+  const manager = await getManagerById(id);
+
+  await manager.deleteOne();
+};

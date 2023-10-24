@@ -6,12 +6,6 @@ import { HttpStatusCode } from '../constants';
 
 // Create a new genre
 export const createGenre = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  if (req.body.name && typeof req.body.name === 'string') {
-    try {
-      req.body.name = JSON.parse(req.body.name);
-    } catch (_) {}
-  }
-
   const genre = await genreServices.createGenre({ ...req.body });
 
   res.status(HttpStatusCode.CREATED_201).json({
@@ -47,22 +41,7 @@ export const getGenre = CatchAsyncError(async (req: Request, res: Response, next
 
 // Update Genre
 export const updateGenre = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const id = req.params.id;
-  let name = req.body.name;
-
-  if (name && typeof name === 'string') {
-    try {
-      name = JSON.parse(name);
-    } catch (_) {}
-  }
-
-  let genre = await genreServices.getGenreById(id);
-
-  if (genre.name !== name) {
-    genre.name = name;
-
-    genre = await genre.save();
-  }
+  const genre = await genreServices.updateGenre(req.params.id, req.body.name);
 
   res.status(HttpStatusCode.CREATED_201).json({
     status: 'success',
@@ -72,9 +51,7 @@ export const updateGenre = CatchAsyncError(async (req: Request, res: Response, n
 
 // Delete Genre
 export const deleteGenre = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const id = req.params.id;
-
-  await genreServices.deleteGenre(id);
+  await genreServices.deleteGenre(req.params.id);
 
   res.status(HttpStatusCode.OK_200).json({
     status: 'success'

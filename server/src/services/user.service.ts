@@ -1,10 +1,23 @@
 import jwt, { type Secret } from 'jsonwebtoken';
 
-import { type IActivationToken, type IUser, type IOTPRequest, type IResetPasswordToken } from '../interfaces';
+import {
+  type IActivationToken,
+  type IUser,
+  type IOTPRequest,
+  type IResetPasswordToken,
+  type IUpdateProfileRequest
+} from '../interfaces';
 import { UserModel } from '../models';
-import logger, { SendMail, omitIsNil } from '../utils';
+import logger, { ErrorHandler, SendMail, omitIsNil } from '../utils';
+import { HttpStatusCode, Message } from '../constants';
+import { cloudinaryServices } from '.';
 
 export const createUser = async (user: IUser) => {
+  const isEmailExist = await findUserByEmail(user.email);
+  if (isEmailExist) {
+    throw new ErrorHandler(Message.EMAIL_ALREADY_EXIST, HttpStatusCode.BAD_REQUEST_400);
+  }
+
   const newUser = new UserModel(user);
 
   return await newUser.save();
@@ -14,24 +27,44 @@ export const findUserByEmail = async (email: string, password: boolean = false) 
   return await UserModel.findOne({ email }).select(password ? '+password' : '-password');
 };
 
-export const findUserById = async (id: string, password: boolean = false) => {
-  return await UserModel.findById(id).select(password ? '+password' : '-password');
+export const getUserByEmail = async (email: string, password: boolean = false) => {
+  const user = await UserModel.findOne({ email }).select(password ? '+password' : '-password');
+  if (!user) {
+    throw new ErrorHandler(Message.EMAIL_ALREADY_EXIST, HttpStatusCode.BAD_REQUEST_400);
+  }
+
+  return user;
 };
 
-export const findUser = async (filters: any, password: boolean = false) => {
-  return await UserModel.findOne(omitIsNil(filters)).select(password ? '+password' : '-password');
+export const getUserById = async (id: string, password: boolean = false) => {
+  const user = await UserModel.findById(id).select(password ? '+password' : '-password');
+  if (!user) {
+    throw new ErrorHandler(Message.EMAIL_ALREADY_EXIST, HttpStatusCode.BAD_REQUEST_400);
+  }
+
+  return user;
 };
 
-export const updateUser = async (data: any) => {
-  const { userId, update } = data;
-  const updatedUser = await UserModel.findOneAndUpdate({ id: userId }, update, {
-    new: true
-  });
-  return updatedUser;
+export const getUser = async (filters: any, password: boolean = false) => {
+  const user = await UserModel.findOne(omitIsNil(filters)).select(password ? '+password' : '-password');
+  if (!user) {
+    throw new ErrorHandler(Message.EMAIL_ALREADY_EXIST, HttpStatusCode.BAD_REQUEST_400);
+  }
+
+  return user;
 };
 
-export const deleteUser = async (id: string) => {
-  return await UserModel.findByIdAndDelete(id);
+export const updateProfile = async (id: string, newProfile: IUpdateProfileRequest) => {
+  const user = await getUserById(id);
+
+  if (newProfile.name) user.name = newProfile.name;
+  if (newProfile.phoneNumber) user.phoneNumber = newProfile.phoneNumber;
+  if (newProfile.avatar)
+    user.avatar = await cloudinaryServices.replaceImage(user.avatar.public_id, newProfile.avatar, 'avatars');
+
+  await user.save();
+
+  return user;
 };
 
 export const sendActivationOTP = async (payload: IOTPRequest): Promise<IActivationToken> => {

@@ -10,13 +10,6 @@ import { redis } from '../config/redis';
 
 //! Đăng ký tài khoản
 export const register = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  // Email đã tồn tại
-  const isEmailExist = await userServices.findUserByEmail(req.body.email);
-  if (isEmailExist) {
-    next(new ErrorHandler(Message.EMAIL_ALREADY_EXIST, HttpStatusCode.BAD_REQUEST_400));
-    return;
-  }
-
   // Tạo user
   const user = await userServices.createUser({ ...req.body });
 
@@ -50,11 +43,7 @@ export const activateUser = CatchAsyncError(async (req: Request, res: Response, 
     return;
   }
 
-  const user = await userServices.findUserById(payload.id);
-  if (!user) {
-    next(new ErrorHandler(Message.USER_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400));
-    return;
-  }
+  const user = await userServices.getUserById(payload.id);
 
   if (user.isVerified) {
     next(new ErrorHandler(Message.ACCOUNT_ACTIVATED, HttpStatusCode.BAD_REQUEST_400));
@@ -71,11 +60,7 @@ export const activateUser = CatchAsyncError(async (req: Request, res: Response, 
 });
 
 export const resendActivationToken = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const user = await userServices.findUserByEmail(req.body.email);
-  if (!user) {
-    next(new ErrorHandler(Message.USER_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400));
-    return;
-  }
+  const user = await userServices.getUserByEmail(req.body.email);
 
   if (user.isVerified) {
     next(new ErrorHandler(Message.ACCOUNT_ACTIVATED, HttpStatusCode.BAD_REQUEST_400));
@@ -106,11 +91,7 @@ export const login = CatchAsyncError(async (req: Request, res: Response, next: N
     return;
   }
 
-  const user = await userServices.findUserByEmail(email, true);
-  if (!user) {
-    next(new ErrorHandler(Message.WRONG_EMAIL, HttpStatusCode.BAD_REQUEST_400));
-    return;
-  }
+  const user = await userServices.getUserByEmail(email, true);
 
   // Chưa xác nhận OTP
   if (!user.isVerified) {
@@ -152,12 +133,12 @@ export const logout = CatchAsyncError(async (req: Request, res: Response, next: 
 
     // blacklist current access token
     await redis.set(`BL_${userId}`, accessToken);
-
-    res.status(HttpStatusCode.OK_200).json({
-      status: 'success',
-      message: res.translate(Message.LOGGED_OUT_SUCCESSFULLY)
-    });
   }
+
+  res.status(HttpStatusCode.OK_200).json({
+    status: 'success',
+    message: res.translate(Message.LOGGED_OUT_SUCCESSFULLY)
+  });
 });
 
 //! Update Access Token
@@ -187,11 +168,7 @@ export const updateAccessToken = CatchAsyncError(async (req: Request, res: Respo
 
 //! Forgot password
 export const forgotPassword = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const user = await userServices.findUserByEmail(req.body.email);
-  if (!user) {
-    next(new ErrorHandler(Message.USER_NOT_FOUND, 400));
-    return;
-  }
+  const user = await userServices.getUserByEmail(req.body.email);
 
   if (!user.isVerified) {
     next(new ErrorHandler(Message.ACCOUNT_NOT_ACTIVATED, HttpStatusCode.BAD_REQUEST_400));
@@ -232,11 +209,7 @@ export const resetPassword = CatchAsyncError(async (req: Request, res: Response,
     return;
   }
 
-  const user = await userServices.findUserById(payload.id, true);
-  if (!user) {
-    next(new ErrorHandler(Message.USER_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400));
-    return;
-  }
+  const user = await userServices.getUserById(payload.id, true);
 
   user.password = newPassword;
   await user.save();

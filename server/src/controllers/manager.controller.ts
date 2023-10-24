@@ -125,9 +125,7 @@ export const getManager = CatchAsyncError(async (req: Request, res: Response, ne
 });
 
 export const deleteManager = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const manager = await managerServices.getManagerById(req.params.id);
-
-  await manager.deleteOne();
+  await managerServices.deleteManager(req.params.id);
 
   res.status(HttpStatusCode.OK_200).json({
     status: 'success'

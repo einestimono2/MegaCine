@@ -25,11 +25,13 @@ export interface IUpdatePasswordRequest {
 export interface IUpdateProfileRequest {
   name?: string;
   phoneNumber?: string;
+  avatar?: string;
 }
 
 export interface IUpdatePersonRequest {
   fullName: string;
   summary?: string;
+  avatar?: string;
 }
 
 export interface IUpdateMovieRequest {

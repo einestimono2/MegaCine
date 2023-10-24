@@ -10,10 +10,7 @@ export const createMovie = CatchAsyncError(async (req: Request, res: Response, n
   req.body.actors = req.body.actors.split(',');
   req.body.genres = req.body.genres.split(',');
 
-  const movie = await movieServices.createMovie(
-    { ...req.body, theater: req.userPayload?.theater ?? '-' },
-    req.file?.path
-  );
+  const movie = await movieServices.createMovie({ ...req.body }, req.file?.path);
 
   res.status(HttpStatusCode.CREATED_201).json({
     status: 'success',
