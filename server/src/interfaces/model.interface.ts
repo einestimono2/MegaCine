@@ -24,6 +24,7 @@ export interface IManager extends Document {
   password: string;
   role: string;
   isVerified: boolean;
+  theater: string | ITheater; // type: mongoose.Schema.Types.ObjectId, ref: 'Theater'
   comparePassword: (password: string) => Promise<boolean>;
   signAccessToken: () => string;
   signRefreshToken: () => string;
@@ -67,22 +68,27 @@ export interface ITheater extends Document {
     count: number;
   };
   reviews: string[]; // type: mongoose.Schema.Types.ObjectId, ref: 'Review'
-  manager: string; // type: mongoose.Schema.Types.ObjectId, ref: 'Manager'
 }
 
 export interface IMovie extends Document {
   title: string;
   originalTitle: string;
-  trailer: ICloudinaryFile;
+  trailer: string;
   poster: ICloudinaryFile;
-  overview: string;
+  overview: {
+    en: string;
+    vi: string;
+  };
   duration: number;
   releaseDate: Date;
-  directors: string[];
-  actors: string[];
-  language: string;
+  directors: Array<string | IPerson>;
+  actors: Array<string | IPerson>;
+  language: {
+    en: string;
+    vi: string;
+  };
   ageType: string;
-  genre: string[];
+  genres: Array<string | IGenre>;
   totalRate: number;
   isActive: boolean;
   totalFavorites: number;
@@ -90,7 +96,8 @@ export interface IMovie extends Document {
     average: number;
     count: number;
   };
-  reviews: string[];
+  reviews: Array<string | IReview>;
+  theater: string | ITheater;
 }
 
 export interface IPerson extends Document {
@@ -100,6 +107,7 @@ export interface IPerson extends Document {
     en: string;
     vi: string;
   };
+  movies: Array<string | IMovie>;
 }
 
 export interface IProduct extends Document {
@@ -126,6 +134,7 @@ export interface IShowTimes extends Document {
   startTime: Date;
   endTime: Date;
   isActive: boolean;
+  prices: number;
 }
 
 export interface IVoucher extends Document {

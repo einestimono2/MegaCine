@@ -122,6 +122,7 @@ export const authRouter = router;
  *              provider:
  *                type: string
  *                enum: ['Google', 'Facebook']
+ *                description: "Google | Facebook"
  *                default: Google
  *
  *        application/x-www-form-urlencoded:
@@ -143,6 +144,7 @@ export const authRouter = router;
  *              provider:
  *                type: string
  *                enum: ['Google', 'Facebook']
+ *                description: "Google | Facebook"
  *                default: Google
  *    responses:
  *      200:

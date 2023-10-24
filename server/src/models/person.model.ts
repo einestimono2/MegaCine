@@ -19,7 +19,13 @@ const personSchema: Schema<IPerson> = new mongoose.Schema(
         type: String,
         default: DEFAULT_AVATAR_URL
       }
-    }
+    },
+    movies: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Movie'
+      }
+    ]
   },
   { timestamps: true, versionKey: false }
 );

@@ -3,7 +3,8 @@ import { type Request } from 'express';
 import { GenreModel } from '../models';
 import { type IGenre } from '../interfaces';
 import { HttpStatusCode, Message } from '../constants';
-import { ErrorHandler, translateQueryRequest } from '../utils';
+import { ErrorHandler, convertRequestToPipelineStages } from '../utils';
+import { isValidObjectId } from 'mongoose';
 
 export const createGenre = async (genre: IGenre) => {
   const checkGenre = await GenreModel.findOne({ name: genre.name });
@@ -16,8 +17,33 @@ export const createGenre = async (genre: IGenre) => {
   return checkGenre;
 };
 
+export const getOrCreateGenre = async (key: string) => {
+  let id: string = key;
+
+  if (!isValidObjectId(key)) {
+    let genre = (
+      await GenreModel.find({
+        $or: [{ 'name.en': key }, { 'name.vi': key }]
+      })
+    )[0];
+
+    if (!genre) {
+      genre = await new GenreModel({
+        name: {
+          en: key,
+          vi: key
+        }
+      }).save();
+    }
+
+    id = genre._id;
+  }
+
+  return id;
+};
+
 export const getGenres = async (req: Request) => {
-  const options = translateQueryRequest(req, ['name'], ['name']);
+  const options = convertRequestToPipelineStages(req, ['name'], ['name']);
 
   return await GenreModel.aggregate(options);
 };

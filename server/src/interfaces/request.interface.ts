@@ -1,4 +1,4 @@
-import { type EmailProvider } from '../constants';
+import { type EmailProviders } from '../constants';
 
 export interface IUserLoginRequest {
   email: string;
@@ -14,7 +14,7 @@ export interface ISocialAuthRequest {
   email: string;
   name: string;
   avatar: string;
-  provider: EmailProvider;
+  provider: EmailProviders;
 }
 
 export interface IUpdatePasswordRequest {
@@ -30,6 +30,21 @@ export interface IUpdateProfileRequest {
 export interface IUpdatePersonRequest {
   fullName: string;
   summary?: string;
+}
+
+export interface IUpdateMovieRequest {
+  title?: string;
+  originalTitle?: string;
+  trailer?: string;
+  poster?: string;
+  overview?: string;
+  duration?: number;
+  releaseDate?: Date;
+  directors?: string;
+  actors?: string;
+  language?: string;
+  ageType?: string;
+  genres?: string;
 }
 
 export interface IOTPRequest {

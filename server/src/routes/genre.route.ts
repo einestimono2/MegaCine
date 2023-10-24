@@ -77,7 +77,7 @@ export const genreRouter = router;
  *                    example: Hành động
  *
  *    responses:
- *      200:
+ *      201:
  *        description: Success
  *        content:
  *          application/json:
@@ -235,7 +235,7 @@ export const genreRouter = router;
  *                    type: string
  *                    example: Hành động
  *    responses:
- *      200:
+ *      201:
  *        description: Success
  *        content:
  *          application/json:

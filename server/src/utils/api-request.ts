@@ -10,7 +10,11 @@ import { type Request } from 'express';
  * @returns Pipeline Aggregation
  *
  */
-export const translateQueryRequest = (req: Request, fieldsApplySearch?: string[], localizationFields?: string[]) => {
+export const convertRequestToPipelineStages = (
+  req: Request,
+  fieldsApplySearch?: string[],
+  localizationFields?: string[]
+) => {
   const query: any = [];
 
   //! Search
@@ -88,11 +92,12 @@ export const translateQueryRequest = (req: Request, fieldsApplySearch?: string[]
 
     localizationFields.forEach(
       // { $project: {MyKey: {$ifNull: ['$A', '$B'] }}}
+      // (field: string) => (map[field] = 0)
       (field: string) => (map[field] = { $ifNull: [`$${field}.${req.getLocale()}`, `$${field}`] })
     );
 
     query.push({
-      $project: map
+      $set: map
     });
   }
 

@@ -58,7 +58,7 @@ export const personRouter = router;
  *                type: string
  *                format: base64
  *    responses:
- *      200:
+ *      201:
  *        description: Success
  *        content:
  *          application/json:
@@ -176,7 +176,7 @@ export const personRouter = router;
  *                type: string
  *                format: base64
  *    responses:
- *      200:
+ *      201:
  *        description: Success
  *        content:
  *          application/json:

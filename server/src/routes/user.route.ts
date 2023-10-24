@@ -5,15 +5,15 @@ import { isAuthenticated, uploadAvatar } from '../middlewares';
 
 const router = express.Router();
 
-// .../api/v1
+// .../api/v1/user
 router
-  .route('/user/me')
+  .route('/me')
   .get(isAuthenticated, getProfile)
   .put(isAuthenticated, uploadAvatar.single('avatar'), updateProfile);
 
-router.put('/user/avatar', isAuthenticated, uploadAvatar.single('avatar'), updateAvatar);
+router.put('/avatar', isAuthenticated, uploadAvatar.single('avatar'), updateAvatar);
 
-router.put('/user/update-password', isAuthenticated, updatePassword);
+router.put('/update-password', isAuthenticated, updatePassword);
 
 export const userRouter = router;
 
