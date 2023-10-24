@@ -11,7 +11,7 @@ import { i18n, swaggerSpec } from './config'; //! Import sau cookie-parser
 import logger from './utils';
 
 // Routes Import
-import { userRouter, authRouter, genreRouter, personRouter, managerRouter } from './routes';
+import { userRouter, authRouter, genreRouter, personRouter, managerRouter, movieRouter } from './routes';
 
 //! Khởi tạo
 const app = express();
@@ -32,10 +32,11 @@ app.use(haltOnTimedout);
 
 //! Routes
 app.use('/api/v1', authRouter);
-app.use('/api/v1', userRouter);
+app.use('/api/v1/user', userRouter);
 app.use('/api/v1/genre', genreRouter);
 app.use('/api/v1/person', personRouter);
 app.use('/api/v1/manager', managerRouter);
+app.use('/api/v1/movie', movieRouter);
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec)); // Swagger Documentation UI
 app.get('/api/docs.json', getSwaggerJsonDocs); // Swagger Documentation JSON

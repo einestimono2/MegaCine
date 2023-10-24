@@ -100,7 +100,7 @@ export const getManagers = CatchAsyncError(async (req: Request, res: Response, n
   });
 });
 
-export const updateManager = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const updateRole = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   let manager = await managerServices.getManagerById(req.params.id);
 
   if (manager.role !== req.body.role) {
@@ -109,7 +109,7 @@ export const updateManager = CatchAsyncError(async (req: Request, res: Response,
     manager = await manager.save();
   }
 
-  res.status(HttpStatusCode.OK_200).json({
+  res.status(HttpStatusCode.CREATED_201).json({
     status: 'success',
     data: { manager }
   });

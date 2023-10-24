@@ -19,12 +19,12 @@ export const createPerson = CatchAsyncError(async (req: Request, res: Response, 
 
   // Upload avatar nếu có
   if (req.file) {
-    avatar = await cloudinaryServices.uploadAvatar(req.file.path);
+    avatar = await cloudinaryServices.uploadImage(req.file.path, 'avatars');
   }
 
   const person = await personServices.createPerson({ ...req.body, avatar });
 
-  res.status(HttpStatusCode.OK_200).json({
+  res.status(HttpStatusCode.CREATED_201).json({
     status: 'success',
     data: { person }
   });
@@ -43,11 +43,12 @@ export const updatePerson = CatchAsyncError(async (req: Request, res: Response, 
       person.summary = JSON.parse(summary);
     } catch (_) {}
   }
-  if (req.file) person.avatar = await cloudinaryServices.replaceAvatar(person.avatar.public_id, req.file.path);
+  if (req.file)
+    person.avatar = await cloudinaryServices.replaceImage(person.avatar.public_id, req.file.path, 'avatars');
 
   await person.save();
 
-  res.status(HttpStatusCode.OK_200).json({
+  res.status(HttpStatusCode.CREATED_201).json({
     status: 'success',
     data: { person }
   });
@@ -69,7 +70,7 @@ export const deletePerson = CatchAsyncError(async (req: Request, res: Response, 
 
 //! Get Person Info
 export const getPerson = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const person = await personServices.getPersonById(req.params.id, req.getLocale());
+  const person = await personServices.getPersonDetails(req.params.id, req.getLocale());
 
   res.status(HttpStatusCode.OK_200).json({
     status: 'success',

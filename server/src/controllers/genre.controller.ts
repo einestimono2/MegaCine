@@ -14,7 +14,7 @@ export const createGenre = CatchAsyncError(async (req: Request, res: Response, n
 
   const genre = await genreServices.createGenre({ ...req.body });
 
-  res.status(HttpStatusCode.OK_200).json({
+  res.status(HttpStatusCode.CREATED_201).json({
     status: 'success',
     data: { genre }
   });
@@ -64,7 +64,7 @@ export const updateGenre = CatchAsyncError(async (req: Request, res: Response, n
     genre = await genre.save();
   }
 
-  res.status(HttpStatusCode.OK_200).json({
+  res.status(HttpStatusCode.CREATED_201).json({
     status: 'success',
     data: { genre }
   });

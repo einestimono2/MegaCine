@@ -18,7 +18,7 @@ router.get('/activate/:id', isAuthenticated, authorizeRoles(Roles.Admin), manage
 
 router
   .route('/details/:id')
-  .put(isAuthenticated, authorizeRoles(Roles.Admin), managerController.updateManager)
+  .put(isAuthenticated, authorizeRoles(Roles.Admin), managerController.updateRole)
   .delete(isAuthenticated, authorizeRoles(Roles.Admin), managerController.deleteManager)
   .get(isAuthenticated, authorizeRoles(Roles.Admin), managerController.getManager);
 
@@ -354,7 +354,7 @@ export const managerRouter = router;
  *                type: string
  *                default: MANAGER
  *    responses:
- *      200:
+ *      201:
  *        description: Success
  *        content:
  *          application/json:

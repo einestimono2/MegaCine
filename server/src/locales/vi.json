@@ -16,8 +16,8 @@
 	"Name too long %s": "Tên không được vượt quá %s kí tự!",
 	"Password empty": "Password không được trống!",
 	"Password too short %s": "Password phải ít nhất %s kí tự!",
-	"Invalid role %s": "Role '%s' không hợp lệ!",
-	"Invalid login method": "Phương thức đăng nhập không hợp lệ!",
+	"Invalid role %s": "Role '%s' không hợp lệ! (ADMIN | USER | MANAGER)",
+	"Invalid login method": "Phương thức đăng nhập không hợp lệ! (Google | Email | Facebook)",
 	"Check email notification %s to verify account": "Đăng ký thành công, vui lòng kiểm tra email '%s' để kích hoạt tài khoản!",
 	"Check email notification %s to reset password": "Email đã được gửi tới '%s', kiểm tra email để khôi phục mật khẩu!",
 	"Activation Email Subject": "Kích hoạt tài khoản MegaCine",
@@ -40,7 +40,7 @@
 	"User Not Found": "Người dùng không tồn tại!",
 	"Insufficient Access Rights": "Không đủ quyền để thực hiện yêu cầu!",
 	"Internal Server Error": "Server không phản hồi, vui lòng thử lại!",
-	"Unsupported Image Format": "Định dạng hình ảnh không hợp lệ (Hỗ trợ .png, .jpg hoặc .jpeg)",
+	"Unsupported Image Format": "Định dạng hình ảnh không hợp lệ! (Hỗ trợ .png, .jpg hoặc .jpeg)",
 	"Unsupported Video Format": "",
 	"Account Not Activated": "Tài khoản chưa được kích hoạt!",
 	"Account Activated": "Tài khoản đã được kích hoạt!",
@@ -51,9 +51,6 @@
 	"Person Not Found": "Nghệ sĩ không tồn tại!",
 	"Response timeout": "Timeout!",
 	"Wait for registration approval": "Đăng ký thành công, vui lòng đợt QTV phê duyệt!",
-	"Đường dẫn '/api/v1/manager/activate?hl=vi' không tồn tại!": "Đường dẫn '/api/v1/manager/activate?hl=vi' không tồn tại!",
-	"Manager validation failed: role: 'Invalid role %s', 'ADMINs'": "Manager validation failed: role: 'Invalid role %s', 'ADMINs'",
-	"Illegal arguments: object, string": "Illegal arguments: object, string",
-	"jwt expired": "jwt expired",
-	"$or/$and/$nor entries need to be full objects": "$or/$and/$nor entries need to be full objects"
+	"Invalid age type %s": "AgeType '%s' không hợp lệ! (P | C13 | C16 | C18)",
+	"Movie Not Found": "Phim không tồn tại!"
 }

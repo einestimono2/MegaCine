@@ -2,10 +2,8 @@ import mongoose, { type Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-import { type IUser } from '../interfaces/model.interface';
-import { Roles, EmailProvider } from '../constants/enum.constant';
-import { DEFAULT_AVATAR_URL, EMAIL_REGEX_PATTERN } from './../constants/value.constant';
-import { Message } from '../constants';
+import { type IUser } from '../interfaces';
+import { DEFAULT_AVATAR_URL, EMAIL_REGEX_PATTERN, Message, Roles, EmailProviders } from '../constants';
 
 const userSchema: Schema<IUser> = new mongoose.Schema(
   {
@@ -35,7 +33,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       minlength: [6, `'${Message.PASSWORD_TOO_SHORT_s}', '6'`],
       required: [
         function () {
-          return this.provider === EmailProvider.Email;
+          return this.provider === EmailProviders.Email;
         },
         `'${Message.PASSWORD_EMPTY}'`
       ]
@@ -51,7 +49,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     role: {
       type: String,
       enum: {
-        values: [Roles.Manager, Roles.User, Roles.Admin],
+        values: Object.values(Roles),
         message: `'${Message.INVALID_ROLE_s}', '{VALUE}'`
       },
       default: Roles.User
@@ -63,10 +61,10 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     provider: {
       type: String,
       enum: {
-        values: [EmailProvider.Email, EmailProvider.Facebook, EmailProvider.Google],
+        values: Object.values(EmailProviders),
         message: `'${Message.INVALID_LOGIN_METHOD}'`
       },
-      default: EmailProvider.Email
+      default: EmailProviders.Email
     }
   },
   { timestamps: true, versionKey: false }

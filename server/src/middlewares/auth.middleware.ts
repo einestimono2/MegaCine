@@ -4,7 +4,7 @@ import jwt, { type JwtPayload } from 'jsonwebtoken';
 import { CatchAsyncError } from '../middlewares';
 import { ErrorHandler } from '../utils';
 import { redis } from '../config';
-import { HttpStatusCode, Message } from '../constants';
+import { HttpStatusCode, Message, Roles } from '../constants';
 
 //! Cookies session
 // export const isAuthenticated = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -51,6 +51,11 @@ export const isAuthenticated = CatchAsyncError(async (req: Request, res: Respons
   if (blacklist && blacklist === accessToken) {
     next(new ErrorHandler(Message.TOKEN_IS_INVALID_TRY_AGAIN, HttpStatusCode.BAD_REQUEST_400));
     return;
+  }
+
+  // Gán theater khi token chưa cập nhật
+  if (!payload.theater && payload.role !== Roles.User) {
+    // Tìm kiếm và gán id
   }
 
   req.userPayload = payload;

@@ -5,13 +5,13 @@ export const enum LoggerTypes {
   Error = 'error'
 }
 
-export const enum Roles {
+export enum Roles {
   Admin = 'ADMIN',
   User = 'USER',
   Manager = 'MANAGER'
 }
 
-export const enum EmailProvider {
+export enum EmailProviders {
   Email = 'Email',
   Google = 'Google',
   Facebook = 'Facebook'
@@ -26,7 +26,7 @@ export const enum RoomType {
   '3D' = '3D'
 }
 
-export const enum ageType {
+export enum AgeTypes {
   P = 'P', // All
   C13 = 'C13', // 13+
   C16 = 'C16', // 16+

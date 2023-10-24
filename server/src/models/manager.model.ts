@@ -23,7 +23,7 @@ const managerSchema: Schema<IManager> = new mongoose.Schema(
     role: {
       type: String,
       enum: {
-        values: [Roles.Manager, Roles.Admin],
+        values: Object.values(Roles),
         message: `'${Message.INVALID_ROLE_s}', '{VALUE}'`
       },
       default: Roles.Manager
@@ -31,6 +31,10 @@ const managerSchema: Schema<IManager> = new mongoose.Schema(
     isVerified: {
       type: Boolean,
       default: false
+    },
+    theater: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Theater'
     }
   },
   { timestamps: true, versionKey: false }

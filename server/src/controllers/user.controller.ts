@@ -27,7 +27,7 @@ export const updateProfile = CatchAsyncError(async (req: Request, res: Response,
 
   if (name) user.name = name;
   if (phoneNumber) user.phoneNumber = phoneNumber;
-  if (req.file) user.avatar = await cloudinaryServices.replaceAvatar(user.avatar.public_id, req.file.path);
+  if (req.file) user.avatar = await cloudinaryServices.replaceImage(user.avatar.public_id, req.file.path, 'avatars');
 
   await user.save();
 
@@ -49,10 +49,7 @@ export const updateAvatar = CatchAsyncError(async (req: Request, res: Response, 
     return;
   }
 
-  const imgID = user.avatar.public_id;
-  if (imgID) await cloudinaryServices.destroy(imgID);
-
-  user.avatar = await cloudinaryServices.uploadAvatar(req.file.path);
+  user.avatar = await cloudinaryServices.replaceImage(user.avatar.public_id, req.file.path, 'avatars');
 
   await user.save();
 

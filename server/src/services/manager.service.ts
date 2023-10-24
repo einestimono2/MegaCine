@@ -3,7 +3,7 @@ import { type Request } from 'express';
 import { HttpStatusCode, Message } from '../constants';
 import { type IManager } from '../interfaces';
 import { ManagerModel } from '../models';
-import { ErrorHandler, translateQueryRequest } from '../utils';
+import { ErrorHandler, convertRequestToPipelineStages } from '../utils';
 
 export const createManager = async (user: IManager) => {
   const isCodeExist = await ManagerModel.findOne({ code: user.code });
@@ -35,7 +35,7 @@ export const getManagerById = async (id: string, password: boolean = false) => {
 };
 
 export const getManagers = async (req: Request) => {
-  const options = translateQueryRequest(req);
+  const options = convertRequestToPipelineStages(req);
 
   return await ManagerModel.aggregate(options);
 };
