@@ -10,29 +10,18 @@ const adminRoles = [Roles.Manager, Roles.Admin];
 //! .../api/v1/movie
 router.post(
   '/create',
-  // isAuthenticated,
-  // authorizeRoles(...adminRoles),
+  isAuthenticated,
+  authorizeRoles(...adminRoles),
   uploadAvatar.single('poster'),
   movieController.createMovie
 );
-router.get(
-  '/list',
-  // isAuthenticated,
-  movieController.getMovies
-);
+router.get('/list', isAuthenticated, movieController.getMovies);
 
 router
   .route('/details/:id')
-  .put(
-    // isAuthenticated, authorizeRoles(...adminRoles),
-    uploadAvatar.single('poster'),
-    movieController.updateMovie
-  )
+  .put(isAuthenticated, authorizeRoles(...adminRoles), uploadAvatar.single('poster'), movieController.updateMovie)
   .delete(isAuthenticated, authorizeRoles(...adminRoles), movieController.deleteMovie)
-  .get(
-    // isAuthenticated,
-    movieController.getMovie
-  );
+  .get(isAuthenticated, movieController.getMovie);
 
 export const movieRouter = router;
 

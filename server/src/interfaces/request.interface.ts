@@ -49,6 +49,14 @@ export interface IUpdateMovieRequest {
   genres?: string;
 }
 
+export interface IUpdateProductRequest {
+  name?: string;
+  description?: string;
+  price?: number;
+  image?: string;
+  isActive?: boolean;
+}
+
 export interface IOTPRequest {
   id: string;
   name?: string;

@@ -4,3 +4,4 @@ export * from './genre.route';
 export * from './person.route';
 export * from './manager.route';
 export * from './movie.route';
+export * from './product.route';
