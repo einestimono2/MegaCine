@@ -1,5 +1,6 @@
 import { type NextFunction, type Request, type Response } from 'express';
 import { transpile } from 'typescript';
+import fs from 'fs';
 
 import logger, { ErrorHandler } from '../utils';
 import { HttpStatusCode, Message } from '../constants';
@@ -52,6 +53,13 @@ export function ErrorMiddleware(err: any, req: Request, res: Response, next: Nex
     const message = req.translate(Message.TOKEN_IS_EXPIRED_TRY_AGAIN);
     err = new ErrorHandler(message, HttpStatusCode.BAD_REQUEST_400);
   }
+
+  // Xóa ảnh ở local nếu gặp lỗi xảy ra
+  try {
+    if (req.file) {
+      fs.unlinkSync(req.file.path);
+    }
+  } catch (_) {}
 
   res.status(err.statusCode).json({
     status: 'error',

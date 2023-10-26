@@ -56,7 +56,7 @@ const movieSchema: Schema<IMovie> = new mongoose.Schema(
     language: {
       en: {
         type: String,
-        required: [true, `'${Message.FIELD_s_EMPTY}', 'language.vi'`]
+        required: [true, `'${Message.FIELD_s_EMPTY}', 'language.en'`]
       },
       vi: {
         type: String,

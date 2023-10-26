@@ -39,6 +39,7 @@ export enum Message {
   USER_NOT_FOUND = 'User Not Found',
   MOVIE_NOT_FOUND = 'Movie Not Found',
   PERSON_NOT_FOUND = 'Person Not Found',
+  PRODUCT_NOT_FOUND = 'Product Not Found',
   INSUFFICIENT_ACCESS_RIGHTS = 'Insufficient Access Rights',
   INTERNAL_SERVER_ERROR = 'Internal Server Error',
   WRONG_OLD_PASSWORD = 'Wrong Old Password',
@@ -52,7 +53,8 @@ export enum Message {
   BEARER_TOKEN_EMPTY = 'Bearer Token Empty',
   AVATAR_EMPTY = 'Avatar Empty',
   FIELDS_EMPTY = 'Fields Empty',
-  GENRE_NOT_FOUND = 'Genre Not Found'
+  GENRE_NOT_FOUND = 'Genre Not Found',
+  MANAGER_THEATER_EMPTY = 'Manager Theater Empty'
 }
 
 /*

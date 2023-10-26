@@ -5,6 +5,7 @@ import { CatchAsyncError } from '../middlewares';
 import { ErrorHandler } from '../utils';
 import { redis } from '../config';
 import { HttpStatusCode, Message, Roles } from '../constants';
+import { ManagerModel } from '../models';
 
 //! Cookies session
 // export const isAuthenticated = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -55,7 +56,13 @@ export const isAuthenticated = CatchAsyncError(async (req: Request, res: Respons
 
   // Gán theater khi token chưa cập nhật
   if (!payload.theater && payload.role !== Roles.User) {
-    // Tìm kiếm và gán id
+    payload.theater = (await ManagerModel.findById(payload.id))?.theater;
+
+    // TODO: De test - Xoa
+    if (!payload.theater) {
+      console.log('Data test');
+      payload.theater = '652c08c5470917f6ff2ff9b7';
+    }
   }
 
   req.userPayload = payload;

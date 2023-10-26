@@ -5,6 +5,11 @@ export interface ICloudinaryFile {
   url: string;
 }
 
+export interface ILocalizationField {
+  en: string;
+  vi: string;
+}
+
 export interface IUser extends Document {
   name: string;
   email: string;
@@ -31,10 +36,7 @@ export interface IManager extends Document {
 }
 
 export interface IGenre extends Document {
-  name: {
-    en: string;
-    vi: string;
-  };
+  name: ILocalizationField;
 }
 
 export interface IReview extends Document {
@@ -75,18 +77,12 @@ export interface IMovie extends Document {
   originalTitle: string;
   trailer: string;
   poster: ICloudinaryFile;
-  overview: {
-    en: string;
-    vi: string;
-  };
+  overview: ILocalizationField;
   duration: number;
   releaseDate: Date;
   directors: Array<string | IPerson>;
   actors: Array<string | IPerson>;
-  language: {
-    en: string;
-    vi: string;
-  };
+  language: ILocalizationField;
   ageType: string;
   genres: Array<string | IGenre>;
   totalRate: number;
@@ -97,44 +93,52 @@ export interface IMovie extends Document {
     count: number;
   };
   reviews: Array<string | IReview>;
-  theater: string | ITheater;
+  theater: Array<string | ITheater>;
 }
 
 export interface IPerson extends Document {
   avatar: ICloudinaryFile;
   fullName: string;
-  summary: {
-    en: string;
-    vi: string;
-  };
+  summary: ILocalizationField;
   movies: Array<string | IMovie>;
 }
 
 export interface IProduct extends Document {
   name: string;
+  description: ILocalizationField;
   price: number;
-  description: string;
   image: ICloudinaryFile;
   isActive: boolean;
-  theater: string;
+  theater: string | ITheater;
+}
+
+export interface IRoom extends Document {
+  type: string;
+  name: string;
+  capacity: number;
+  seats: Array<string | ISeat>;
 }
 
 export interface ISeat extends Document {
-  row: string;
-  number: number;
+  row: string; // unique
+  col: number; // unique
+  name: string;
   theatre: string;
   room: string;
-  isActive: boolean;
+  type: string; // VIP, STANDARD, HỎNG
+  status: string; // Để frontend xử lý
 }
 
-export interface IShowTimes extends Document {
+// [startTime, room] --> unique --> không có 2 lịch chiếu nào cùng một phòng
+export interface IShowTime extends Document {
   movie: string;
   theater: string;
   room: string;
   startTime: Date;
   endTime: Date;
+  date: Date;
   isActive: boolean;
-  prices: number;
+  price: number;
 }
 
 export interface IVoucher extends Document {
@@ -147,7 +151,6 @@ export interface IVoucher extends Document {
   showTime: string;
   theater: string;
   movie: string;
-  creator: string;
   userUsed: string[];
   isActive: boolean;
 }
@@ -157,7 +160,6 @@ export interface IPromotion extends Document {
   title: string;
   description: string;
   thumbnail: ICloudinaryFile;
-  creator: string;
   // Phạm vi + Thời gian
   startTime: Date;
   endTime: Date;
@@ -173,22 +175,38 @@ export interface IPromotion extends Document {
   isActive: boolean;
 }
 
-export interface ITicket extends Document {
-  user: string | null;
-  showTime: string;
-  seat: string;
-  product: string[];
+export interface IBooking extends Document {
+  reservation: string | IReservation;
 
+  products: Array<{
+    quantity: number;
+    items: string | IProduct;
+  }>;
+
+  user: string | null;
   email: string;
   phoneNumber: string;
 
+  promotion: string;
+  vourcher: string | IVoucher;
+
   totalPrice: number;
   finalPrice: number;
-  promotion: string;
-  vourcher: string;
+
   paymentInfo: {
     id: string;
     status: string;
   };
   paidAt: Date;
+
+  qrcode: string;
+}
+
+export interface IReservation {
+  user: string | null;
+  showTime: string;
+  theater: string;
+  room: string;
+  seat: Array<string | ISeat>;
+  // status: string;
 }
