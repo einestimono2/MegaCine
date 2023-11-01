@@ -1,10 +1,10 @@
 import { type Request } from 'express';
 import mongoose, { type Types } from 'mongoose';
 
-import { HttpStatusCode, Message } from '../constants';
+import { Message } from '../constants';
 import { type IPerson, type IMovie, type IUpdateMovieRequest } from '../interfaces';
-import { MovieModel } from '../models';
-import { ErrorHandler, convertRequestToPipelineStages } from '../utils';
+import { MovieModel, NotFoundError } from '../models';
+import { convertRequestToPipelineStages } from '../utils';
 import { cloudinaryServices, personServices, genreServices } from './';
 
 export const createMovie = async (movie: IMovie, poster: string | undefined) => {
@@ -97,7 +97,7 @@ export const updateMovie = async (id: string, newMovie: IUpdateMovieRequest) => 
 export const getMovieById = async (id: string) => {
   const movie = await MovieModel.findById(id);
   if (!movie) {
-    throw new ErrorHandler(Message.MOVIE_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400);
+    throw new NotFoundError(Message.MOVIE_NOT_FOUND);
   }
 
   return movie;
@@ -141,14 +141,18 @@ export const getMovieDetails = async (id: string, lang: string) => {
     }
   ]);
   if (!movie) {
-    throw new ErrorHandler(Message.MOVIE_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400);
+    throw new NotFoundError(Message.MOVIE_NOT_FOUND);
   }
 
   return movie;
 };
 
 export const getMovies = async (req: Request) => {
-  const options = convertRequestToPipelineStages(req, ['title', 'originalTitle'], ['overview', 'language']);
+  const options = convertRequestToPipelineStages({
+    req,
+    fieldsApplySearch: ['title', 'originalTitle'],
+    localizationFields: ['overview', 'language']
+  });
 
   return await MovieModel.aggregate(options);
 

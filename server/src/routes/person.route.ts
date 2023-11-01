@@ -1,19 +1,19 @@
 import express from 'express';
 
 import { createPerson, updatePerson, deletePerson, getPerson, getPersons } from '../controllers/person.controller';
-import { isAuthenticated, authorizeRoles, uploadAvatar } from '../middlewares';
+import { isAuthenticated, authorizeRoles, uploadImage } from '../middlewares';
 import { Roles } from '../constants';
 
 const router = express.Router();
 const adminRoles = [Roles.Manager, Roles.Admin];
 
 //! .../api/v1/person
-router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), uploadAvatar.single('avatar'), createPerson);
+router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), uploadImage.single('avatar'), createPerson);
 router.get('/list', isAuthenticated, getPersons);
 
 router
   .route('/details/:id')
-  .put(isAuthenticated, authorizeRoles(...adminRoles), uploadAvatar.single('avatar'), updatePerson)
+  .put(isAuthenticated, authorizeRoles(...adminRoles), uploadImage.single('avatar'), updatePerson)
   .delete(isAuthenticated, authorizeRoles(...adminRoles), deletePerson)
   .get(isAuthenticated, getPerson);
 
@@ -108,28 +108,7 @@ export const personRouter = router;
  *        content:
  *          application/json:
  *            schema:
- *              type: object
- *              properties:
- *                status:
- *                  type: string
- *                message:
- *                  type: string
- *                data:
- *                  type: object
- *                  properties:
- *                    extra:
- *                      type: object
- *                      properties:
- *                        totalCount:
- *                          type: number
- *                        totalPages:
- *                          type: number
- *                        pageIndex:
- *                          type: number
- *                        pageSize:
- *                          type: number
- *                    persons:
- *                      example: []
+ *              $ref: '#/components/schemas/ListResponse'
  */
 
 //! Cập nhật thông tin nghệ sỹ

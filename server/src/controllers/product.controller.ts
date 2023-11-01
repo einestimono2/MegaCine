@@ -1,7 +1,6 @@
 import { type NextFunction, type Request, type Response } from 'express';
 
 import { CatchAsyncError } from '../middlewares';
-import { HttpStatusCode } from '../constants';
 import { productServices } from '../services';
 
 //! Create Product
@@ -11,9 +10,8 @@ export const createProduct = CatchAsyncError(async (req: Request, res: Response,
     req.file?.path
   );
 
-  res.status(HttpStatusCode.CREATED_201).json({
-    status: 'success',
-    data: { product }
+  res.sendCREATED({
+    data: product
   });
 });
 
@@ -21,9 +19,8 @@ export const createProduct = CatchAsyncError(async (req: Request, res: Response,
 export const updateProduct = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const product = await productServices.updateProduct(req.params.id, { ...req.body, image: req.file?.path });
 
-  res.status(HttpStatusCode.CREATED_201).json({
-    status: 'success',
-    data: { product }
+  res.sendCREATED({
+    data: product
   });
 });
 
@@ -31,18 +28,15 @@ export const updateProduct = CatchAsyncError(async (req: Request, res: Response,
 export const deleteProduct = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   await productServices.deleteProduct(req.params.id);
 
-  res.status(HttpStatusCode.OK_200).json({
-    status: 'success'
-  });
+  res.sendOK();
 });
 
 //! Get Product Info
 export const getProduct = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const prodcut = await productServices.getProductDetails(req.params.id, req.getLocale());
 
-  res.status(HttpStatusCode.OK_200).json({
-    status: 'success',
-    data: { prodcut }
+  res.sendOK({
+    data: prodcut
   });
 });
 
@@ -50,12 +44,9 @@ export const getProduct = CatchAsyncError(async (req: Request, res: Response, ne
 export const getProducts = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const [payload] = await productServices.getProducts(req); // [ { extra: {}, data: [] } ]
 
-  res.status(HttpStatusCode.OK_200).json({
-    status: 'success',
-    data: {
-      extra: payload?.extra ?? { totalCount: 0 },
-      products: payload?.data ?? []
-    }
+  res.sendOK({
+    data: payload?.data ?? [],
+    extra: payload?.extra ?? { totalCount: 0 }
   });
 });
 
@@ -63,11 +54,8 @@ export const getProducts = CatchAsyncError(async (req: Request, res: Response, n
 export const getProductsByTheater = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const [payload] = await productServices.getProductsByTheater(req); // [ { extra: {}, data: [] } ]
 
-  res.status(HttpStatusCode.OK_200).json({
-    status: 'success',
-    data: {
-      extra: payload?.extra ?? { totalCount: 0 },
-      products: payload?.data ?? []
-    }
+  res.sendOK({
+    data: payload?.data ?? [],
+    extra: payload?.extra ?? { totalCount: 0 }
   });
 });

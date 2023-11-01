@@ -258,28 +258,7 @@ export const managerRouter = router;
  *        content:
  *          application/json:
  *            schema:
- *              type: object
- *              properties:
- *                status:
- *                  type: string
- *                message:
- *                  type: string
- *                data:
- *                  type: object
- *                  properties:
- *                    extra:
- *                      type: object
- *                      properties:
- *                        totalCount:
- *                          type: number
- *                        totalPages:
- *                          type: number
- *                        pageIndex:
- *                          type: number
- *                        pageSize:
- *                          type: number
- *                    managers:
- *                      example: []
+ *              $ref: '#/components/schemas/ListResponse'
  */
 
 //! Lấy thông tin quản lý

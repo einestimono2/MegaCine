@@ -1,15 +1,15 @@
 import { type Request } from 'express';
 import mongoose from 'mongoose';
 
-import { HttpStatusCode, Message } from '../constants';
+import { Message } from '../constants';
 import { type IUpdateProductRequest, type IProduct } from '../interfaces';
-import { ProductModel } from '../models';
-import { ErrorHandler, convertRequestToPipelineStages } from '../utils';
+import { NotFoundError, ProductModel } from '../models';
+import { convertRequestToPipelineStages } from '../utils';
 import { cloudinaryServices } from '.';
 
 export const createProduct = async (product: IProduct, image?: string) => {
   if (!product.theater) {
-    throw new ErrorHandler(Message.MANAGER_THEATER_EMPTY, HttpStatusCode.NOT_FOUND_404);
+    throw new NotFoundError(Message.MANAGER_THEATER_EMPTY);
   }
 
   if (product.description && typeof product.description === 'string') {
@@ -30,7 +30,7 @@ export const createProduct = async (product: IProduct, image?: string) => {
 export const getProductById = async (id: string) => {
   const product = await ProductModel.findById(id);
   if (!product) {
-    throw new ErrorHandler(Message.PRODUCT_NOT_FOUND, HttpStatusCode.NOT_FOUND_404);
+    throw new NotFoundError(Message.PRODUCT_NOT_FOUND);
   }
 
   return product;
@@ -43,21 +43,25 @@ export const getProductDetails = async (id: string, lang?: string) => {
     { $set: { description: lang ? `$description.${lang}` : `$description` } }
   ]);
   if (!product) {
-    throw new ErrorHandler(Message.PRODUCT_NOT_FOUND, HttpStatusCode.NOT_FOUND_404);
+    throw new NotFoundError(Message.PRODUCT_NOT_FOUND);
   }
 
   return product;
 };
 
 export const getProducts = async (req: Request) => {
-  const options = convertRequestToPipelineStages(req, ['name'], ['description']);
+  const options = convertRequestToPipelineStages({
+    req,
+    fieldsApplySearch: ['name'],
+    localizationFields: ['description']
+  });
 
   return await ProductModel.aggregate(options);
 };
 
 export const getProductsByTheater = async (req: Request) => {
   if (!req.userPayload?.theater) {
-    throw new ErrorHandler(Message.MANAGER_THEATER_EMPTY, HttpStatusCode.NOT_FOUND_404);
+    throw new NotFoundError(Message.MANAGER_THEATER_EMPTY);
   }
 
   const matchPipeline = [
@@ -66,7 +70,11 @@ export const getProductsByTheater = async (req: Request) => {
     }
   ];
 
-  const options = convertRequestToPipelineStages(req, ['name'], ['description']);
+  const options = convertRequestToPipelineStages({
+    req,
+    fieldsApplySearch: ['name'],
+    localizationFields: ['description']
+  });
 
   return await ProductModel.aggregate(matchPipeline).append(options);
 };

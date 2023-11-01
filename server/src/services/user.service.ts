@@ -7,15 +7,15 @@ import {
   type IResetPasswordToken,
   type IUpdateProfileRequest
 } from '../interfaces';
-import { UserModel } from '../models';
-import logger, { ErrorHandler, SendMail, omitIsNil } from '../utils';
-import { HttpStatusCode, Message } from '../constants';
+import { BadRequestError, NotFoundError, UserModel } from '../models';
+import logger, { SendMail, omitIsNil } from '../utils';
+import { Message } from '../constants';
 import { cloudinaryServices } from '.';
 
 export const createUser = async (user: IUser) => {
   const isEmailExist = await findUserByEmail(user.email);
   if (isEmailExist) {
-    throw new ErrorHandler(Message.EMAIL_ALREADY_EXIST, HttpStatusCode.BAD_REQUEST_400);
+    throw new BadRequestError(Message.EMAIL_ALREADY_EXIST);
   }
 
   const newUser = new UserModel(user);
@@ -30,7 +30,7 @@ export const findUserByEmail = async (email: string, password: boolean = false) 
 export const getUserByEmail = async (email: string, password: boolean = false) => {
   const user = await UserModel.findOne({ email }).select(password ? '+password' : '-password');
   if (!user) {
-    throw new ErrorHandler(Message.EMAIL_ALREADY_EXIST, HttpStatusCode.BAD_REQUEST_400);
+    throw new NotFoundError(Message.EMAIL_ALREADY_EXIST);
   }
 
   return user;
@@ -39,7 +39,7 @@ export const getUserByEmail = async (email: string, password: boolean = false) =
 export const getUserById = async (id: string, password: boolean = false) => {
   const user = await UserModel.findById(id).select(password ? '+password' : '-password');
   if (!user) {
-    throw new ErrorHandler(Message.EMAIL_ALREADY_EXIST, HttpStatusCode.BAD_REQUEST_400);
+    throw new NotFoundError(Message.EMAIL_ALREADY_EXIST);
   }
 
   return user;
@@ -48,7 +48,7 @@ export const getUserById = async (id: string, password: boolean = false) => {
 export const getUser = async (filters: any, password: boolean = false) => {
   const user = await UserModel.findOne(omitIsNil(filters)).select(password ? '+password' : '-password');
   if (!user) {
-    throw new ErrorHandler(Message.EMAIL_ALREADY_EXIST, HttpStatusCode.BAD_REQUEST_400);
+    throw new NotFoundError(Message.EMAIL_ALREADY_EXIST);
   }
 
   return user;

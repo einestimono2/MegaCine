@@ -10,13 +10,13 @@ const genreSchema: Schema<IGenre> = new mongoose.Schema(
         type: String,
         unique: true,
         trim: true,
-        required: [true, `'${Message.FIELD_s_EMPTY}', 'name.en'`]
+        required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'name.en'`]
       },
       vi: {
         type: String,
         unique: true,
         trim: true,
-        required: [true, `'${Message.FIELD_s_EMPTY}', 'name.vi'`]
+        required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'name.vi'`]
       }
     }
   },

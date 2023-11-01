@@ -1,11 +1,13 @@
 import multer, { type FileFilterCallback } from 'multer';
 import path from 'path';
 
-import { HttpStatusCode, Message } from './../constants';
+import { Message } from './../constants';
 import { avatarAccepted } from '../constants';
-import { ErrorHandler } from '../utils';
+import { UnsupportedMediaTypeError } from '../models';
 
-const multerStorage = multer.diskStorage({
+const memoryStorage = multer.memoryStorage();
+
+const diskStorage = multer.diskStorage({
   destination(_req, _file, callback) {
     callback(null, path.join(__dirname, '../uploads'));
   },
@@ -26,12 +28,14 @@ const imageFilter = (_req: Express.Request, file: Express.Multer.File, callback:
   if (avatarAccepted.fileTypes.includes(file.mimetype)) {
     callback(null, true);
   } else {
-    callback(new ErrorHandler(Message.UNSUPPORTED_IMAGE_FORMAT, HttpStatusCode.UNSUPPORTED_MEDIA_TYPE_415));
+    callback(new UnsupportedMediaTypeError(Message.UNSUPPORTED_IMAGE_FORMAT));
   }
 };
 
-export const uploadAvatar = multer({
-  storage: multerStorage,
+export const uploadImage = multer({
+  storage: diskStorage,
   fileFilter: imageFilter,
   limits: { fileSize: avatarAccepted.fileMaxSize }
 });
+
+export const uploadMemory = multer({ storage: memoryStorage });

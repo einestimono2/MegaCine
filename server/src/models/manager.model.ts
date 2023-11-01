@@ -12,19 +12,19 @@ const managerSchema: Schema<IManager> = new mongoose.Schema(
       type: String,
       unique: true,
       trim: true,
-      required: [true, `'${Message.FIELD_s_EMPTY}', 'code'`]
+      required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'code'`]
     },
     password: {
       type: String,
       select: false,
-      minlength: [6, `'${Message.PASSWORD_TOO_SHORT_s}', '6'`],
-      required: [true, `'${Message.PASSWORD_EMPTY}'`]
+      minlength: [6, `'${Message.PASSWORD_TOO_SHORT_s.msg}', '6'`],
+      required: [true, `'${Message.PASSWORD_EMPTY.msg}'`]
     },
     role: {
       type: String,
       enum: {
         values: Object.values(Roles),
-        message: `'${Message.INVALID_ROLE_s}', '{VALUE}'`
+        message: `'${Message.INVALID_ROLE_s.msg}', '{VALUE}'`
       },
       default: Roles.Manager
     },

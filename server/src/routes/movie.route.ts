@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { isAuthenticated, authorizeRoles, uploadAvatar } from '../middlewares';
+import { isAuthenticated, authorizeRoles, uploadImage } from '../middlewares';
 import { movieController } from '../controllers';
 import { Roles } from '../constants';
 
@@ -12,14 +12,14 @@ router.post(
   '/create',
   isAuthenticated,
   authorizeRoles(...adminRoles),
-  uploadAvatar.single('poster'),
+  uploadImage.single('poster'),
   movieController.createMovie
 );
 router.get('/list', isAuthenticated, movieController.getMovies);
 
 router
   .route('/details/:id')
-  .put(isAuthenticated, authorizeRoles(...adminRoles), uploadAvatar.single('poster'), movieController.updateMovie)
+  .put(isAuthenticated, authorizeRoles(...adminRoles), uploadImage.single('poster'), movieController.updateMovie)
   .delete(isAuthenticated, authorizeRoles(...adminRoles), movieController.deleteMovie)
   .get(isAuthenticated, movieController.getMovie);
 
@@ -169,28 +169,7 @@ export const movieRouter = router;
  *        content:
  *          application/json:
  *            schema:
- *              type: object
- *              properties:
- *                status:
- *                  type: string
- *                message:
- *                  type: string
- *                data:
- *                  type: object
- *                  properties:
- *                    extra:
- *                      type: object
- *                      properties:
- *                        totalCount:
- *                          type: number
- *                        totalPages:
- *                          type: number
- *                        pageIndex:
- *                          type: number
- *                        pageSize:
- *                          type: number
- *                    persons:
- *                      example: []
+ *              $ref: '#/components/schemas/ListResponse'
  */
 
 //! Thông tin phim

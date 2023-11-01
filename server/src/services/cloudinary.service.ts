@@ -1,9 +1,9 @@
 import fs from 'fs';
 
-import { ErrorHandler } from '../utils';
 import { cloudinary } from '../config';
 import { type CloudinaryResponse } from '../interfaces';
-import { Message, HttpStatusCode } from '../constants';
+import { Message } from '../constants';
+import { BadRequestError } from '../models';
 
 export const replaceImage = async (
   imgID: string | null,
@@ -23,7 +23,7 @@ export const uploadImage = async (file: string, folder: string): Promise<Cloudin
   });
 
   if (!myCloud) {
-    throw new ErrorHandler(Message.UPLOAD_FAILED, HttpStatusCode.BAD_REQUEST_400);
+    throw new BadRequestError(Message.UPLOAD_FAILED);
   }
 
   // Xóa ảnh ở folder uploads
@@ -41,12 +41,13 @@ export const destroy = async (id?: string) => {
   await cloudinary.uploader.destroy(id);
 };
 
-export const resizeImage = (id: string, h: number, w: number) => {
+export const resizeImage = (id: string, height: number, width: number, format: string = 'jpg') => {
   if (!id) return;
 
   return cloudinary.url(id, {
-    height: h,
-    width: w,
+    height,
+    width,
+    format,
     crop: 'scale'
   });
 };

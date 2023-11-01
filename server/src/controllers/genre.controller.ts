@@ -2,15 +2,13 @@ import { type NextFunction, type Request, type Response } from 'express';
 
 import { CatchAsyncError } from '../middlewares';
 import { genreServices } from '../services';
-import { HttpStatusCode } from '../constants';
 
 // Create a new genre
 export const createGenre = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const genre = await genreServices.createGenre({ ...req.body });
 
-  res.status(HttpStatusCode.CREATED_201).json({
-    status: 'success',
-    data: { genre }
+  res.sendCREATED({
+    data: genre
   });
 });
 
@@ -18,12 +16,9 @@ export const createGenre = CatchAsyncError(async (req: Request, res: Response, n
 export const getGenres = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const [payload] = await genreServices.getGenres(req); // [ { extra: {}, data: [] } ]
 
-  res.status(HttpStatusCode.OK_200).json({
-    status: 'success',
-    data: {
-      extra: payload?.extra ?? { totalCount: 0 },
-      genres: payload?.data ?? []
-    }
+  res.sendOK({
+    data: payload?.data ?? [],
+    extra: payload?.extra ?? { totalCount: 0 }
   });
 });
 
@@ -33,9 +28,8 @@ export const getGenre = CatchAsyncError(async (req: Request, res: Response, next
 
   const genre = await genreServices.getGenreById(id, req.getLocale());
 
-  res.status(HttpStatusCode.OK_200).json({
-    status: 'success',
-    data: { genre }
+  res.sendOK({
+    data: genre
   });
 });
 
@@ -43,9 +37,8 @@ export const getGenre = CatchAsyncError(async (req: Request, res: Response, next
 export const updateGenre = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const genre = await genreServices.updateGenre(req.params.id, req.body.name);
 
-  res.status(HttpStatusCode.CREATED_201).json({
-    status: 'success',
-    data: { genre }
+  res.sendCREATED({
+    data: genre
   });
 });
 
@@ -53,7 +46,5 @@ export const updateGenre = CatchAsyncError(async (req: Request, res: Response, n
 export const deleteGenre = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   await genreServices.deleteGenre(req.params.id);
 
-  res.status(HttpStatusCode.OK_200).json({
-    status: 'success'
-  });
+  res.sendOK();
 });

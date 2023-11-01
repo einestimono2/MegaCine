@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { getProfile, updateProfile, updatePassword, updateAvatar } from '../controllers';
-import { isAuthenticated, uploadAvatar } from '../middlewares';
+import { isAuthenticated, uploadImage } from '../middlewares';
 
 const router = express.Router();
 
@@ -9,9 +9,9 @@ const router = express.Router();
 router
   .route('/me')
   .get(isAuthenticated, getProfile)
-  .put(isAuthenticated, uploadAvatar.single('avatar'), updateProfile);
+  .put(isAuthenticated, uploadImage.single('avatar'), updateProfile);
 
-router.put('/avatar', isAuthenticated, uploadAvatar.single('avatar'), updateAvatar);
+router.put('/avatar', isAuthenticated, uploadImage.single('avatar'), updateAvatar);
 
 router.put('/update-password', isAuthenticated, updatePassword);
 

@@ -10,19 +10,19 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     name: {
       type: String,
       trim: true,
-      required: [true, `'${Message.NAME_EMPTY}'`],
-      maxLength: [50, `'${Message.NAME_TOO_LONG_s}', '50'`],
-      minLength: [2, `'${Message.NAME_TOO_SHORT_s}', '2'`]
+      required: [true, `'${Message.NAME_EMPTY.msg}'`],
+      maxLength: [50, `'${Message.NAME_TOO_LONG_s.msg}', '50'`],
+      minLength: [2, `'${Message.NAME_TOO_SHORT_s.msg}', '2'`]
     },
     email: {
       type: String,
       index: true,
-      required: [true, `'${Message.EMAIL_EMPTY}'`],
+      required: [true, `'${Message.EMAIL_EMPTY.msg}'`],
       validate: {
         validator: function (value: string) {
           return EMAIL_REGEX_PATTERN.test(value);
         },
-        message: `'${Message.INVALID_EMAIL}'`
+        message: `'${Message.INVALID_EMAIL.msg}'`
       },
       unique: true,
       trim: true
@@ -30,12 +30,12 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     password: {
       type: String,
       select: false,
-      minlength: [6, `'${Message.PASSWORD_TOO_SHORT_s}', '6'`],
+      minlength: [6, `'${Message.PASSWORD_TOO_SHORT_s.msg}', '6'`],
       required: [
         function () {
           return this.provider === EmailProviders.Email;
         },
-        `'${Message.PASSWORD_EMPTY}'`
+        `'${Message.PASSWORD_EMPTY.msg}'`
       ]
     },
     avatar: {
@@ -50,7 +50,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       type: String,
       enum: {
         values: Object.values(Roles),
-        message: `'${Message.INVALID_ROLE_s}', '{VALUE}'`
+        message: `'${Message.INVALID_ROLE_s.msg}', '{VALUE}'`
       },
       default: Roles.User
     },
@@ -62,7 +62,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       type: String,
       enum: {
         values: Object.values(EmailProviders),
-        message: `'${Message.INVALID_LOGIN_METHOD}'`
+        message: `'${Message.INVALID_LOGIN_METHOD.msg}'`
       },
       default: EmailProviders.Email
     }
@@ -98,18 +98,3 @@ userSchema.methods.signRefreshToken = function () {
 };
 
 export const UserModel = mongoose.model<IUser>('User', userSchema);
-
-/**
- * @swagger
- * components:
- *  schemas:
- *    Response:
- *      type: object
- *      properties:
- *        status:
- *          type: string
- *        message:
- *          type: string
- *        data:
- *          type: object
- */

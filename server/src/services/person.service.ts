@@ -1,10 +1,10 @@
 import { type Request } from 'express';
 import mongoose, { type Types, isValidObjectId } from 'mongoose';
 
-import { HttpStatusCode, Message } from '../constants';
+import { Message } from '../constants';
 import { type IUpdatePersonRequest, type IPerson } from '../interfaces';
-import { PersonModel } from '../models';
-import { ErrorHandler, convertRequestToPipelineStages } from '../utils';
+import { NotFoundError, PersonModel } from '../models';
+import { convertRequestToPipelineStages } from '../utils';
 import { cloudinaryServices } from '.';
 
 export const createPerson = async (person: IPerson, avatar?: string) => {
@@ -39,7 +39,7 @@ export const getOrCreatePerson = async (key: string) => {
 export const getPersonById = async (id: string) => {
   const person = await PersonModel.findById(id);
   if (!person) {
-    throw new ErrorHandler(Message.PERSON_NOT_FOUND, HttpStatusCode.NOT_FOUND_404);
+    throw new NotFoundError(Message.PERSON_NOT_FOUND);
   }
 
   return person;
@@ -52,14 +52,18 @@ export const getPersonDetails = async (id: string, lang?: string) => {
     { $set: { summary: lang ? `$summary.${lang}` : `$summary` } }
   ]);
   if (!person) {
-    throw new ErrorHandler(Message.PERSON_NOT_FOUND, HttpStatusCode.NOT_FOUND_404);
+    throw new NotFoundError(Message.PERSON_NOT_FOUND);
   }
 
   return person;
 };
 
 export const getPersons = async (req: Request) => {
-  const options = convertRequestToPipelineStages(req, ['fullName'], ['summary']);
+  const options = convertRequestToPipelineStages({
+    req,
+    fieldsApplySearch: ['fullName'],
+    localizationFields: ['summary']
+  });
 
   return await PersonModel.aggregate(options);
 };

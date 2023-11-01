@@ -2,28 +2,27 @@ import { type NextFunction, type Request, type Response } from 'express';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
 
 import { CatchAsyncError } from '../middlewares';
-import { ErrorHandler } from '../utils';
 import { redis } from '../config';
-import { HttpStatusCode, Message, Roles } from '../constants';
-import { ManagerModel } from '../models';
+import { Message, Roles } from '../constants';
+import { BadRequestError, ForbiddenError, ManagerModel, NotFoundError } from '../models';
 
 //! Cookies session
 // export const isAuthenticated = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
 //   const accessToken = req.cookies.access_token;
 //   if (!accessToken) {
-//     next(new ErrorHandler(Message.LOGIN_TO_ACCESS_RESOURCE, HttpStatusCode.BAD_REQUEST_400));
+//     next(new BadRequestError(Message.LOGIN_TO_ACCESS_RESOURCE));
 //     return;
 //   }
 
 //   const decodedData = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET as string) as JwtPayload;
 //   if (!decodedData) {
-//     next(new ErrorHandler(Message.TOKEN_IS_INVALID, HttpStatusCode.BAD_REQUEST_400));
+//     next(new BadRequestError(Message.TOKEN_IS_INVALID));
 //     return;
 //   }
 
 //   const user = await redis.get(decodedData.id);
 //   if (!user) {
-//     next(new ErrorHandler(Message.USER_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400));
+//     next(new BadRequestError(Message.USER_NOT_FOUND));
 //     return;
 //   }
 
@@ -36,21 +35,21 @@ import { ManagerModel } from '../models';
 export const isAuthenticated = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const accessToken = req.headers.authorization?.split(' ')[1];
   if (!accessToken) {
-    next(new ErrorHandler(Message.BEARER_TOKEN_EMPTY, HttpStatusCode.BAD_REQUEST_400));
+    next(new NotFoundError(Message.BEARER_TOKEN_EMPTY));
     return;
   }
 
   // Giải mã lấy id
   const payload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET as string) as JwtPayload;
   if (!payload) {
-    next(new ErrorHandler(Message.TOKEN_IS_INVALID, HttpStatusCode.BAD_REQUEST_400));
+    next(new BadRequestError(Message.TOKEN_IS_INVALID));
     return;
   }
 
   // Check blacklist
   const blacklist = await redis.get(`BL_${payload.id}`);
   if (blacklist && blacklist === accessToken) {
-    next(new ErrorHandler(Message.TOKEN_IS_INVALID_TRY_AGAIN, HttpStatusCode.BAD_REQUEST_400));
+    next(new BadRequestError(Message.TOKEN_IS_INVALID_TRY_AGAIN));
     return;
   }
 
@@ -74,27 +73,27 @@ export const isAuthenticated = CatchAsyncError(async (req: Request, res: Respons
 export const verifyRefreshToken = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const refreshToken = req.body.refreshToken;
   if (!refreshToken) {
-    next(new ErrorHandler(Message.TOKEN_IS_INVALID, HttpStatusCode.BAD_REQUEST_400));
+    next(new NotFoundError(Message.TOKEN_IS_INVALID));
     return;
   }
 
   const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string) as JwtPayload;
   if (!payload) {
-    next(new ErrorHandler(Message.TOKEN_IS_INVALID_TRY_AGAIN, HttpStatusCode.BAD_REQUEST_400));
+    next(new BadRequestError(Message.TOKEN_IS_INVALID_TRY_AGAIN));
     return;
   }
 
   // verify if token is in store or not
   const userJSON = await redis.get(payload.id as string);
   if (!userJSON) {
-    next(new ErrorHandler(Message.USER_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400));
+    next(new NotFoundError(Message.USER_NOT_FOUND));
     return;
   }
 
   const user = JSON.parse(userJSON); // { accessToken, refreshToken }
 
   if (user.refreshToken !== refreshToken) {
-    next(new ErrorHandler(Message.TOKEN_IS_INVALID, HttpStatusCode.BAD_REQUEST_400));
+    next(new BadRequestError(Message.TOKEN_IS_INVALID));
     return;
   }
 
@@ -109,7 +108,7 @@ export const authorizeRoles = (...roles: string[]) => {
   return (req: Request, _res: Response, next: NextFunction) => {
     if (!roles.includes(req.userPayload?.role ?? '')) {
       // Role: ${req.user.role} insufficient access rights
-      next(new ErrorHandler(Message.INSUFFICIENT_ACCESS_RIGHTS, HttpStatusCode.FORBIDDEN_403));
+      next(new ForbiddenError(Message.INSUFFICIENT_ACCESS_RIGHTS));
       return;
     }
 

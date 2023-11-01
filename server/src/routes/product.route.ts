@@ -1,18 +1,19 @@
 import express from 'express';
 
 import { productController } from '../controllers';
-import { isAuthenticated, authorizeRoles, uploadAvatar } from '../middlewares';
+import { isAuthenticated, authorizeRoles, uploadImage } from '../middlewares';
 import { Roles } from '../constants';
 
 const router = express.Router();
 const adminRoles = [Roles.Manager, Roles.Admin];
 
 //! .../api/v1/product
+
 router.post(
   '/create',
   isAuthenticated,
   authorizeRoles(...adminRoles),
-  uploadAvatar.single('image'),
+  uploadImage.single('image'),
   productController.createProduct
 );
 router.get(
@@ -24,7 +25,7 @@ router.get('/my-theater', isAuthenticated, productController.getProductsByTheate
 
 router
   .route('/details/:id')
-  .put(isAuthenticated, authorizeRoles(...adminRoles), uploadAvatar.single('image'), productController.updateProduct)
+  .put(isAuthenticated, authorizeRoles(...adminRoles), uploadImage.single('image'), productController.updateProduct)
   .delete(isAuthenticated, authorizeRoles(...adminRoles), productController.deleteProduct)
   .get(isAuthenticated, productController.getProduct);
 
@@ -124,28 +125,7 @@ export const productRouter = router;
  *        content:
  *          application/json:
  *            schema:
- *              type: object
- *              properties:
- *                status:
- *                  type: string
- *                message:
- *                  type: string
- *                data:
- *                  type: object
- *                  properties:
- *                    extra:
- *                      type: object
- *                      properties:
- *                        totalCount:
- *                          type: number
- *                        totalPages:
- *                          type: number
- *                        pageIndex:
- *                          type: number
- *                        pageSize:
- *                          type: number
- *                    persons:
- *                      example: []
+ *              $ref: '#/components/schemas/ListResponse'
  */
 
 //! List Product By Theater
@@ -169,28 +149,7 @@ export const productRouter = router;
  *        content:
  *          application/json:
  *            schema:
- *              type: object
- *              properties:
- *                status:
- *                  type: string
- *                message:
- *                  type: string
- *                data:
- *                  type: object
- *                  properties:
- *                    extra:
- *                      type: object
- *                      properties:
- *                        totalCount:
- *                          type: number
- *                        totalPages:
- *                          type: number
- *                        pageIndex:
- *                          type: number
- *                        pageSize:
- *                          type: number
- *                    persons:
- *                      example: []
+ *              $ref: '#/components/schemas/ListResponse'
  */
 
 //! Cập nhật product

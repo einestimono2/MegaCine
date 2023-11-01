@@ -55,5 +55,7 @@
   "Invalid age type %s": "AgeType '%s' không hợp lệ! (P | C13 | C16 | C18)",
   "Movie Not Found": "Phim không tồn tại!",
   "Manager Theater Empty": "Vui lòng tạo rạp trước khi thực hiện!",
-  "Argument passed in must be a string of 12 bytes or a string of 24 hex characters or an integer": "Argument passed in must be a string of 12 bytes or a string of 24 hex characters or an integer"
+  "Coordinates are not valid": "Tọa độ không hợp lệ!",
+  "Field Empty": "Vui lòng điền đầy đủ thông tin!",
+  "Invalid type %s": "Type '%s' không hợp lệ (2D | 3D)!"
 }

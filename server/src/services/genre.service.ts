@@ -1,10 +1,10 @@
 import { type Request } from 'express';
 import { isValidObjectId } from 'mongoose';
 
-import { GenreModel } from '../models';
+import { GenreModel, NotFoundError } from '../models';
 import { type IGenre } from '../interfaces';
-import { HttpStatusCode, Message } from '../constants';
-import { ErrorHandler, convertRequestToPipelineStages } from '../utils';
+import { Message } from '../constants';
+import { convertRequestToPipelineStages } from '../utils';
 
 export const createGenre = async (genre: IGenre) => {
   const checkGenre = await GenreModel.findOne({ name: genre.name });
@@ -49,7 +49,7 @@ export const getOrCreateGenre = async (key: string) => {
 };
 
 export const getGenres = async (req: Request) => {
-  const options = convertRequestToPipelineStages(req, ['name'], ['name']);
+  const options = convertRequestToPipelineStages({ req, fieldsApplySearch: ['name'], localizationFields: ['name'] });
 
   return await GenreModel.aggregate(options);
 };
@@ -60,7 +60,7 @@ export const getGenreById = async (id: string, lang?: string) => {
 
   const genre = await GenreModel.findById(id, options);
   if (!genre) {
-    throw new ErrorHandler(Message.GENRE_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400);
+    throw new NotFoundError(Message.GENRE_NOT_FOUND);
   }
 
   return genre;

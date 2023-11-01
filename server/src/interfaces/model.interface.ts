@@ -56,20 +56,17 @@ export interface ITheater extends Document {
   email: string;
   description: string;
   hotline: string;
-  thumbnail: ICloudinaryFile;
-  cover: ICloudinaryFile;
+  logo: ICloudinaryFile;
+  images: ICloudinaryFile[];
   roomSummary: string; // 1 2D, 1 3D (1 phòng loại 2D và 1 phòng loại 3D)
-  rooms: Array<{
-    name: string; // tên phòng
-    type: string; // loại 2D, 3D ...
-  }>;
+  rooms: Array<string | IRoom>;
   isActive: boolean;
   totalFavorites: number;
   ratings: {
     average: number;
     count: number;
   };
-  reviews: string[]; // type: mongoose.Schema.Types.ObjectId, ref: 'Review'
+  reviews: Array<string | IReview>; // type: mongoose.Schema.Types.ObjectId, ref: 'Review'
 }
 
 export interface IMovie extends Document {
@@ -151,6 +148,9 @@ export interface IVoucher extends Document {
   showTime: string;
   theater: string;
   movie: string;
+  maxUse: number; // Số lượng tối đa
+  useCount: number; // so luong đã sd
+  minValue: number; // Giá trị min để có thể sử dụng
   userUsed: string[];
   isActive: boolean;
 }

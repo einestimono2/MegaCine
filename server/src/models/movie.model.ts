@@ -7,34 +7,34 @@ const movieSchema: Schema<IMovie> = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: [true, `'${Message.FIELD_s_EMPTY}', 'title'`]
+      required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'title'`]
     },
     originalTitle: {
       type: String,
-      required: [true, `'${Message.FIELD_s_EMPTY}', 'originalTitle'`]
+      required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'originalTitle'`]
     },
     trailer: {
       type: String,
-      required: [true, `'${Message.FIELD_s_EMPTY}', 'trailer'`]
+      required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'trailer'`]
     },
     poster: {
       public_id: {
         type: String,
-        required: [true, `'${Message.FIELD_s_EMPTY}', 'poster.public_id'`]
+        required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'poster.public_id'`]
       },
       url: {
         type: String,
-        required: [true, `'${Message.FIELD_s_EMPTY}', 'poster.url'`]
+        required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'poster.url'`]
       }
     },
     overview: {
       en: {
         type: String,
-        required: [true, `'${Message.FIELD_s_EMPTY}', 'overview.en'`]
+        required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'overview.en'`]
       },
       vi: {
         type: String,
-        required: [true, `'${Message.FIELD_s_EMPTY}', 'overview.vi'`]
+        required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'overview.vi'`]
       }
     },
     duration: Number,
@@ -43,39 +43,39 @@ const movieSchema: Schema<IMovie> = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Person',
-        required: [true, `'${Message.FIELD_s_EMPTY}', 'directors'`]
+        required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'directors'`]
       }
     ],
     actors: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Person',
-        required: [true, `'${Message.FIELD_s_EMPTY}', 'actors'`]
+        required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'actors'`]
       }
     ],
     language: {
       en: {
         type: String,
-        required: [true, `'${Message.FIELD_s_EMPTY}', 'language.en'`]
+        required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'language.en'`]
       },
       vi: {
         type: String,
-        required: [true, `'${Message.FIELD_s_EMPTY}', 'language.vi'`]
+        required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'language.vi'`]
       }
     },
     ageType: {
       type: String,
       enum: {
         values: Object.values(AgeTypes),
-        message: `'${Message.INVALID_AGETYPE_s}', '{VALUE}'`
+        message: `'${Message.INVALID_AGETYPE_s.msg}', '{VALUE}'`
       },
-      required: [true, `'${Message.FIELD_s_EMPTY}', 'ageType'`]
+      required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'ageType'`]
     },
     genres: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Genre',
-        required: [true, `'${Message.FIELD_s_EMPTY}', 'genres'`]
+        required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'genres'`]
       }
     ],
     totalRate: Number,

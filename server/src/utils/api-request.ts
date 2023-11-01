@@ -10,11 +10,15 @@ import { type Request } from 'express';
  * @returns Pipeline Aggregation
  *
  */
-export const convertRequestToPipelineStages = (
-  req: Request,
-  fieldsApplySearch?: string[],
-  localizationFields?: string[]
-) => {
+export const convertRequestToPipelineStages = ({
+  req,
+  fieldsApplySearch,
+  localizationFields
+}: {
+  req: Request;
+  fieldsApplySearch?: string[];
+  localizationFields?: string[];
+}) => {
   const query: any = [];
 
   //! Search

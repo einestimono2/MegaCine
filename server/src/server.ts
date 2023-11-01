@@ -1,12 +1,16 @@
 import app from './app';
-import { connectDB } from './config';
 import logger from './utils';
+import { app as appConfig } from './config/env';
+
+const PORT = appConfig.port;
 
 // Server
-const server = app.listen(process.env.PORT, () => {
-  logger.info(`Server is running at http://localhost:${process.env.PORT}  [env: ${app.get('env')}]`);
-
-  connectDB();
+const server = app.listen(PORT, () => {
+  logger.info(`Server is running at http://localhost:${PORT}  [env: ${app.get('env')}]`);
 });
 
-export default server;
+process.on('SIGINT', () => {
+  server.close(() => {
+    logger.info('Exit express server!');
+  });
+});

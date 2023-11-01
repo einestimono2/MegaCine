@@ -7,7 +7,7 @@ const personSchema: Schema<IPerson> = new mongoose.Schema(
   {
     fullName: {
       type: String,
-      required: [true, `'${Message.NAME_EMPTY}'`]
+      required: [true, `'${Message.NAME_EMPTY.msg}'`]
     },
     summary: {
       en: String,
