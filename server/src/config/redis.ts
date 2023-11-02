@@ -8,12 +8,20 @@ require('dotenv').config();
 
 const client = () => {
   if (process.env.REDIS_URL) {
-    logger.info(`Redis connected`);
-
     return process.env.REDIS_URL;
   }
 
   throw new BadRequestError(Message.REDIS_CONNECTION_FAIL);
 };
 
-export const redis = new Redis(client());
+const redis = new Redis(client());
+
+redis.on('connect', () => {
+  logger.info(`Redis connected with ${process.env.REDIS_URL}`);
+});
+
+redis.on('error', (error) => {
+  logger.error('Redis connection failed: ', error);
+});
+
+export { redis };

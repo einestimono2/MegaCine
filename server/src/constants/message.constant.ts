@@ -179,6 +179,13 @@ export const Message = {
   },
   INVALID_COORDINATES: {
     msg: 'Coordinates are not valid'
+  },
+  FILE_EMPTY: {
+    msg: 'File empty'
+  },
+  FILE_NOT_FOUND: {
+    ec: 3000,
+    msg: 'File not found'
   }
 };
 

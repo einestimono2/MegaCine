@@ -6,4 +6,4 @@ export const DEFAULT_AVATAR_URL: string =
 export const ACCESS_TOKEN = 'access_token';
 export const REFRESH_TOKEN = 'refresh_token';
 
-export const MONITOR_TIMER = 10000; // 5s
+export const MONITOR_TIMER = 30000; // 30s
