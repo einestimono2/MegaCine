@@ -18,8 +18,8 @@ declare global {
 
       translate: (phraseOrOptions: string | TranslateOptions, replacements: Replacements) => string;
 
-      sendOK: ({ message, data, extra }: ISuccessResponse) => this;
-      sendCREATED: ({ message, data, extra }: ISuccessResponse) => this;
+      sendOK: ({ message, data, extra }: ISuccessResponse = {}) => this;
+      sendCREATED: ({ message, data, extra }: ISuccessResponse = {}) => this;
     }
   }
 }

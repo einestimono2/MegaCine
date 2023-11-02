@@ -180,7 +180,6 @@ export const forgotPassword = CatchAsyncError(async (req: Request, res: Response
   });
 
   res.sendCREATED({
-    status: 'success',
     message: res.translate(Message.RESET_PASSWORD_CHECK_EMAIL_NOTIFICATION_s.msg, user.email),
     data: { resetPasswordToken, otp }
   });

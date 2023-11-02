@@ -57,5 +57,7 @@
   "Manager Theater Empty": "Please create theater first!",
   "Field Empty": "Please complete all information!",
   "Coordinates are not valid": "Coordinates are not valid!",
-  "Invalid type %s": "%s is not a valid type (2D | 3D)!"
+  "Invalid type %s": "%s is not a valid type (2D | 3D)!",
+  "File empty": "File missing!",
+  "File not found": "File not found!"
 }

@@ -3,6 +3,8 @@ import swaggerUi from 'swagger-ui-express';
 
 import logger from '../utils';
 import { Message } from '../constants';
+import { NotFoundError } from '../models';
+import { swaggerSpec } from '../config';
 
 //! All Route
 import { authRouter } from './auth.route';
@@ -12,18 +14,20 @@ import { managerRouter } from './manager.route';
 import { movieRouter } from './movie.route';
 import { personRouter } from './person.route';
 import { productRouter } from './product.route';
-import { swaggerSpec } from '../config';
-import { NotFoundError } from '../models';
+import { uploadRouter } from './upload.route';
 
 const router = express.Router();
+const v1 = '/api/v1';
 
-router.use('/api/v1', authRouter);
-router.use('/api/v1/user', userRouter);
-router.use('/api/v1/genre', genreRouter);
-router.use('/api/v1/person', personRouter);
-router.use('/api/v1/manager', managerRouter);
-router.use('/api/v1/movie', movieRouter);
-router.use('/api/v1/product', productRouter);
+router.use(`${v1}`, authRouter);
+router.use(`${v1}/user`, userRouter);
+router.use(`${v1}/genre`, genreRouter);
+router.use(`${v1}/person`, personRouter);
+router.use(`${v1}/manager`, managerRouter);
+router.use(`${v1}/movie`, movieRouter);
+router.use(`${v1}/product`, productRouter);
+
+router.use(`${v1}/upload`, uploadRouter);
 
 //! Swagger Documentation
 router.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
