@@ -9,11 +9,7 @@ import { cloudinaryServices, personServices, genreServices } from './';
 
 export const createMovie = async (movie: IMovie, poster: string | undefined) => {
   // Lưu lại list person để gán id của phim đó vào
-  const persons: Array<
-    IPerson & {
-      _id: Types.ObjectId;
-    }
-  > = [];
+  const persons: Array<IPerson & { _id: Types.ObjectId }> = [];
 
   // Tạo person model nếu nhập tên
   //! forEach có thể k await được
@@ -87,6 +83,7 @@ export const updateMovie = async (id: string, newMovie: IUpdateMovieRequest) => 
   if (newMovie.directors) movie.directors = newMovie.directors.split(',');
   if (newMovie.actors) movie.actors = newMovie.actors.split(',');
   if (newMovie.ageType) movie.ageType = newMovie.ageType;
+  if (newMovie.type) movie.type = newMovie.type;
   if (newMovie.genres) movie.genres = newMovie.genres.split(',');
 
   await movie.save();

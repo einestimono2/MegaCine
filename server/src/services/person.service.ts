@@ -26,7 +26,20 @@ export const createPerson = async (person: IPerson, avatar?: string) => {
 export const getOrCreatePerson = async (key: string) => {
   let person: IPerson & { _id: Types.ObjectId };
 
+  // Do tên có thể trùng nên tạo mới luôn
   if (!isValidObjectId(key)) {
+    // // Tạo mới nếu không tìm thấy
+    // // setDefaultsOnInsert: true cho phép sử dụng các giá trị mặc định được định nghĩa trong Mongoose schema khi chèn một tài liệu mới.
+    // person = await PersonModel.findOneAndUpdate(
+    //   { fullName: key },
+    //   {
+    //     $setOnInsert: {
+    //       fullName: key
+    //     }
+    //   },
+    //   { upsert: true, new: true, setDefaultsOnInsert: true }
+    // );
+
     person = new PersonModel({ fullName: key });
     await person.save();
   } else {

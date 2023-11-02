@@ -59,8 +59,11 @@ export const Message = {
   INVALID_AGETYPE_s: {
     msg: 'Invalid age type %s'
   },
-  INVALID_TYPE_s: {
-    msg: 'Invalid type %s'
+  INVALID_ROOM_TYPE_s: {
+    msg: 'Invalid room type %s'
+  },
+  INVALID_MOVIE_TYPE_s: {
+    msg: 'Invalid movie type %s'
   },
   INVALID_LOGIN_METHOD: {
     msg: 'Invalid login method'

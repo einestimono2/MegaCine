@@ -52,12 +52,14 @@
 	"Product Not Found": "Sản phẩm không tồn tại!",
 	"Response timeout": "Timeout!",
 	"Wait for registration approval": "Đăng ký thành công, vui lòng đợt QTV phê duyệt!",
-	"Invalid age type %s": "AgeType '%s' không hợp lệ! (P | C13 | C16 | C18)",
+	"Invalid age type %s": "AgeType '%s' không hợp lệ! (P | T13 | T16 | T18)",
 	"Movie Not Found": "Phim không tồn tại!",
 	"Manager Theater Empty": "Vui lòng tạo rạp trước khi thực hiện!",
 	"Coordinates are not valid": "Tọa độ không hợp lệ!",
 	"Field Empty": "Vui lòng điền đầy đủ thông tin!",
-	"Invalid type %s": "Type '%s' không hợp lệ (2D | 3D)!",
+	"Invalid room type %s": "Loại phòng '%s' không hợp lệ (2D | 3D)!",
+	"Invalid movie type %s": "Loại phim %s không hợp lệ (2D | 3D)!",
 	"File empty": "Vui lòng cung cấp file!",
-	"File not found": "File không tồn tại!"
+	"File not found": "File không tồn tại!",
+	"": ""
 }
