@@ -56,6 +56,7 @@ export const movieRouter = router;
  *              - actors
  *              - language
  *              - ageType
+ *              - type
  *              - genres
  *            properties:
  *              title:
@@ -111,8 +112,12 @@ export const movieRouter = router;
  *                    example: 'Tiếng Anh - Phụ đề Tiếng Việt'
  *              ageType:
  *                type: string
- *                description: "P (All) | C13 (13+) | C16 (16+) | C18 (18+)"
- *                "enum": [ "P", "C13", "C16", "C18"]
+ *                description: "P (All) | T13 (13+) | T16 (16+) | T18 (18+)"
+ *                "enum": [ "P", "T13", "T16", "T18"]
+ *              type:
+ *                type: string
+ *                description: "2D | 3D"
+ *                "enum": [ "2D", "3D"]
  *              genres:
  *                description: Tên hoặc objectId
  *                type: array
@@ -274,8 +279,12 @@ export const movieRouter = router;
  *                    example: ""
  *              ageType:
  *                type: string
- *                description: "P (All) | C13 (13+) | C16 (16+) | C18 (18+)"
- *                "enum": [ "P", "C13", "C16", "C18"]
+ *                description: "P (All) | T13 (13+) | T16 (16+) | T18 (18+)"
+ *                "enum": [ "P", "T13", "T16", "T18"]
+ *              type:
+ *                type: string
+ *                description: "2D | 3D"
+ *                "enum": [ "2D", "3D"]
  *              genres:
  *                description: objectId
  *                type: array
@@ -283,6 +292,35 @@ export const movieRouter = router;
  *                  type: string
  *    responses:
  *      201:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Response'
+ */
+
+//! Xóa phim
+/**
+ * @swagger
+ * /api/v1/movie/details/{id}:
+ *  delete:
+ *    tags: [Movie]
+ *    summary: Xóa phim
+ *    security:
+ *      - BearerToken: []
+ *    parameters:
+ *      - in: query
+ *        name: hl
+ *        type: string
+ *        default: vi
+ *        description: Ngôn ngữ trả về 'en | vi'
+ *      - in: path
+ *        name: id
+ *        type: string
+ *        required: true
+ *        description: Movie ID
+ *    responses:
+ *      200:
  *        description: Success
  *        content:
  *          application/json:

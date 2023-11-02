@@ -1,7 +1,7 @@
 import mongoose, { type Schema } from 'mongoose';
 
 import { type ITheater } from '../interfaces';
-import { Message, LocationType } from '../constants';
+import { Message, LocationTypes } from '../constants';
 
 const theaterSchema: Schema<ITheater> = new mongoose.Schema(
   {
@@ -45,8 +45,8 @@ const theaterSchema: Schema<ITheater> = new mongoose.Schema(
     location: {
       type: {
         type: String,
-        enum: [LocationType.Point],
-        default: LocationType.Point
+        enum: [LocationTypes.Point],
+        default: LocationTypes.Point
       },
       coordinates: {
         type: [Number, Number], // [long, lat]

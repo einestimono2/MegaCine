@@ -1,7 +1,7 @@
 import mongoose, { type Schema } from 'mongoose';
 
 import { type IMovie } from '../interfaces';
-import { Message, AgeTypes } from '../constants';
+import { Message, AgeTypes, MovieTypes } from '../constants';
 
 const movieSchema: Schema<IMovie> = new mongoose.Schema(
   {
@@ -36,6 +36,14 @@ const movieSchema: Schema<IMovie> = new mongoose.Schema(
         type: String,
         required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'overview.vi'`]
       }
+    },
+    type: {
+      type: String,
+      enum: {
+        values: Object.values(MovieTypes),
+        message: `'${Message.INVALID_MOVIE_TYPE_s.msg}', '{VALUE}'`
+      },
+      required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'type'`]
     },
     duration: Number,
     releaseDate: Date,

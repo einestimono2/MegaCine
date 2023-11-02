@@ -77,6 +77,7 @@ export interface IMovie extends Document {
   overview: ILocalizationField;
   duration: number;
   releaseDate: Date;
+  type: string;
   directors: Array<string | IPerson>;
   actors: Array<string | IPerson>;
   language: ILocalizationField;

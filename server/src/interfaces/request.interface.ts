@@ -46,6 +46,7 @@ export interface IUpdateMovieRequest {
   actors?: string;
   language?: string;
   ageType?: string;
+  type?: string;
   genres?: string;
 }
 
