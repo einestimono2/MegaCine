@@ -2,13 +2,13 @@ import { type Request } from 'express';
 
 import { Message } from '../constants';
 import { type IManager } from '../interfaces';
-import { BadRequestError, ManagerModel, NotFoundError } from '../models';
+import { ManagerModel, NotFoundError } from '../models';
 import { convertRequestToPipelineStages } from '../utils';
 
 export const createManager = async (user: IManager) => {
   const isCodeExist = await ManagerModel.findOne({ code: user.code });
   if (isCodeExist) {
-    throw new BadRequestError(Message.CODE_ALREADY_EXIST);
+    throw new NotFoundError(Message.CODE_ALREADY_EXIST);
   }
 
   const newManager = new ManagerModel(user);
@@ -41,7 +41,5 @@ export const getManagers = async (req: Request) => {
 };
 
 export const deleteManager = async (id: string) => {
-  const manager = await getManagerById(id);
-
-  await manager.deleteOne();
+  return await ManagerModel.findByIdAndDelete(id);
 };

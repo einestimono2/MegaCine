@@ -1,7 +1,7 @@
-import mongoose, { type Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 import { type ITheater } from '../interfaces';
-import { Message, LocationTypes } from '../constants';
+import { Message, LocationTypes, EMAIL_REGEX_PATTERN } from '../constants';
 
 const theaterSchema: Schema<ITheater> = new mongoose.Schema(
   {
@@ -15,7 +15,13 @@ const theaterSchema: Schema<ITheater> = new mongoose.Schema(
       type: String,
       trim: true,
       unique: true,
-      required: [true, `'${Message.FIELD_s_EMPTY.msg}','email'`]
+      required: [true, `'${Message.FIELD_s_EMPTY.msg}','email'`],
+      validate: {
+        validator: function (value: string) {
+          return EMAIL_REGEX_PATTERN.test(value);
+        },
+        message: `'${Message.INVALID_EMAIL.msg}'`
+      }
     },
     description: {
       en: String,
@@ -32,10 +38,13 @@ const theaterSchema: Schema<ITheater> = new mongoose.Schema(
       url: String
     },
     images: [
-      {
-        public_id: String,
-        url: String
-      }
+      new Schema(
+        {
+          public_id: String,
+          url: String
+        },
+        { _id: false }
+      )
     ],
     address: {
       type: String,
@@ -45,7 +54,10 @@ const theaterSchema: Schema<ITheater> = new mongoose.Schema(
     location: {
       type: {
         type: String,
-        enum: [LocationTypes.Point],
+        enum: {
+          values: Object.values(LocationTypes),
+          message: `'${Message.INVALID_COORDINATE_TYPE_s.msg}', '{VALUE}'`
+        },
         default: LocationTypes.Point
       },
       coordinates: {
@@ -67,10 +79,6 @@ const theaterSchema: Schema<ITheater> = new mongoose.Schema(
         }
       }
     },
-    roomSummary: {
-      type: String,
-      required: [true, `'${Message.FIELD_s_EMPTY.msg}','roomSummary'`]
-    },
     rooms: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -82,14 +90,22 @@ const theaterSchema: Schema<ITheater> = new mongoose.Schema(
       default: true
     },
     totalFavorites: Number,
-    ratings: {
-      average: Number,
-      count: Number
-    },
+    ratingAverage: Number,
+    ratingCount: Number,
     reviews: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Review'
+      }
+    ],
+    fare: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Fare'
+    },
+    movies: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Movie'
       }
     ]
   },

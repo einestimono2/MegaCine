@@ -1,44 +1,46 @@
 import express from 'express';
 
-import { productController } from '../controllers';
-import { isAuthenticated, authorizeRoles, uploadImage } from '../middlewares';
+import { authorizeRoles, isAuthenticated, uploadImage } from '../middlewares';
 import { Roles } from '../constants';
+import { theaterController } from '../controllers';
 
 const router = express.Router();
 const adminRoles = [Roles.Manager, Roles.Admin];
 
-//! .../api/v1/product
+//! .../api/v1/theater
 
 router.post(
   '/create',
   isAuthenticated,
   authorizeRoles(...adminRoles),
-  uploadImage.single('image'),
-  productController.createProduct
+  uploadImage.fields([{ name: 'logo' }, { name: 'images', maxCount: 8 }]),
+  theaterController.createTheater
 );
-router.get(
-  '/list',
-  // isAuthenticated,
-  productController.getProducts
-);
-router.get('/list/:theaterId', isAuthenticated, productController.getProductsByTheater);
-router.get('/my-theater', isAuthenticated, productController.getProductsByTheater);
+
+router.get('/list', theaterController.getTheaters);
+
+router.post('/nearby', theaterController.getNearByTheaters);
 
 router
   .route('/details/:id')
-  .put(isAuthenticated, authorizeRoles(...adminRoles), uploadImage.single('image'), productController.updateProduct)
-  .delete(isAuthenticated, authorizeRoles(...adminRoles), productController.deleteProduct)
-  .get(isAuthenticated, productController.getProduct);
+  .get(theaterController.getTheaterDetails)
+  .delete(isAuthenticated, authorizeRoles(...adminRoles), theaterController.deleteTheater)
+  .put(
+    // isAuthenticated,
+    // authorizeRoles(...adminRoles),
+    uploadImage.fields([{ name: 'logo' }, { name: 'images', maxCount: 8 }]),
+    theaterController.updateTheater
+  );
 
-export const productRouter = router;
+export const theaterRouter = router;
 
-//! Thêm mới product
+//! Create Theater
 /**
  * @swagger
- * /api/v1/product/create:
+ * /api/v1/theater/create:
  *  post:
- *    tags: [Product]
- *    summary: Thêm mới product
+ *    tags: [Theater]
+ *    summary: Tạo rạp
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -55,11 +57,16 @@ export const productRouter = router;
  *            type: object
  *            required:
  *              - name
- *              - description
- *              - price
- *              - image
+ *              - email
+ *              - hotline
+ *              - address
+ *              - location
  *            properties:
  *              name:
+ *                type: string
+ *              email:
+ *                type: string
+ *              hotline:
  *                type: string
  *              description:
  *                type: object
@@ -70,11 +77,26 @@ export const productRouter = router;
  *                  vi:
  *                    type: string
  *                    example: ''
- *              price:
- *                type: number
- *              image:
+ *              address:
  *                type: string
- *                format: base64
+ *              location:
+ *                type: object
+ *                description: "type: Point, coordinates: [long, lat]"
+ *                properties:
+ *                  type:
+ *                    type: string
+ *                    example: 'Point'
+ *                  coordinates:
+ *                    type: array
+ *                    example: [105.804817, 21.028511]
+ *              logo:
+ *                type: string
+ *                format: binary
+ *              images:
+ *                type: array
+ *                items:
+ *                  type: string
+ *                  format: binary
  *    responses:
  *      201:
  *        description: Success
@@ -84,13 +106,13 @@ export const productRouter = router;
  *              $ref: '#/components/schemas/Response'
  */
 
-//! List Product
+//! List Theater
 /**
  * @swagger
- * /api/v1/product/list:
+ * /api/v1/theater/list:
  *  get:
- *    tags: [Product]
- *    summary: Danh sách product
+ *    tags: [Theater]
+ *    summary: Danh sách theater
  *    parameters:
  *      - in: query
  *        name: hl
@@ -129,13 +151,13 @@ export const productRouter = router;
  *              $ref: '#/components/schemas/ListResponse'
  */
 
-//! List Product By Theater
+//! Near By Theater
 /**
  * @swagger
- * /api/v1/product/my-theater:
- *  get:
- *    tags: [Product]
- *    summary: Danh sách product của rạp
+ * /api/v1/theater/nearby:
+ *  post:
+ *    tags: [Theater]
+ *    summary: Danh sách theater ở gần
  *    parameters:
  *      - in: query
  *        name: hl
@@ -144,6 +166,31 @@ export const productRouter = router;
  *        description: Ngôn ngữ trả về 'en | vi'
  *    security:
  *      - BearerToken: []
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - longitude
+ *              - latitude
+ *            properties:
+ *              longitude:
+ *                type: number
+ *              latitude:
+ *                type: number
+ *        multipart/form-data:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - longitude
+ *              - latitude
+ *            properties:
+ *              longitude:
+ *                type: number
+ *              latitude:
+ *                type: number
  *    responses:
  *      200:
  *        description: Success
@@ -153,42 +200,13 @@ export const productRouter = router;
  *              $ref: '#/components/schemas/ListResponse'
  */
 
-//! List Product By Theater
+//! Cập nhật theater
 /**
  * @swagger
- * /api/v1/product/list/{theaterId}:
- *  get:
- *    tags: [Product]
- *    summary: Danh sách product của rạp
- *    parameters:
- *      - in: query
- *        name: hl
- *        type: string
- *        default: vi
- *        description: Ngôn ngữ trả về 'en | vi'
- *      - in: path
- *        name: theaterId
- *        type: string
- *        required: true
- *        description: Product ID
- *    security:
- *      - BearerToken: []
- *    responses:
- *      200:
- *        description: Success
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/ListResponse'
- */
-
-//! Cập nhật product
-/**
- * @swagger
- * /api/v1/product/details/{id}:
+ * /api/v1/theater/details/{id}:
  *  put:
- *    tags: [Product]
- *    summary: Cập nhật product
+ *    tags: [Theater]
+ *    summary: Cập nhật theater
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -201,7 +219,7 @@ export const productRouter = router;
  *        name: id
  *        type: string
  *        required: true
- *        description: Product ID
+ *        description: Theater ID
  *    requestBody:
  *      required: true
  *      content:
@@ -210,6 +228,10 @@ export const productRouter = router;
  *            type: object
  *            properties:
  *              name:
+ *                type: string
+ *              email:
+ *                type: string
+ *              hotline:
  *                type: string
  *              description:
  *                type: object
@@ -220,11 +242,26 @@ export const productRouter = router;
  *                  vi:
  *                    type: string
  *                    example: ''
- *              price:
- *                type: number
- *              image:
+ *              address:
  *                type: string
- *                format: base64
+ *              location:
+ *                type: object
+ *                description: "type: Point, coordinates: [long, lat]"
+ *                properties:
+ *                  type:
+ *                    type: string
+ *                    example: 'Point'
+ *                  coordinates:
+ *                    type: array
+ *                    example: [105.804817, 21.028511]
+ *              logo:
+ *                type: string
+ *                format: binary
+ *              images:
+ *                type: array
+ *                items:
+ *                  type: string
+ *                  format: binary
  *    responses:
  *      201:
  *        description: Success
@@ -234,13 +271,13 @@ export const productRouter = router;
  *              $ref: '#/components/schemas/Response'
  */
 
-//! Lấy thông tin product
+//! Lấy thông tin theater
 /**
  * @swagger
- * /api/v1/product/details/{id}:
+ * /api/v1/theater/details/{id}:
  *  get:
- *    tags: [Product]
- *    summary: Thông tin chi tiết product
+ *    tags: [Theater]
+ *    summary: Thông tin chi tiết theater
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -253,7 +290,7 @@ export const productRouter = router;
  *        name: id
  *        type: string
  *        required: true
- *        description: Product ID
+ *        description: Theater ID
  *    responses:
  *      200:
  *        description: Success
@@ -263,13 +300,13 @@ export const productRouter = router;
  *              $ref: '#/components/schemas/Response'
  */
 
-//! Xóa product
+//! Xóa theater
 /**
  * @swagger
- * /api/v1/product/details/{id}:
+ * /api/v1/theater/details/{id}:
  *  delete:
- *    tags: [Product]
- *    summary: Xóa product
+ *    tags: [Theater]
+ *    summary: Xóa theater
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -282,7 +319,7 @@ export const productRouter = router;
  *        name: id
  *        type: string
  *        required: true
- *        description: Product ID
+ *        description: Theater ID
  *    responses:
  *      200:
  *        description: Success

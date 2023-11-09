@@ -42,11 +42,6 @@ export const uploadImages = CatchAsyncError(async (req: Request, res: Response, 
 export const deleteImage = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   fs.unlink(path.join(__dirname, `../uploads/${req.params.fileName}`), (err: any) => {
     if (err !== null) {
-      if (err.code === 'ENOENT') {
-        next(new NotFoundError(Message.FILE_NOT_FOUND));
-        return;
-      }
-
       next(err);
       return;
     }

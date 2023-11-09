@@ -5,3 +5,5 @@ export * as managerController from './manager.controller';
 export * as movieController from './movie.controller';
 export * as productController from './product.controller';
 export * as uploadController from './upload.controller';
+export * as theaterController from './theater.controller';
+export * as fareController from './fare.controller';

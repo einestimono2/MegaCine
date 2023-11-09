@@ -59,6 +59,9 @@ export const Message = {
   INVALID_AGETYPE_s: {
     msg: 'Invalid age type %s'
   },
+  INVALID_COORDINATE_TYPE_s: {
+    msg: 'Invalid coordinate type %s'
+  },
   INVALID_ROOM_TYPE_s: {
     msg: 'Invalid room type %s'
   },
@@ -132,6 +135,9 @@ export const Message = {
   PRODUCT_NOT_FOUND: {
     msg: 'Product Not Found'
   },
+  FARE_NOT_FOUND: {
+    msg: 'Fare Not Found'
+  },
   THEATER_NOT_FOUND: {
     msg: 'Theater Not Found'
   },
@@ -179,6 +185,9 @@ export const Message = {
   },
   MANAGER_THEATER_EMPTY: {
     msg: 'Manager Theater Empty'
+  },
+  MANAGER_OWNED_THEATER: {
+    msg: 'Manager owned theater'
   },
   INVALID_COORDINATES: {
     msg: 'Coordinates are not valid'

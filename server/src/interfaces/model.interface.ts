@@ -29,7 +29,7 @@ export interface IManager extends Document {
   password: string;
   role: string;
   isVerified: boolean;
-  theater: string | ITheater; // type: mongoose.Schema.Types.ObjectId, ref: 'Theater'
+  theater?: string | ITheater; // type: mongoose.Schema.Types.ObjectId, ref: 'Theater'
   comparePassword: (password: string) => Promise<boolean>;
   signAccessToken: () => string;
   signRefreshToken: () => string;
@@ -54,19 +54,46 @@ export interface ITheater extends Document {
     coordinates: [number, number];
   };
   email: string;
-  description: string;
+  description: ILocalizationField;
   hotline: string;
   logo: ICloudinaryFile;
   images: ICloudinaryFile[];
-  roomSummary: string; // 1 2D, 1 3D (1 phòng loại 2D và 1 phòng loại 3D)
   rooms: Array<string | IRoom>;
   isActive: boolean;
   totalFavorites: number;
-  ratings: {
-    average: number;
-    count: number;
-  };
+  ratingAverage: number;
+  ratingCount: number;
+  fare: string | IFare;
   reviews: Array<string | IReview>; // type: mongoose.Schema.Types.ObjectId, ref: 'Review'
+  movies: Array<string | IMovie>; // type: mongoose.Schema.Types.ObjectId, ref: 'Movie'
+}
+
+export interface IFare extends Document {
+  theater: string | ITheater;
+  normalDay: string;
+  weekend: string;
+  specialDay: string;
+  description: ILocalizationField;
+  u22: number;
+  _2d: Array<{
+    from: string;
+    to: string;
+    seat: Array<{
+      type: string;
+      normalDayPrice: number;
+      specialDayPrice: number;
+    }>;
+  }>;
+  _3d: Array<{
+    from: string;
+    to: string;
+    seat: Array<{
+      type: string;
+      normalDayPrice: number;
+      specialDayPrice: number;
+    }>;
+  }>;
+  surcharge: Array<{ name: string; value: number }>;
 }
 
 export interface IMovie extends Document {
@@ -86,10 +113,8 @@ export interface IMovie extends Document {
   totalRate: number;
   isActive: boolean;
   totalFavorites: number;
-  ratings: {
-    average: number;
-    count: number;
-  };
+  ratingAverage: number;
+  ratingCount: number;
   reviews: Array<string | IReview>;
   theater: Array<string | ITheater>;
 }
@@ -123,7 +148,7 @@ export interface ISeat extends Document {
   name: string;
   theatre: string;
   room: string;
-  type: string; // VIP, STANDARD, HỎNG
+  type: string; // VIP, STANDARD, HỎNG, SWEET
   status: string; // Để frontend xử lý
 }
 
@@ -137,6 +162,7 @@ export interface IShowTime extends Document {
   date: Date;
   isActive: boolean;
   price: number;
+  type: string; // Snakeshow (Suất chiếu sớm / Suất chiếu đặc biệt), Normal
 }
 
 export interface IVoucher extends Document {

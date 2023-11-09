@@ -106,7 +106,7 @@ export const uploadRouter = router;
  *              $ref: '#/components/schemas/Response'
  */
 
-// Xóa ảnh
+//! Xóa ảnh
 /**
  * @swagger
  * /api/v1/upload/{fileName}:

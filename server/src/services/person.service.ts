@@ -1,10 +1,10 @@
 import { type Request } from 'express';
-import mongoose, { type Types, isValidObjectId } from 'mongoose';
+import { type Types, isValidObjectId } from 'mongoose';
 
 import { Message } from '../constants';
 import { type IUpdatePersonRequest, type IPerson } from '../interfaces';
 import { NotFoundError, PersonModel } from '../models';
-import { convertRequestToPipelineStages } from '../utils';
+import { convertRequestToPipelineStages, convertToMongooseId } from '../utils';
 import { cloudinaryServices } from '.';
 
 export const createPerson = async (person: IPerson, avatar?: string) => {
@@ -20,7 +20,11 @@ export const createPerson = async (person: IPerson, avatar?: string) => {
 
   const newPerson = new PersonModel(person);
 
-  return await newPerson.save();
+  return await newPerson.save().catch(async (err) => {
+    await cloudinaryServices.destroy(person.avatar.public_id);
+
+    throw err;
+  });
 };
 
 export const getOrCreatePerson = async (key: string) => {
@@ -61,7 +65,7 @@ export const getPersonById = async (id: string) => {
 // Xử lý các trường đa ngữ
 export const getPersonDetails = async (id: string, lang?: string) => {
   const [person] = await PersonModel.aggregate([
-    { $match: { _id: new mongoose.Types.ObjectId(id) } },
+    { $match: { _id: convertToMongooseId(id) } },
     { $set: { summary: lang ? `$summary.${lang}` : `$summary` } }
   ]);
   if (!person) {
@@ -91,7 +95,7 @@ export const updatePerson = async (id: string, newPerson: IUpdatePersonRequest) 
     } catch (_) {}
   }
   if (newPerson.avatar)
-    person.avatar = await cloudinaryServices.replaceImage(person.avatar.public_id, newPerson.avatar, 'avatars');
+    person.avatar = await cloudinaryServices.replaceImage(person.avatar.public_id, newPerson.avatar, 'people');
 
   return await person.save();
 };

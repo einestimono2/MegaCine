@@ -1,9 +1,8 @@
-import fs from 'fs';
-
 import { cloudinary } from '../config';
 import { type CloudinaryResponse } from '../interfaces';
 import { Message } from '../constants';
 import { BadRequestError } from '../models';
+import { unlinkFileFromPath } from '../utils';
 
 export const replaceImage = async (
   imgID: string | null,
@@ -27,7 +26,7 @@ export const uploadImage = async (file: string, folder: string): Promise<Cloudin
   }
 
   // Xóa ảnh ở folder uploads
-  fs.unlinkSync(file);
+  unlinkFileFromPath(file);
 
   return {
     public_id: myCloud.public_id,

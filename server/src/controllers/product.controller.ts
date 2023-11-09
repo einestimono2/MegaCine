@@ -33,10 +33,10 @@ export const deleteProduct = CatchAsyncError(async (req: Request, res: Response,
 
 //! Get Product Info
 export const getProduct = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const prodcut = await productServices.getProductDetails(req.params.id, req.getLocale());
+  const product = await productServices.getProductDetails(req.params.id, req.getLocale());
 
   res.sendOK({
-    data: prodcut
+    data: product
   });
 });
 
