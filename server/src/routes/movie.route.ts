@@ -112,7 +112,7 @@ export const movieRouter = router;
  *                    example: 'Tiếng Anh - Phụ đề Tiếng Việt'
  *              ageType:
  *                type: string
- *                description: "P (All) | T13 (13+) | T16 (16+) | T18 (18+)"
+ *                description: "P (All) | K | T13 (13+) | T16 (16+) | T18 (18+) | C"
  *                "enum": [ "P", "T13", "T16", "T18"]
  *              type:
  *                type: string
@@ -279,7 +279,7 @@ export const movieRouter = router;
  *                    example: ""
  *              ageType:
  *                type: string
- *                description: "P (All) | T13 (13+) | T16 (16+) | T18 (18+)"
+ *                description: "P (All) | K | T13 (13+) | T16 (16+) | T18 (18+) | C"
  *                "enum": [ "P", "T13", "T16", "T18"]
  *              type:
  *                type: string

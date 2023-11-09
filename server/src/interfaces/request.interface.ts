@@ -58,6 +58,48 @@ export interface IUpdateProductRequest {
   isActive?: boolean;
 }
 
+export interface IUpdateTheaterRequest {
+  name?: string;
+  address?: string;
+  location?: string;
+  email?: string;
+  description?: string;
+  hotline?: string;
+  logo?: string;
+  images?: string[];
+  isActive?: boolean;
+  totalFavorites?: number;
+  ratingAverage?: number;
+  ratingCount?: number;
+}
+
+export interface IUpdateFareRequest {
+  normalDay?: string;
+  weekend?: string;
+  specialDay?: string;
+  description?: string;
+  u22?: number;
+  _2d?: Array<{
+    from: string;
+    to: string;
+    seat: Array<{
+      type: string;
+      normalDayPrice: number;
+      specialDayPrice: number;
+    }>;
+  }>;
+  _3d?: Array<{
+    from: string;
+    to: string;
+    seat: Array<{
+      type: string;
+      normalDayPrice: number;
+      specialDayPrice: number;
+    }>;
+  }>;
+  surcharge?: Array<{ name: string; value: number }>;
+}
+
 export interface IOTPRequest {
   id: string;
   name?: string;

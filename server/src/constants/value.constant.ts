@@ -7,3 +7,5 @@ export const ACCESS_TOKEN = 'access_token';
 export const REFRESH_TOKEN = 'refresh_token';
 
 export const MONITOR_TIMER = 30000; // 30s
+
+export const MAX_DISTANCE_IN_METERS = 10000;

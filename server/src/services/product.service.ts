@@ -1,21 +1,14 @@
 import { type Request } from 'express';
-import mongoose from 'mongoose';
 
 import { Message } from '../constants';
 import { type IUpdateProductRequest, type IProduct } from '../interfaces';
 import { NotFoundError, ProductModel } from '../models';
-import { convertRequestToPipelineStages } from '../utils';
+import { convertRequestToPipelineStages, convertToMongooseId } from '../utils';
 import { cloudinaryServices } from '.';
 
 export const createProduct = async (product: IProduct, image?: string) => {
   if (!product.theater) {
     throw new NotFoundError(Message.MANAGER_THEATER_EMPTY);
-  }
-
-  if (product.description && typeof product.description === 'string') {
-    try {
-      product.description = JSON.parse(product.description);
-    } catch (_) {}
   }
 
   // Upload ảnh
@@ -24,7 +17,11 @@ export const createProduct = async (product: IProduct, image?: string) => {
   }
 
   const newProduct = new ProductModel(product);
-  return await newProduct.save();
+  return await newProduct.save().catch(async (err) => {
+    await cloudinaryServices.destroy(product.image.public_id);
+
+    throw err;
+  });
 };
 
 export const getProductById = async (id: string) => {
@@ -39,7 +36,7 @@ export const getProductById = async (id: string) => {
 // Xử lý các trường đa ngữ
 export const getProductDetails = async (id: string, lang?: string) => {
   const [product] = await ProductModel.aggregate([
-    { $match: { _id: new mongoose.Types.ObjectId(id) } },
+    { $match: { _id: convertToMongooseId(id) } },
     { $set: { description: lang ? `$description.${lang}` : `$description` } }
   ]);
   if (!product) {
@@ -60,13 +57,14 @@ export const getProducts = async (req: Request) => {
 };
 
 export const getProductsByTheater = async (req: Request) => {
-  if (!req.userPayload?.theater) {
+  const theaterId = req.params.id ?? req.userPayload?.theater;
+  if (!theaterId) {
     throw new NotFoundError(Message.MANAGER_THEATER_EMPTY);
   }
 
   const matchPipeline = [
     {
-      $match: { theater: new mongoose.Types.ObjectId(req.userPayload?.theater) }
+      $match: { theater: convertToMongooseId(req.userPayload?.theater) }
     }
   ];
 

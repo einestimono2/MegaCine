@@ -1,5 +1,5 @@
 // const enum: giữ nguyên các giá trị enum thay vì tạo một đối tượng enum riêng biệt
-//  can't index it by an arbitrary value
+// can't index it by an arbitrary value
 export const enum LoggerTypes {
   Debug = 'debug',
   Info = 'info',
@@ -35,7 +35,20 @@ export enum MovieTypes {
 
 export enum AgeTypes {
   P = 'P', // All
+  K = 'K', // < 13 với điều kiện xem cùng cha, mẹ hoặc người giám hộ
   T13 = 'T13', // 13+
   T16 = 'T16', // 16+
-  T18 = 'T18' // 18+
+  T18 = 'T18', // 18+,
+  C = 'C' // Không được phép phổ biến
+}
+
+export enum SeatTypes {
+  VIP = 'VIP',
+  Standard = 'Standard',
+  Sweetbox = 'Sweetbox'
+}
+
+export enum SurchargeTypes {
+  Sneakshow = 'Sneakshow', // Suất chiếu sớm/đặc biệt
+  Blockbuster = 'Blockbuster' // Phim bom tấn
 }

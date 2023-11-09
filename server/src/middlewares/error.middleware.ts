@@ -1,10 +1,9 @@
 import { type NextFunction, type Request, type Response } from 'express';
 import { transpile } from 'typescript';
-import fs from 'fs';
 
-import logger from '../utils';
+import logger, { unlinkRequestFile, unlinkRequestFiles } from '../utils';
 import { HttpStatusCode, Message } from '../constants';
-import { BadRequestError } from '../models';
+import { ConflictError, NotFoundError, UnauthorizedError, UnprocessableEntityError } from '../models';
 
 export function ErrorMiddleware(err: any, req: Request, res: Response, next: NextFunction) {
   logger.error(err.message);
@@ -29,39 +28,42 @@ export function ErrorMiddleware(err: any, req: Request, res: Response, next: Nex
       message = req.translate(firstError); // Trường hợp chỉ có key
     }
 
-    err = new BadRequestError(message);
+    err = new UnprocessableEntityError(message);
   }
 
   // Error: Wrong id in mongoDB
   if (err.name === 'CastError') {
     const message = req.translate(Message.RESOURCE_NOT_FOUND_INVALID_s.msg, err.path);
-    err = new BadRequestError(message);
+    err = new UnprocessableEntityError(message);
   }
 
   // Error: Duplicate key in mongoDB
   if (err.code === 11000) {
     const message = req.translate(Message.s_ALREADY_EXISTS.msg, Object.keys(err.keyValue).toString());
-    err = new BadRequestError(message);
+    err = new ConflictError(message);
   }
 
   // Wrong JWT error
   if (err.name === 'JsonWebTokenError') {
     const message = req.translate(Message.TOKEN_IS_INVALID_TRY_AGAIN.msg);
-    err = new BadRequestError(message);
+    err = new UnauthorizedError(message);
   }
 
   // JWT EXPIRE error
   if (err.name === 'TokenExpiredError') {
     const message = req.translate(Message.TOKEN_IS_EXPIRED_TRY_AGAIN.msg);
-    err = new BadRequestError(message);
+    err = new UnauthorizedError(message);
   }
 
-  // Xóa ảnh ở local nếu gặp lỗi xảy ra
-  try {
-    if (req.file) {
-      fs.unlinkSync(req.file.path);
-    }
-  } catch (_) {}
+  // File not exist
+  if (err.code === 'ENOENT') {
+    next(new NotFoundError(Message.FILE_NOT_FOUND));
+    return;
+  }
+
+  // Xóa ảnh ở local nếu chưa bị xóa khi gặp lỗi
+  unlinkRequestFile(req.file);
+  unlinkRequestFiles(req.files);
 
   res.status(err.statusCode).json({
     status: 'error',

@@ -1,10 +1,10 @@
 import { type Request } from 'express';
-import mongoose, { type Types } from 'mongoose';
+import { type Types } from 'mongoose';
 
 import { Message } from '../constants';
 import { type IPerson, type IMovie, type IUpdateMovieRequest } from '../interfaces';
 import { MovieModel, NotFoundError } from '../models';
-import { convertRequestToPipelineStages } from '../utils';
+import { convertRequestToPipelineStages, convertToMongooseId } from '../utils';
 import { cloudinaryServices, personServices, genreServices } from './';
 
 export const createMovie = async (movie: IMovie, poster: string | undefined) => {
@@ -56,7 +56,11 @@ export const createMovie = async (movie: IMovie, poster: string | undefined) => 
     }
   }
 
-  return await newMovie.save();
+  return await newMovie.save().catch(async (err) => {
+    await cloudinaryServices.destroy(movie.poster.public_id); // Xóa ảnh
+
+    throw err;
+  });
 };
 
 export const updateMovie = async (id: string, newMovie: IUpdateMovieRequest) => {
@@ -102,7 +106,7 @@ export const getMovieById = async (id: string) => {
 
 export const getMovieDetails = async (id: string, lang: string) => {
   const [movie] = await MovieModel.aggregate([
-    { $match: { _id: new mongoose.Types.ObjectId(id) } },
+    { $match: { _id: convertToMongooseId(id) } },
     {
       $set: {
         overview: `$overview.${lang}`,

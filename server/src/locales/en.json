@@ -52,14 +52,17 @@
   "Product Not Found": "Product Not Found!",
   "Response timeout": "Timeout!",
   "Wait for registration approval": "Registration successful, please wait for admin approval!",
-  "Invalid age type %s": "'%s' is not a valid type! (P | T13 | T16 | T18)",
+  "Invalid age type %s": "'%s' is not a valid type! (P | K | T13 | T16 | T18 | C)",
   "Movie Not Found": "Movie Not Found!",
   "Manager Theater Empty": "Please create theater first!",
   "Field Empty": "Please complete all information!",
-  "Coordinates are not valid": "Coordinates are not valid!",
+  "Coordinates are not valid": "Coordinates are not valid! (Format: [lng, lat])",
   "Invalid room type %s": "%s is not a valid room type (2D | 3D)!",
   "Invalid movie type %s": "%s is not a valid movie type (2D | 3D)!",
+  "Invalid coordinate type %s": "%s is not a valid coordinate type (Point)!",
   "File empty": "File missing!",
   "File not found": "File not found!",
-  "": ""
+  "": "",
+  "Fare Not Found": "Fare Not Found!",
+  "Manager owned theater": "You already own your theater!"
 }

@@ -15,6 +15,8 @@ import { movieRouter } from './movie.route';
 import { personRouter } from './person.route';
 import { productRouter } from './product.route';
 import { uploadRouter } from './upload.route';
+import { theaterRouter } from './theater.route';
+import { fareRouter } from './fare.route';
 
 const router = express.Router();
 const v1 = '/api/v1';
@@ -26,6 +28,8 @@ router.use(`${v1}/person`, personRouter);
 router.use(`${v1}/manager`, managerRouter);
 router.use(`${v1}/movie`, movieRouter);
 router.use(`${v1}/product`, productRouter);
+router.use(`${v1}/theater`, theaterRouter);
+router.use(`${v1}/fare`, fareRouter);
 
 router.use(`${v1}/upload`, uploadRouter);
 

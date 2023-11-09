@@ -92,10 +92,8 @@ const movieSchema: Schema<IMovie> = new mongoose.Schema(
       type: Boolean,
       default: true
     },
-    ratings: {
-      average: Number,
-      count: Number
-    },
+    ratingAverage: Number,
+    ratingCount: Number,
     reviews: [
       {
         type: mongoose.Schema.Types.ObjectId,
