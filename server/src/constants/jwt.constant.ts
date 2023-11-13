@@ -10,7 +10,7 @@ export const accessTokenOptions: ITokenOptions = {
   maxAge: accessTokenExpire * 24 * 60 * 60 * 1000,
   httpOnly: true,
   sameSite: 'lax',
-  secure: process.env.NODE_ENV === 'production' ? true : undefined // secure=true <=> production
+  secure: process.env.NODE_ENV === 'prod' ? true : undefined // secure=true <=> production
 };
 
 export const refreshTokenOptions: ITokenOptions = {

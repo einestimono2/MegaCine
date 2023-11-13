@@ -1,51 +1,205 @@
-export enum Message {
-  REDIS_CONNECTION_FAIL = 'Redis connection fail',
-  ROUTE_s_NOT_FOUND = 'Route %s not found',
-  RESOURCE_NOT_FOUND_INVALID_s = 'Resource not found. Invalid %s',
-  s_ALREADY_EXISTS = '%s already exists',
-  TOKEN_IS_INVALID_TRY_AGAIN = 'Token is invalid, Try again',
-  TOKEN_IS_INVALID = 'Token is invalid',
-  TOKEN_IS_EXPIRED_TRY_AGAIN = 'Token is expired, Try again',
-  EMAIL_ALREAD_EXIST = 'Email alread exist',
-  EMAIL_EMPTY = 'Email empty',
-  INVALID_EMAIL = 'Invalid email',
-  NAME_EMPTY = 'Name empty',
-  NAME_TOO_SHORT_s = 'Name too short %s',
-  NAME_TOO_LONG_s = 'Name too long %s',
-  PASSWORD_EMPTY = 'Password empty',
-  PASSWORD_TOO_SHORT_s = 'Password too short %s',
-  INVALID_ROLE_s = 'Invalid role %s',
-  INVALID_LOGIN_METHOD = 'Invalid login method',
-  REGISTER_CHECK_EMAIL_NOTIFICATION_s = 'Check email notification %s to verify account',
-  RESET_PASSWORD_CHECK_EMAIL_NOTIFICATION_s = 'Check email notification %s to reset password',
-  ACTIVATION_EMAIL_SUBJECT = 'Activation Email Subject',
-  ACTIVATION_EMAIL_TEMPLATE = 'Activation Email Template',
-  RESET_PASSWORD_EMAIL_SUBJECT = 'Reset Password Email Subject',
-  RESET_PASSWORD_EMAIL_TEMPLATE = 'Reset Password Email Template',
-  INVALID_OTP_CODE = 'Invalid OTP Code',
-  EMAIL_ACTIVATION_SUCCESSFUL = 'Email Activation Successful',
-  PASSWORD_RESET_SUCCESSFUL = 'Password Reset Successful',
-  EMAIL_OR_PASSWORD_EMPTY = 'Email Or Password Empty',
-  WRONG_EMAIL = 'Wrong Email',
-  WRONG_PASSWORD = 'Wrong Password',
-  LOGGED_OUT_SUCCESSFULLY = 'Logged Out Successfully',
-  SESSION_EXPIRED = 'Session Expired',
-  LOGIN_TO_ACCESS_RESOURCE = 'Login To Access Resource',
-  USER_NOT_FOUND = 'User Not Found',
-  INSUFFICIENT_ACCESS_RIGHTS = 'Insufficient Access Rights',
-  INTERNAL_SERVER_ERROR = 'Internal Server Error',
-  WRONG_OLD_PASSWORD = 'Wrong Old Password',
-  PASSWORD_DOES_NOT_MATCH = 'Password does not match',
-  OLD_OR_NEW_PASSWORD_EMPTY = 'Old Or New Password Empty',
-  UNSUPPORTED_IMAGE_FORMAT = 'Unsupported Image Format',
-  UNSUPPORTED_VIDEO_FORMAT = 'Unsupported Video Format',
-  UPLOAD_FAILED = 'Upload Failed',
-  ACCOUNT_NOT_ACTIVATED = 'Account Not Activated',
-  ACCOUNT_ACTIVATED = 'Account Activated',
-  BEARER_TOKEN_EMPTY = 'Bearer Token Empty',
-  AVATAR_EMPTY = 'Avatar Empty',
-  FIELDS_EMPTY = 'Field Empty'
-}
+export const Message = {
+  REDIS_CONNECTION_FAIL: {
+    msg: 'Redis connection fail'
+  },
+  ROUTE_s_NOT_FOUND: {
+    msg: 'Route %s not found'
+  },
+  RESOURCE_NOT_FOUND_INVALID_s: {
+    msg: 'Resource not found. Invalid %s'
+  },
+  s_ALREADY_EXISTS: {
+    msg: '%s already exists'
+  },
+  TOKEN_IS_INVALID_TRY_AGAIN: {
+    msg: 'Token is invalid, Try again'
+  },
+  TOKEN_IS_INVALID: {
+    ec: 420,
+    msg: 'Token is invalid'
+  },
+  TOKEN_IS_EXPIRED_TRY_AGAIN: {
+    ec: 419,
+    msg: 'Token is expired, Try again'
+  },
+  EMAIL_ALREADY_EXIST: {
+    msg: 'Email already exist'
+  },
+  CODE_ALREADY_EXIST: {
+    msg: 'Code already exist'
+  },
+  EMAIL_EMPTY: {
+    msg: 'Email empty'
+  },
+  INVALID_EMAIL: {
+    msg: 'Invalid email'
+  },
+  NAME_EMPTY: {
+    msg: 'Name empty'
+  },
+  FIELD_s_EMPTY: {
+    msg: 'Field %s empty'
+  },
+  NAME_TOO_SHORT_s: {
+    msg: 'Name too short %s'
+  },
+  NAME_TOO_LONG_s: {
+    msg: 'Name too long %s'
+  },
+  PASSWORD_EMPTY: {
+    msg: 'Password empty'
+  },
+  PASSWORD_TOO_SHORT_s: {
+    msg: 'Password too short %s'
+  },
+  INVALID_ROLE_s: {
+    ec: 400,
+    msg: 'Invalid role %s'
+  },
+  INVALID_AGETYPE_s: {
+    msg: 'Invalid age type %s'
+  },
+  INVALID_COORDINATE_TYPE_s: {
+    msg: 'Invalid coordinate type %s'
+  },
+  INVALID_ROOM_TYPE_s: {
+    msg: 'Invalid room type %s'
+  },
+  INVALID_MOVIE_TYPE_s: {
+    msg: 'Invalid movie type %s'
+  },
+  INVALID_LOGIN_METHOD: {
+    msg: 'Invalid login method'
+  },
+  REGISTER_CHECK_EMAIL_NOTIFICATION_s: {
+    msg: 'Check email notification %s to verify account'
+  },
+  WAIT_FOR_REGISTRATION_APPROVAL: {
+    msg: 'Wait for registration approval'
+  },
+  RESET_PASSWORD_CHECK_EMAIL_NOTIFICATION_s: {
+    msg: 'Check email notification %s to reset password'
+  },
+  ACTIVATION_EMAIL_SUBJECT: {
+    msg: 'Activation Email Subject'
+  },
+  ACTIVATION_EMAIL_TEMPLATE: {
+    msg: 'Activation Email Template'
+  },
+  RESET_PASSWORD_EMAIL_SUBJECT: {
+    msg: 'Reset Password Email Subject'
+  },
+  RESET_PASSWORD_EMAIL_TEMPLATE: {
+    msg: 'Reset Password Email Template'
+  },
+  INVALID_OTP_CODE: {
+    msg: 'Invalid OTP Code'
+  },
+  EMAIL_ACTIVATION_SUCCESSFUL: {
+    msg: 'Email Activation Successful'
+  },
+  ACCOUNT_ACTIVATION_SUCCESSFUL: {
+    msg: 'Account Activation Successful'
+  },
+  PASSWORD_RESET_SUCCESSFUL: {
+    msg: 'Password Reset Successful'
+  },
+  EMAIL_OR_PASSWORD_EMPTY: {
+    msg: 'Email Or Password Empty'
+  },
+  WRONG_EMAIL: {
+    msg: 'Wrong Email'
+  },
+  WRONG_PASSWORD: {
+    msg: 'Wrong Password'
+  },
+  LOGGED_OUT_SUCCESSFULLY: {
+    msg: 'Logged Out Successfully'
+  },
+  SESSION_EXPIRED: {
+    msg: 'Session Expired'
+  },
+  LOGIN_TO_ACCESS_RESOURCE: {
+    msg: 'Login To Access Resource'
+  },
+  USER_NOT_FOUND: {
+    ec: 1000,
+    msg: 'User Not Found'
+  },
+  MOVIE_NOT_FOUND: {
+    msg: 'Movie Not Found'
+  },
+  PERSON_NOT_FOUND: {
+    msg: 'Person Not Found'
+  },
+  PRODUCT_NOT_FOUND: {
+    msg: 'Product Not Found'
+  },
+  FARE_NOT_FOUND: {
+    msg: 'Fare Not Found'
+  },
+  THEATER_NOT_FOUND: {
+    msg: 'Theater Not Found'
+  },
+  INSUFFICIENT_ACCESS_RIGHTS: {
+    msg: 'Insufficient Access Rights'
+  },
+  INTERNAL_SERVER_ERROR: {
+    msg: 'Internal Server Error'
+  },
+  WRONG_OLD_PASSWORD: {
+    msg: 'Wrong Old Password'
+  },
+  PASSWORD_DOES_NOT_MATCH: {
+    msg: 'Password does not match'
+  },
+  OLD_OR_NEW_PASSWORD_EMPTY: {
+    msg: 'Old Or New Password Empty'
+  },
+  UNSUPPORTED_IMAGE_FORMAT: {
+    msg: 'Unsupported Image Format'
+  },
+  UNSUPPORTED_VIDEO_FORMAT: {
+    msg: 'Unsupported Video Format'
+  },
+  UPLOAD_FAILED: {
+    msg: 'Upload Failed'
+  },
+  ACCOUNT_NOT_ACTIVATED: {
+    msg: 'Account Not Activated'
+  },
+  ACCOUNT_ACTIVATED: {
+    msg: 'Account Activated'
+  },
+  BEARER_TOKEN_EMPTY: {
+    msg: 'Bearer Token Empty'
+  },
+  AVATAR_EMPTY: {
+    msg: 'Avatar Empty'
+  },
+  FIELDS_EMPTY: {
+    msg: 'Fields Empty'
+  },
+  GENRE_NOT_FOUND: {
+    msg: 'Genre Not Found'
+  },
+  MANAGER_THEATER_EMPTY: {
+    msg: 'Manager Theater Empty'
+  },
+  MANAGER_OWNED_THEATER: {
+    msg: 'Manager owned theater'
+  },
+  INVALID_COORDINATES: {
+    msg: 'Coordinates are not valid'
+  },
+  FILE_EMPTY: {
+    msg: 'File empty'
+  },
+  FILE_NOT_FOUND: {
+    ec: 3000,
+    msg: 'File not found'
+  }
+};
 
 /*
 export const messages = {

@@ -1,14 +1,9 @@
 import chalk from 'chalk';
-
-enum LoggerLevel {
-  Debug = 'debug',
-  Info = 'info',
-  Warn = 'warn',
-  Error = 'error'
-}
+import { LoggerTypes } from '../constants';
 
 const renderTime = () => {
   const now = new Date();
+
   // return `[${now.toLocaleDateString()} ${now.toLocaleTimeString()}]`;
   return `[${now.toLocaleTimeString('en-GB' /* 24h */)}]`;
 };
@@ -21,7 +16,7 @@ const renderMessage = (color: chalk.Chalk, messages: any[]) => {
   return messages.map((m) => (typeof m === 'string' ? color(m) : m));
 };
 
-const renderLog = (method: LoggerLevel, level: string, color: chalk.Chalk, scope?: string) => {
+const renderLog = (method: LoggerTypes, level: string, color: chalk.Chalk, scope?: string) => {
   return (...messages: any) => {
     const logs: any[] = [];
     logs.push(chalk.greenBright(`MegaCine:`));
@@ -30,15 +25,16 @@ const renderLog = (method: LoggerLevel, level: string, color: chalk.Chalk, scope
     if (scope) {
       logs.push(renderScope(scope));
     }
+
     console[method](...logs, ...renderMessage(color, messages));
   };
 };
 
 const createLogger = (scope?: string) => ({
-  debug: renderLog(LoggerLevel.Debug, chalk.cyan('[DEBUG]'), chalk.cyanBright, scope),
-  info: renderLog(LoggerLevel.Info, chalk.blue('[INFO]'), chalk.greenBright, scope),
-  warn: renderLog(LoggerLevel.Warn, chalk.yellow('[WARN]'), chalk.yellowBright, scope),
-  error: renderLog(LoggerLevel.Error, chalk.red('[ERROR]'), chalk.redBright, scope)
+  debug: renderLog(LoggerTypes.Debug, chalk.cyan('[DEBUG]'), chalk.cyanBright, scope),
+  info: renderLog(LoggerTypes.Info, chalk.blue('[INFO]'), chalk.greenBright, scope),
+  warn: renderLog(LoggerTypes.Warn, chalk.yellow('[WARN]'), chalk.yellowBright, scope),
+  error: renderLog(LoggerTypes.Error, chalk.red('[ERROR]'), chalk.redBright, scope)
 });
 
 export const logger = {

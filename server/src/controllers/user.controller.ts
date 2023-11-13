@@ -1,70 +1,38 @@
 import { type NextFunction, type Request, type Response } from 'express';
 
-import { userServices, cloudinaryServices } from '../services';
-import { type IUpdatePasswordRequest, type IUpdateProfileRequest } from '../interfaces';
+import { userServices } from '../services';
+import { type IUpdatePasswordRequest } from '../interfaces';
 import { CatchAsyncError } from '../middlewares';
-import { ErrorHandler } from '../utils';
-import { HttpStatusCode, Message } from '../constants';
+import { Message } from '../constants';
+import { BadRequestError, NotFoundError } from '../models';
 
 //! Profile
 export const getProfile = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const user = await userServices.findUserById(req.userId!);
+  const user = await userServices.getUserById(req.userPayload!.id);
 
-  res.status(HttpStatusCode.OK_200).json({
-    status: 'success',
-    message: null,
-    data: { user }
+  res.sendOK({
+    data: user
   });
 });
 
 export const updateProfile = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const { name, phoneNumber } = req.body as IUpdateProfileRequest;
+  const user = await userServices.updateProfile(req.userPayload!.id, { ...req.body, avatar: req.file?.path });
 
-  const user = await userServices.findUserById(req.userId!);
-  if (!user) {
-    next(new ErrorHandler(Message.USER_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400));
-    return;
-  }
-
-  if (name) user.name = name;
-  if (phoneNumber) user.phoneNumber = phoneNumber;
-  if (req.file) {
-    const imgID = user.avatar.public_id;
-    if (imgID) await cloudinaryServices.destroy(imgID);
-
-    user.avatar = await cloudinaryServices.uploadAvatar(req.file.path);
-  }
-
-  await user.save();
-
-  res.status(HttpStatusCode.OK_200).json({
-    status: 'success',
-    data: { user }
+  res.sendOK({
+    data: user
   });
 });
 
 export const updateAvatar = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   if (!req.file) {
-    next(new ErrorHandler(Message.AVATAR_EMPTY, HttpStatusCode.BAD_REQUEST_400));
+    next(new NotFoundError(Message.AVATAR_EMPTY));
     return;
   }
 
-  const user = await userServices.findUserById(req.userId!);
-  if (!user) {
-    next(new ErrorHandler(Message.USER_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400));
-    return;
-  }
+  const user = await userServices.updateProfile(req.userPayload!.id, { avatar: req.file.path });
 
-  const imgID = user.avatar.public_id;
-  if (imgID) await cloudinaryServices.destroy(imgID);
-
-  user.avatar = await cloudinaryServices.uploadAvatar(req.file.path);
-
-  await user.save();
-
-  res.status(HttpStatusCode.OK_200).json({
-    status: 'success',
-    data: { user }
+  res.sendOK({
+    data: user
   });
 });
 
@@ -72,25 +40,22 @@ export const updatePassword = CatchAsyncError(async (req: Request, res: Response
   const { oldPassword, newPassword } = req.body as IUpdatePasswordRequest;
 
   if (!oldPassword || !newPassword) {
-    next(new ErrorHandler(Message.OLD_OR_NEW_PASSWORD_EMPTY, HttpStatusCode.BAD_REQUEST_400));
+    next(new BadRequestError(Message.OLD_OR_NEW_PASSWORD_EMPTY));
     return;
   }
 
-  const user = await userServices.findUserById(req.userId!, true);
-  if (!user) {
-    next(new ErrorHandler(Message.USER_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400));
-    return;
-  }
+  const user = await userServices.getUserById(req.userPayload!.id, true);
 
+  // Trường hợp social login => không có mật khẩu
   if (user.password !== undefined) {
     const isPasswordMatchh = await user?.comparePassword(oldPassword);
     if (!isPasswordMatchh) {
-      next(new ErrorHandler(Message.WRONG_OLD_PASSWORD, HttpStatusCode.BAD_REQUEST_400));
+      next(new BadRequestError(Message.WRONG_OLD_PASSWORD));
       return;
     }
 
     if (oldPassword === newPassword) {
-      next(new ErrorHandler(Message.PASSWORD_DOES_NOT_MATCH, HttpStatusCode.BAD_REQUEST_400));
+      next(new BadRequestError(Message.PASSWORD_DOES_NOT_MATCH));
       return;
     }
   }
@@ -99,9 +64,7 @@ export const updatePassword = CatchAsyncError(async (req: Request, res: Response
 
   await user.save();
 
-  res.status(HttpStatusCode.CREATED_201).json({
-    status: 'success',
-    message: null,
-    data: { user }
+  res.sendCREATED({
+    data: user
   });
 });

@@ -1,10 +1,10 @@
 import { type Response } from 'express';
 
-import { type IUser } from '../interfaces';
+import { type IManager, type IUser } from '../interfaces';
 import { redis } from '../config';
 // import { ACCESS_TOKEN, REFRESH_TOKEN, accessTokenOptions, refreshTokenOptions } from '../constants';
 
-export const sendToken = async (user: IUser, statusCode: number, res: Response) => {
+export const sendToken = async (user: IUser | IManager, statusCode: number, res: Response) => {
   const accessToken = user.signAccessToken();
   const refreshToken = user.signRefreshToken();
 
@@ -25,7 +25,6 @@ export const sendToken = async (user: IUser, statusCode: number, res: Response) 
 
   return res.status(statusCode).json({
     status: 'success',
-    message: null,
     data: {
       user,
       accessToken,

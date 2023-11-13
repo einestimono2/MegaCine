@@ -2,21 +2,15 @@ import { type NextFunction, type Request, type Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { userServices } from '../services';
-import { type IActivationToken, type ILoginRequest } from '../interfaces';
+import { type IActivationToken, type IUserLoginRequest } from '../interfaces';
 import { CatchAsyncError } from '../middlewares';
-import { sendToken, ErrorHandler } from '../utils';
+import { sendToken } from '../utils';
 import { HttpStatusCode, Message } from '../constants';
 import { redis } from '../config/redis';
+import { BadRequestError } from '../models';
 
 //! Đăng ký tài khoản
 export const register = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  // Email đã tồn tại
-  const isEmailExist = await userServices.findUserByEmail(req.body.email);
-  if (isEmailExist) {
-    next(new ErrorHandler(Message.EMAIL_ALREAD_EXIST, HttpStatusCode.BAD_REQUEST_400));
-    return;
-  }
-
   // Tạo user
   const user = await userServices.createUser({ ...req.body });
 
@@ -25,13 +19,12 @@ export const register = CatchAsyncError(async (req: Request, res: Response, next
     name: user.name,
     email: user.email,
     id: user._id,
-    subject: res.translate(Message.ACTIVATION_EMAIL_SUBJECT),
-    template: res.translate(Message.ACTIVATION_EMAIL_TEMPLATE)
+    subject: res.translate(Message.ACTIVATION_EMAIL_SUBJECT.msg),
+    template: res.translate(Message.ACTIVATION_EMAIL_TEMPLATE.msg)
   });
 
-  res.status(HttpStatusCode.CREATED_201).json({
-    status: 'success',
-    message: res.translate(Message.REGISTER_CHECK_EMAIL_NOTIFICATION_s, user.email),
+  res.sendCREATED({
+    message: res.translate(Message.REGISTER_CHECK_EMAIL_NOTIFICATION_s.msg, user.email),
     data: { activationToken, otp }
   });
 });
@@ -46,40 +39,30 @@ export const activateUser = CatchAsyncError(async (req: Request, res: Response, 
   };
 
   if (payload.otp !== otp) {
-    next(new ErrorHandler(Message.INVALID_OTP_CODE, HttpStatusCode.BAD_REQUEST_400));
+    next(new BadRequestError(Message.INVALID_OTP_CODE));
     return;
   }
 
-  const user = await userServices.findUserById(payload.id);
-  if (!user) {
-    next(new ErrorHandler(Message.USER_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400));
-    return;
-  }
+  const user = await userServices.getUserById(payload.id);
 
   if (user.isVerified) {
-    next(new ErrorHandler(Message.ACCOUNT_ACTIVATED, HttpStatusCode.BAD_REQUEST_400));
+    next(new BadRequestError(Message.ACCOUNT_ACTIVATED));
     return;
   }
 
   user.isVerified = true;
   await user.save();
 
-  res.status(HttpStatusCode.CREATED_201).json({
-    status: 'success',
-    message: res.translate(Message.EMAIL_ACTIVATION_SUCCESSFUL),
-    data: null
+  res.sendCREATED({
+    message: res.translate(Message.EMAIL_ACTIVATION_SUCCESSFUL.msg)
   });
 });
 
 export const resendActivationToken = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const user = await userServices.findUserByEmail(req.body.email);
-  if (!user) {
-    next(new ErrorHandler(Message.USER_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400));
-    return;
-  }
+  const user = await userServices.getUserByEmail(req.body.email);
 
   if (user.isVerified) {
-    next(new ErrorHandler(Message.ACCOUNT_ACTIVATED, HttpStatusCode.BAD_REQUEST_400));
+    next(new BadRequestError(Message.ACCOUNT_ACTIVATED));
     return;
   }
 
@@ -88,40 +71,35 @@ export const resendActivationToken = CatchAsyncError(async (req: Request, res: R
     name: user.name,
     email: user.email,
     id: user._id,
-    subject: res.translate(Message.ACTIVATION_EMAIL_SUBJECT),
-    template: res.translate(Message.ACTIVATION_EMAIL_TEMPLATE)
+    subject: res.translate(Message.ACTIVATION_EMAIL_SUBJECT.msg),
+    template: res.translate(Message.ACTIVATION_EMAIL_TEMPLATE.msg)
   });
 
-  res.status(HttpStatusCode.OK_200).json({
-    status: 'success',
-    message: res.translate(Message.REGISTER_CHECK_EMAIL_NOTIFICATION_s, user.email),
+  res.sendOK({
+    message: res.translate(Message.REGISTER_CHECK_EMAIL_NOTIFICATION_s.msg, user.email),
     data: { activationToken, otp }
   });
 });
 
 //! Login
 export const login = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const { email, password } = req.body as ILoginRequest;
+  const { email, password } = req.body as IUserLoginRequest;
   if (!email || !password) {
-    next(new ErrorHandler(Message.EMAIL_OR_PASSWORD_EMPTY, HttpStatusCode.BAD_REQUEST_400));
+    next(new BadRequestError(Message.EMAIL_OR_PASSWORD_EMPTY));
     return;
   }
 
-  const user = await userServices.findUserByEmail(email, true);
-  if (!user) {
-    next(new ErrorHandler(Message.WRONG_EMAIL, HttpStatusCode.BAD_REQUEST_400));
-    return;
-  }
+  const user = await userServices.getUserByEmail(email, true);
 
   // Chưa xác nhận OTP
   if (!user.isVerified) {
-    next(new ErrorHandler(Message.ACCOUNT_NOT_ACTIVATED, HttpStatusCode.BAD_REQUEST_400));
+    next(new BadRequestError(Message.ACCOUNT_NOT_ACTIVATED));
     return;
   }
 
   const isPasswordMatch = await user.comparePassword(password);
   if (!isPasswordMatch) {
-    next(new ErrorHandler(Message.WRONG_PASSWORD, HttpStatusCode.BAD_REQUEST_400));
+    next(new BadRequestError(Message.WRONG_PASSWORD));
     return;
   }
 
@@ -145,7 +123,7 @@ export const logout = CatchAsyncError(async (req: Request, res: Response, next: 
   // res.clearCookie(ACCESS_TOKEN);
   // res.clearCookie(REFRESH_TOKEN);
 
-  const userId = req.userId;
+  const userId = req.userPayload?.id;
   const accessToken = req.accessToken;
 
   if (userId && accessToken) {
@@ -153,21 +131,19 @@ export const logout = CatchAsyncError(async (req: Request, res: Response, next: 
 
     // blacklist current access token
     await redis.set(`BL_${userId}`, accessToken);
-
-    res.status(HttpStatusCode.OK_200).json({
-      status: 'success',
-      message: res.translate(Message.LOGGED_OUT_SUCCESSFULLY),
-      data: null
-    });
   }
+
+  res.sendOK({
+    message: res.translate(Message.LOGGED_OUT_SUCCESSFULLY.msg)
+  });
 });
 
 //! Update Access Token
 export const updateAccessToken = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   // blacklist current access token
-  if (req.accessToken) await redis.set(`BL_${req.userId}`, req.accessToken);
+  if (req.accessToken) await redis.set(`BL_${req.userPayload?.id}`, req.accessToken);
 
-  const accessToken = jwt.sign({ id: req.userId }, process.env.ACCESS_TOKEN_SECRET as string, {
+  const accessToken = jwt.sign({ id: req.userPayload?.id }, process.env.ACCESS_TOKEN_SECRET as string, {
     expiresIn: process.env.ACCESS_TOKEN_EXPIRE
   });
   const refreshToken = req.body.refreshToken;
@@ -177,11 +153,9 @@ export const updateAccessToken = CatchAsyncError(async (req: Request, res: Respo
   // });
 
   // Cập nhật lại token lên redis
-  await redis.set(req.userId!, JSON.stringify({ accessToken, refreshToken }));
+  await redis.set(req.userPayload?.userId ?? '', JSON.stringify({ accessToken, refreshToken }));
 
-  return res.status(HttpStatusCode.OK_200).json({
-    status: 'success',
-    message: null,
+  res.sendOK({
     data: {
       accessToken
     }
@@ -190,14 +164,10 @@ export const updateAccessToken = CatchAsyncError(async (req: Request, res: Respo
 
 //! Forgot password
 export const forgotPassword = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const user = await userServices.findUserByEmail(req.body.email);
-  if (!user) {
-    next(new ErrorHandler(Message.USER_NOT_FOUND, 400));
-    return;
-  }
+  const user = await userServices.getUserByEmail(req.body.email);
 
   if (!user.isVerified) {
-    next(new ErrorHandler(Message.ACCOUNT_NOT_ACTIVATED, HttpStatusCode.BAD_REQUEST_400));
+    next(new BadRequestError(Message.ACCOUNT_NOT_ACTIVATED));
     return;
   }
 
@@ -205,13 +175,12 @@ export const forgotPassword = CatchAsyncError(async (req: Request, res: Response
     name: user.name,
     email: user.email,
     id: user._id,
-    subject: res.translate(Message.RESET_PASSWORD_EMAIL_SUBJECT),
-    template: res.translate(Message.RESET_PASSWORD_EMAIL_TEMPLATE)
+    subject: res.translate(Message.RESET_PASSWORD_EMAIL_SUBJECT.msg),
+    template: res.translate(Message.RESET_PASSWORD_EMAIL_TEMPLATE.msg)
   });
 
-  res.status(HttpStatusCode.CREATED_201).json({
-    status: 'success',
-    message: res.translate(Message.RESET_PASSWORD_CHECK_EMAIL_NOTIFICATION_s, user.email),
+  res.sendCREATED({
+    message: res.translate(Message.RESET_PASSWORD_CHECK_EMAIL_NOTIFICATION_s.msg, user.email),
     data: { resetPasswordToken, otp }
   });
 });
@@ -221,7 +190,7 @@ export const resetPassword = CatchAsyncError(async (req: Request, res: Response,
   const { resetPasswordToken, otp, newPassword } = req.body;
 
   if (!newPassword || !otp || !resetPasswordToken) {
-    next(new ErrorHandler(Message.FIELDS_EMPTY, 400));
+    next(new BadRequestError(Message.FIELDS_EMPTY));
     return;
   }
 
@@ -231,22 +200,16 @@ export const resetPassword = CatchAsyncError(async (req: Request, res: Response,
   };
 
   if (payload.otp !== otp) {
-    next(new ErrorHandler(Message.INVALID_OTP_CODE, HttpStatusCode.BAD_REQUEST_400));
+    next(new BadRequestError(Message.INVALID_OTP_CODE));
     return;
   }
 
-  const user = await userServices.findUserById(payload.id, true);
-  if (!user) {
-    next(new ErrorHandler(Message.USER_NOT_FOUND, HttpStatusCode.BAD_REQUEST_400));
-    return;
-  }
+  const user = await userServices.getUserById(payload.id, true);
 
   user.password = newPassword;
   await user.save();
 
-  res.status(HttpStatusCode.CREATED_201).json({
-    status: 'success',
-    message: res.translate(Message.PASSWORD_RESET_SUCCESSFUL),
-    data: null
+  res.sendCREATED({
+    message: res.translate(Message.PASSWORD_RESET_SUCCESSFUL.msg)
   });
 });

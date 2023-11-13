@@ -1,19 +1,19 @@
 import express from 'express';
 
 import { getProfile, updateProfile, updatePassword, updateAvatar } from '../controllers';
-import { isAuthenticated, uploadAvatar } from '../middlewares';
+import { isAuthenticated, uploadImage } from '../middlewares';
 
 const router = express.Router();
 
-// .../api/v1
+// .../api/v1/user
 router
-  .route('/user/me')
+  .route('/me')
   .get(isAuthenticated, getProfile)
-  .put(isAuthenticated, uploadAvatar.single('avatar'), updateProfile);
+  .put(isAuthenticated, uploadImage.single('avatar'), updateProfile);
 
-router.put('/user/avatar', isAuthenticated, uploadAvatar.single('avatar'), updateAvatar);
+router.put('/avatar', isAuthenticated, uploadImage.single('avatar'), updateAvatar);
 
-router.put('/user/password/update', isAuthenticated, updatePassword);
+router.put('/update-password', isAuthenticated, updatePassword);
 
 export const userRouter = router;
 
@@ -41,7 +41,7 @@ export const userRouter = router;
  *              $ref: '#/components/schemas/Response'
  */
 
-// Cập nhật avatar
+//! Cập nhật avatar
 /**
  * @swagger
  * /api/v1/user/avatar:
@@ -77,7 +77,7 @@ export const userRouter = router;
  *              $ref: '#/components/schemas/Response'
  */
 
-// Cập nhật thông tin tài khoản
+//! Cập nhật thông tin tài khoản
 /**
  * @swagger
  * /api/v1/user/me:
@@ -115,10 +115,10 @@ export const userRouter = router;
  *              $ref: '#/components/schemas/Response'
  */
 
-// Đổi mật khẩu
+//! Đổi mật khẩu
 /**
  * @swagger
- * /api/v1/user/password/update:
+ * /api/v1/user/update-password:
  *  put:
  *    tags: [User]
  *    summary: Thay đổi mật khẩu tài khoản
@@ -133,6 +133,20 @@ export const userRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - oldPassword
+ *              - newPassword
+ *            properties:
+ *              oldPassword:
+ *                type: string
+ *                default: ''
+ *              newPassword:
+ *                type: string
+ *                default: ''
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object

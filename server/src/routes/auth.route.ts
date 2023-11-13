@@ -20,7 +20,7 @@ const router = express.Router();
 router.post('/register', register);
 
 router.post('/activate', activateUser);
-router.post('/activate/resend', resendActivationToken);
+router.post('/resend-activate', resendActivationToken);
 
 router.post('/login', login);
 router.post('/social-auth', socialAuth);
@@ -29,8 +29,8 @@ router.get('/logout', isAuthenticated, logout);
 
 router.post('/refresh', verifyRefreshToken, updateAccessToken);
 
-router.route('/password/forgot').post(forgotPassword); // Resend - gọi lại forgotPassword
-router.route('/password/reset').put(resetPassword);
+router.route('/forgot-password').post(forgotPassword); // Resend - gọi lại forgotPassword
+router.route('/reset-password').put(resetPassword);
 
 export const authRouter = router;
 
@@ -50,6 +50,20 @@ export const authRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - email
+ *              - password
+ *            properties:
+ *              email:
+ *                type: string
+ *                default: test@gmail.com
+ *              password:
+ *                type: string
+ *                default: 123456
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
@@ -88,6 +102,29 @@ export const authRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - name
+ *              - email
+ *              - provider
+ *            properties:
+ *              name:
+ *                type: string
+ *                default: Tester 00
+ *              email:
+ *                type: string
+ *                default: test@gmail.com
+ *              avatar:
+ *                type: string
+ *                default: ''
+ *              provider:
+ *                type: string
+ *                enum: ['Google', 'Facebook']
+ *                description: "Google | Facebook"
+ *                default: Google
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
@@ -107,6 +144,7 @@ export const authRouter = router;
  *              provider:
  *                type: string
  *                enum: ['Google', 'Facebook']
+ *                description: "Google | Facebook"
  *                default: Google
  *    responses:
  *      200:
@@ -133,6 +171,24 @@ export const authRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - name
+ *              - email
+ *              - password
+ *            properties:
+ *              name:
+ *                type: string
+ *                default: Tester 00
+ *              email:
+ *                type: string
+ *                default: test@gmail.com
+ *              password:
+ *                type: string
+ *                default: 123456
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
@@ -175,6 +231,20 @@ export const authRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - activationToken
+ *              - otp
+ *            properties:
+ *              activationToken:
+ *                type: string
+ *                default: ''
+ *              otp:
+ *                type: string
+ *                default: ''
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
@@ -198,7 +268,7 @@ export const authRouter = router;
 //! Resend Activate
 /**
  * @swagger
- * /api/v1/activate/resend:
+ * /api/v1/resend-activate:
  *  post:
  *    tags: [Auth]
  *    summary: Gửi lại mã OTP kích hoạt tài khoản
@@ -211,6 +281,16 @@ export const authRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - email
+ *            properties:
+ *              email:
+ *                type: string
+ *                default: test@gmail.com
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
@@ -219,7 +299,7 @@ export const authRouter = router;
  *            properties:
  *              email:
  *                type: string
- *                defaukt: test@gmail.com
+ *                default: test@gmail.com
  *    responses:
  *      200:
  *        description: Success
@@ -234,7 +314,7 @@ export const authRouter = router;
  * @swagger
  * /api/v1/logout:
  *  get:
- *    tags: [Auth]
+ *    tags: [All]
  *    summary: Đăng xuất
  *    security:
  *      - BearerToken: []
@@ -258,7 +338,7 @@ export const authRouter = router;
  * @swagger
  * /api/v1/refresh:
  *  post:
- *    tags: [Auth]
+ *    tags: [All]
  *    summary: Gia hạn assetToken
  *    parameters:
  *      - in: query
@@ -269,6 +349,16 @@ export const authRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - refreshToken
+ *            properties:
+ *              refreshToken:
+ *                type: string
+ *                default: ''
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
@@ -289,7 +379,7 @@ export const authRouter = router;
 //! Forgot
 /**
  * @swagger
- * /api/v1/password/forgot:
+ * /api/v1/forgot-password:
  *  post:
  *    tags: [Auth]
  *    summary: Quên mật khẩu
@@ -302,6 +392,16 @@ export const authRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - email
+ *            properties:
+ *              email:
+ *                type: string
+ *                default: test@gmail.com
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object
@@ -323,7 +423,7 @@ export const authRouter = router;
 //! Reset
 /**
  * @swagger
- * /api/v1/password/reset:
+ * /api/v1/reset-password:
  *  put:
  *    tags: [Auth]
  *    summary: Đặt lại mật khẩu
@@ -336,6 +436,24 @@ export const authRouter = router;
  *    requestBody:
  *      required: true
  *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - resetPasswordToken
+ *              - newPassword
+ *              - otp
+ *            properties:
+ *              resetPasswordToken:
+ *                type: string
+ *                default: ''
+ *              newPassword:
+ *                type: string
+ *                default: ''
+ *              otp:
+ *                type: string
+ *                default: ''
+ *
  *        application/x-www-form-urlencoded:
  *          schema:
  *            type: object

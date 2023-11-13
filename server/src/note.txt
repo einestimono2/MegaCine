@@ -1,0 +1,22 @@
+----- -----
+Atomic trong mongodb: find...AndUpdate()
+
+----- -----
+`${req.protocol}://${req.get("host")}/password/reset/${resetToken}`
+
+----- lean() -----
+query find...().lean() ==> tốc độ nhanh hơn
+Nhưng không thể sử dụng
+  - Change tracking
+  - Casting and validation
+  - Getters and setters
+  - Virtuals
+  - save()
+
+aggregation -- luôn luôn áp dụng lean()
+Nếu bạn đang thực hiện một truy vấn và gửi kết quả mà không sửa đổi tới phản hồi Express, bạn nên sử dụng Lean.
+
+----- Chú ý -----
+- Với những db có thuộc tính isActive --> tạo 2 route cho Admin (lấy cả !isActive) và User (chỉ lấy isActive)
+
+-----

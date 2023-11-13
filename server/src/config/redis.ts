@@ -2,19 +2,26 @@ import Redis from 'ioredis';
 
 import { Message } from './../constants';
 import logger from '../utils';
+import { BadRequestError } from '../models';
 
-require('dotenv').config({
-  path: 'src/config/.env'
-});
+require('dotenv').config();
 
-const redisClient = () => {
+const client = () => {
   if (process.env.REDIS_URL) {
-    logger.info(`Redis connected`);
-
     return process.env.REDIS_URL;
   }
 
-  throw new Error(Message.REDIS_CONNECTION_FAIL);
+  throw new BadRequestError(Message.REDIS_CONNECTION_FAIL);
 };
 
-export const redis = new Redis(redisClient());
+const redis = new Redis(client());
+
+redis.on('connect', () => {
+  logger.info(`Redis connected with ${process.env.REDIS_URL}`);
+});
+
+redis.on('error', (error) => {
+  logger.error('Redis connection failed: ', error);
+});
+
+export { redis };

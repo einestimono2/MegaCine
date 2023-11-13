@@ -2,29 +2,27 @@ import mongoose, { type Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-import { type IUser } from '../interfaces/model.interface';
-import { Roles, EmailProvider } from '../constants/enum.constant';
-import { DEFAULT_AVATAR_URL, EMAIL_REGEX_PATTERN } from './../constants/value.constant';
-import { Message } from '../constants';
+import { type IUser } from '../interfaces';
+import { DEFAULT_AVATAR_URL, EMAIL_REGEX_PATTERN, Message, Roles, EmailProviders } from '../constants';
 
 const userSchema: Schema<IUser> = new mongoose.Schema(
   {
     name: {
       type: String,
       trim: true,
-      required: [true, `'${Message.NAME_EMPTY}'`],
-      maxLength: [50, `'${Message.NAME_TOO_LONG_s}', '50'`],
-      minLength: [2, `'${Message.NAME_TOO_SHORT_s}', '2'`]
+      required: [true, `'${Message.NAME_EMPTY.msg}'`],
+      maxLength: [50, `'${Message.NAME_TOO_LONG_s.msg}', '50'`],
+      minLength: [2, `'${Message.NAME_TOO_SHORT_s.msg}', '2'`]
     },
     email: {
       type: String,
       index: true,
-      required: [true, `'${Message.EMAIL_EMPTY}'`],
+      required: [true, `'${Message.EMAIL_EMPTY.msg}'`],
       validate: {
         validator: function (value: string) {
           return EMAIL_REGEX_PATTERN.test(value);
         },
-        message: `'${Message.INVALID_EMAIL}'`
+        message: `'${Message.INVALID_EMAIL.msg}'`
       },
       unique: true,
       trim: true
@@ -32,12 +30,12 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     password: {
       type: String,
       select: false,
-      minlength: [6, `'${Message.PASSWORD_TOO_SHORT_s}', '6'`],
+      minlength: [6, `'${Message.PASSWORD_TOO_SHORT_s.msg}', '6'`],
       required: [
         function () {
-          return this.provider === EmailProvider.Email;
+          return this.provider === EmailProviders.Email;
         },
-        `'${Message.PASSWORD_EMPTY}'`
+        `'${Message.PASSWORD_EMPTY.msg}'`
       ]
     },
     avatar: {
@@ -51,8 +49,8 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     role: {
       type: String,
       enum: {
-        values: [Roles.SuperAdmin, Roles.User, Roles.Admin],
-        message: `'${Message.INVALID_ROLE_s}', '{VALUE}'`
+        values: Object.values(Roles),
+        message: `'${Message.INVALID_ROLE_s.msg}', '{VALUE}'`
       },
       default: Roles.User
     },
@@ -63,10 +61,10 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     provider: {
       type: String,
       enum: {
-        values: [EmailProvider.Email, EmailProvider.Facebook, EmailProvider.Google],
-        message: `'${Message.INVALID_LOGIN_METHOD}'`
+        values: Object.values(EmailProviders),
+        message: `'${Message.INVALID_LOGIN_METHOD.msg}'`
       },
-      default: EmailProvider.Email
+      default: EmailProviders.Email
     }
   },
   { timestamps: true, versionKey: false }
@@ -88,30 +86,15 @@ userSchema.methods.comparePassword = async function (_password: string): Promise
 };
 
 userSchema.methods.signAccessToken = function () {
-  return jwt.sign({ id: this._id }, process.env.ACCESS_TOKEN_SECRET as string, {
+  return jwt.sign({ id: this._id, role: this.role }, process.env.ACCESS_TOKEN_SECRET as string, {
     expiresIn: process.env.ACCESS_TOKEN_EXPIRE
   });
 };
 
 userSchema.methods.signRefreshToken = function () {
-  return jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN_SECRET as string, {
+  return jwt.sign({ id: this._id, role: this.role }, process.env.REFRESH_TOKEN_SECRET as string, {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRE
   });
 };
 
-export const UserModel = mongoose.model<IUser>('Users', userSchema);
-
-/**
- * @swagger
- * components:
- *  schemas:
- *    Response:
- *      type: object
- *      properties:
- *        status:
- *          type: string
- *        message:
- *          type: string
- *        data:
- *          type: object
- */
+export const UserModel = mongoose.model<IUser>('User', userSchema);

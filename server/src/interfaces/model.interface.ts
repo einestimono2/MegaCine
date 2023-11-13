@@ -1,9 +1,13 @@
 import { type Document } from 'mongoose';
-// mongoose.Schema.ObjectId;
 
 export interface ICloudinaryFile {
   public_id: string;
   url: string;
+}
+
+export interface ILocalizationField {
+  en: string;
+  vi: string;
 }
 
 export interface IUser extends Document {
@@ -20,8 +24,19 @@ export interface IUser extends Document {
   signRefreshToken: () => string;
 }
 
+export interface IManager extends Document {
+  code: string;
+  password: string;
+  role: string;
+  isVerified: boolean;
+  theater?: string | ITheater; // type: mongoose.Schema.Types.ObjectId, ref: 'Theater'
+  comparePassword: (password: string) => Promise<boolean>;
+  signAccessToken: () => string;
+  signRefreshToken: () => string;
+}
+
 export interface IGenre extends Document {
-  name: string;
+  name: ILocalizationField;
 }
 
 export interface IReview extends Document {
@@ -33,79 +48,121 @@ export interface IReview extends Document {
 
 export interface ITheater extends Document {
   name: string;
+  address: string;
   location: {
     type: string;
-    address: string;
     coordinates: [number, number];
   };
   email: string;
-  description: string;
+  description: ILocalizationField;
   hotline: string;
-  thumbnail: ICloudinaryFile;
-  cover: ICloudinaryFile;
-  roomSummary: string[];
-  rooms: string[];
+  logo: ICloudinaryFile;
+  images: ICloudinaryFile[];
+  rooms: Array<string | IRoom>;
   isActive: boolean;
   totalFavorites: number;
-  ratings: {
-    average: number;
-    count: number;
-  };
-  reviews: string[];
+  ratingAverage: number;
+  ratingCount: number;
+  fare: string | IFare;
+  reviews: Array<string | IReview>; // type: mongoose.Schema.Types.ObjectId, ref: 'Review'
+  movies: Array<string | IMovie>; // type: mongoose.Schema.Types.ObjectId, ref: 'Movie'
+}
+
+export interface IFare extends Document {
+  theater: string | ITheater;
+  normalDay: string;
+  weekend: string;
+  specialDay: string;
+  description: ILocalizationField;
+  u22: number;
+  _2d: Array<{
+    from: string;
+    to: string;
+    seat: Array<{
+      type: string;
+      normalDayPrice: number;
+      specialDayPrice: number;
+    }>;
+  }>;
+  _3d: Array<{
+    from: string;
+    to: string;
+    seat: Array<{
+      type: string;
+      normalDayPrice: number;
+      specialDayPrice: number;
+    }>;
+  }>;
+  surcharge: Array<{ name: string; value: number }>;
 }
 
 export interface IMovie extends Document {
   title: string;
   originalTitle: string;
-  trailer: ICloudinaryFile;
+  trailer: string;
   poster: ICloudinaryFile;
-  overview: string;
+  overview: ILocalizationField;
   duration: number;
   releaseDate: Date;
-  directors: string[];
-  actors: string[];
-  language: string;
+  type: string;
+  directors: Array<string | IPerson>;
+  actors: Array<string | IPerson>;
+  language: ILocalizationField;
   ageType: string;
-  genre: string[];
+  genres: Array<string | IGenre>;
   totalRate: number;
   isActive: boolean;
   totalFavorites: number;
-  ratings: {
-    average: number;
-    count: number;
-  };
-  reviews: string[];
+  ratingAverage: number;
+  ratingCount: number;
+  reviews: Array<string | IReview>;
+  theater: Array<string | ITheater>;
 }
 
 export interface IPerson extends Document {
   avatar: ICloudinaryFile;
   fullName: string;
+  summary: ILocalizationField;
+  movies: Array<string | IMovie>;
 }
 
 export interface IProduct extends Document {
   name: string;
+  description: ILocalizationField;
   price: number;
-  description: string;
   image: ICloudinaryFile;
   isActive: boolean;
-  theater: string;
+  theater: string | ITheater;
+}
+
+export interface IRoom extends Document {
+  type: string;
+  name: string;
+  capacity: number;
+  seats: Array<string | ISeat>;
 }
 
 export interface ISeat extends Document {
-  row: string;
-  number: number;
+  row: string; // unique
+  col: number; // unique
+  name: string;
   theatre: string;
   room: string;
-  isActive: boolean;
+  type: string; // VIP, STANDARD, HỎNG, SWEET
+  status: string; // Để frontend xử lý
 }
 
-export interface IShowTimes extends Document {
+// [startTime, room] --> unique --> không có 2 lịch chiếu nào cùng một phòng
+export interface IShowTime extends Document {
   movie: string;
   theater: string;
   room: string;
   startTime: Date;
   endTime: Date;
+  date: Date;
   isActive: boolean;
+  price: number;
+  type: string; // Snakeshow (Suất chiếu sớm / Suất chiếu đặc biệt), Normal
 }
 
 export interface IVoucher extends Document {
@@ -118,7 +175,9 @@ export interface IVoucher extends Document {
   showTime: string;
   theater: string;
   movie: string;
-  creator: string;
+  maxUse: number; // Số lượng tối đa
+  useCount: number; // so luong đã sd
+  minValue: number; // Giá trị min để có thể sử dụng
   userUsed: string[];
   isActive: boolean;
 }
@@ -128,7 +187,6 @@ export interface IPromotion extends Document {
   title: string;
   description: string;
   thumbnail: ICloudinaryFile;
-  creator: string;
   // Phạm vi + Thời gian
   startTime: Date;
   endTime: Date;
@@ -144,22 +202,38 @@ export interface IPromotion extends Document {
   isActive: boolean;
 }
 
-export interface ITicket extends Document {
-  user: string | null;
-  showTime: string;
-  seat: string;
-  product: string[];
+export interface IBooking extends Document {
+  reservation: string | IReservation;
 
+  products: Array<{
+    quantity: number;
+    items: string | IProduct;
+  }>;
+
+  user: string | null;
   email: string;
   phoneNumber: string;
 
+  promotion: string;
+  vourcher: string | IVoucher;
+
   totalPrice: number;
   finalPrice: number;
-  promotion: string;
-  vourcher: string;
+
   paymentInfo: {
     id: string;
     status: string;
   };
   paidAt: Date;
+
+  qrcode: string;
+}
+
+export interface IReservation {
+  user: string | null;
+  showTime: string;
+  theater: string;
+  room: string;
+  seat: Array<string | ISeat>;
+  // status: string;
 }
