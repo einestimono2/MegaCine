@@ -1,10 +1,11 @@
+import path from 'path';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
 
 import logger from '../utils';
 import { Message } from '../constants';
 import { NotFoundError } from '../models';
-import { swaggerSpec } from '../config';
+import { swaggerSpec, app } from '../config';
 
 //! All Route
 import { authRouter } from './auth.route';
@@ -34,14 +35,63 @@ router.use(`${v1}/fare`, fareRouter);
 router.use(`${v1}/upload`, uploadRouter);
 
 //! Swagger Documentation
-router.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-logger.info(`Docs available at http://localhost:${process.env.PORT}/api/docs`);
+router.use(
+  '/api/docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    customSiteTitle: 'MegaCine APIs',
+    // customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css',
+    // customfavIcon: "/assets/favicon.ico"
+    customCss:
+      '.swagger-ui .topbar { display: none } .swagger-ui .scheme-container .schemes { justify-content: flex-end }'
+  })
+);
+logger.info(`Docs available at http://localhost:${app.port}/api/docs`);
+
+//! Static - Import trước check Unknown route
+router.use('/files', express.static(path.join(__dirname, '../uploads')));
 
 //! Unknown route
-router.get('*', (req: Request, _res: Response, next: NextFunction) => {
-  const message = req.translate(Message.ROUTE_s_NOT_FOUND.msg);
+router.get('*', (req: Request, res: Response, next: NextFunction) => {
+  const message = res.translate(Message.ROUTE_s_NOT_FOUND.msg, req.originalUrl);
 
   next(new NotFoundError(message));
 });
 
 export default router;
+
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    Response:
+ *      type: object
+ *      properties:
+ *        status:
+ *          type: string
+ *        message:
+ *          type: string
+ *        data:
+ *          type: object
+ *    ListResponse:
+ *      type: object
+ *      properties:
+ *        status:
+ *          type: string
+ *        message:
+ *          type: string
+ *        data:
+ *          type: array
+ *          example: []
+ *        extra:
+ *          type: object
+ *          properties:
+ *            totalCount:
+ *              type: number
+ *            totalPages:
+ *              type: number
+ *            pageIndex:
+ *              type: number
+ *            pageSize:
+ *              type: number
+ */

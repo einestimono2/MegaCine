@@ -12,5 +12,6 @@ const server = app.listen(PORT, () => {
 process.on('SIGINT', () => {
   server.close(() => {
     logger.info('Exit express server!');
+    process.exit();
   });
 });

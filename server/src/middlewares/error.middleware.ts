@@ -1,5 +1,4 @@
 import { type NextFunction, type Request, type Response } from 'express';
-import { transpile } from 'typescript';
 
 import logger, { unlinkRequestFile, unlinkRequestFiles } from '../utils';
 import { HttpStatusCode, Message } from '../constants';
@@ -23,7 +22,7 @@ export function ErrorMiddleware(err: any, req: Request, res: Response, next: Nex
 
     try {
       // eslint-disable-next-line no-eval
-      message = eval(transpile(`req.translate(${firstError})`)); // Trường hợp có thêm value kèm
+      message = eval(`req.translate(${firstError})`); // Trường hợp có thêm value kèm
     } catch (error: any) {
       message = req.translate(firstError); // Trường hợp chỉ có key
     }

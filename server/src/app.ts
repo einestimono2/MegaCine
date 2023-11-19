@@ -11,7 +11,6 @@ import { i18n } from './config'; //! Import sau cookie-parser
 import { checkOverload } from './utils';
 import routers from './routes';
 import { instanceDb } from './dbs';
-import path from 'path';
 
 //! Cấu hình env
 dotenv.config();
@@ -33,9 +32,6 @@ app.use(haltOnTimedout);
 //! Database
 instanceDb.connect();
 checkOverload();
-
-//! Static - Import trước check Unknown route
-app.use(express.static(path.join(__dirname, 'uploads')));
 
 //! Routes + Unknown route
 app.use('', routers);
