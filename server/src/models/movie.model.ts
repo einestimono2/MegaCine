@@ -75,7 +75,7 @@ const movieSchema: Schema<IMovie> = new mongoose.Schema(
       type: String,
       enum: {
         values: Object.values(AgeTypes),
-        message: `'${Message.INVALID_AGETYPE_s.msg}', '{VALUE}'`
+        message: `'${Message.INVALID_AGE_TYPE_s.msg}', '{VALUE}'`
       },
       required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'ageType'`]
     },
@@ -98,12 +98,6 @@ const movieSchema: Schema<IMovie> = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Review'
-      }
-    ],
-    theater: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Theater'
       }
     ]
   },

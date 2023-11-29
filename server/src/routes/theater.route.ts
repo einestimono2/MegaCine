@@ -26,8 +26,8 @@ router
   .get(theaterController.getTheaterDetails)
   .delete(isAuthenticated, authorizeRoles(...adminRoles), theaterController.deleteTheater)
   .put(
-    // isAuthenticated,
-    // authorizeRoles(...adminRoles),
+    isAuthenticated,
+    authorizeRoles(...adminRoles),
     uploadImage.fields([{ name: 'logo' }, { name: 'images', maxCount: 8 }]),
     theaterController.updateTheater
   );
@@ -37,10 +37,10 @@ export const theaterRouter = router;
 //! Create Theater
 /**
  * @swagger
- * /api/v1/theater/create:
+ * /theater/create:
  *  post:
  *    tags: [Theater]
- *    summary: Tạo rạp
+ *    summary: "[Manager] Tạo rạp"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -109,10 +109,10 @@ export const theaterRouter = router;
 //! List Theater
 /**
  * @swagger
- * /api/v1/theater/list:
+ * /theater/list:
  *  get:
  *    tags: [Theater]
- *    summary: Danh sách theater
+ *    summary: "[All] Danh sách theater"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -140,8 +140,6 @@ export const theaterRouter = router;
  *        name: fields
  *        type: string
  *        description: Giới hạn trường trả về (cách nhau bởi dấu phẩy)
- *    security:
- *      - BearerToken: []
  *    responses:
  *      200:
  *        description: Success
@@ -154,18 +152,16 @@ export const theaterRouter = router;
 //! Near By Theater
 /**
  * @swagger
- * /api/v1/theater/nearby:
+ * /theater/nearby:
  *  post:
  *    tags: [Theater]
- *    summary: Danh sách theater ở gần
+ *    summary: "[All] Danh sách theater ở gần"
  *    parameters:
  *      - in: query
  *        name: hl
  *        type: string
  *        default: vi
  *        description: Ngôn ngữ trả về 'en | vi'
- *    security:
- *      - BearerToken: []
  *    requestBody:
  *      required: true
  *      content:
@@ -203,10 +199,10 @@ export const theaterRouter = router;
 //! Cập nhật theater
 /**
  * @swagger
- * /api/v1/theater/details/{id}:
+ * /theater/details/{id}:
  *  put:
  *    tags: [Theater]
- *    summary: Cập nhật theater
+ *    summary: "[Manager] Cập nhật theater"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -274,12 +270,10 @@ export const theaterRouter = router;
 //! Lấy thông tin theater
 /**
  * @swagger
- * /api/v1/theater/details/{id}:
+ * /theater/details/{id}:
  *  get:
  *    tags: [Theater]
- *    summary: Thông tin chi tiết theater
- *    security:
- *      - BearerToken: []
+ *    summary: "[All] Thông tin chi tiết theater"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -303,10 +297,10 @@ export const theaterRouter = router;
 //! Xóa theater
 /**
  * @swagger
- * /api/v1/theater/details/{id}:
+ * /theater/details/{id}:
  *  delete:
  *    tags: [Theater]
- *    summary: Xóa theater
+ *    summary: "[Manager] Xóa theater"
  *    security:
  *      - BearerToken: []
  *    parameters:

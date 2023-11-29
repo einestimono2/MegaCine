@@ -1,5 +1,6 @@
 // const enum: giữ nguyên các giá trị enum thay vì tạo một đối tượng enum riêng biệt
 // can't index it by an arbitrary value
+
 export const enum LoggerTypes {
   Debug = 'debug',
   Info = 'info',
@@ -46,6 +47,12 @@ export enum SeatTypes {
   VIP = 'VIP',
   Standard = 'Standard',
   Sweetbox = 'Sweetbox'
+}
+
+export enum SeatStatus {
+  Available = 'Available',
+  Booked = 'Booked',
+  Locked = 'Locked'
 }
 
 export enum SurchargeTypes {

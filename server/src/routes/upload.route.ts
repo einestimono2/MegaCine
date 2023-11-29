@@ -1,44 +1,27 @@
 import express from 'express';
 
-import { isAuthenticated, authorizeRoles, uploadImage } from '../middlewares';
-import { Roles } from '../constants';
+import { isAuthenticated, uploadImage } from '../middlewares';
 import { uploadController } from '../controllers';
 
 const router = express.Router();
-const adminRoles = [Roles.Manager, Roles.Admin];
 
 //! .../api/v1/upload
-router.post(
-  '/image',
-  // isAuthenticated,
-  // authorizeRoles(...adminRoles),
-  uploadImage.single('file'),
-  uploadController.uploadImage
-);
-router.post(
-  '/images',
-  isAuthenticated,
-  authorizeRoles(...adminRoles),
-  uploadImage.array('files'),
-  uploadController.uploadImages
-);
 
-router.delete(
-  '/:fileName',
-  // isAuthenticated,
-  // authorizeRoles(...adminRoles),
-  uploadController.deleteImage
-);
+router.post('/image', isAuthenticated, uploadImage.single('file'), uploadController.uploadImage);
+
+router.post('/images', isAuthenticated, uploadImage.array('files'), uploadController.uploadImages);
+
+router.delete('/:fileName', isAuthenticated, uploadController.deleteImage);
 
 export const uploadRouter = router;
 
 //! Upload One Image
 /**
  * @swagger
- * /api/v1/upload/image:
+ * /upload/image:
  *  post:
  *    tags: [Upload]
- *    summary: Tải một ảnh
+ *    summary: "[User] Tải một ảnh"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -71,10 +54,10 @@ export const uploadRouter = router;
 //! Upload Many Image
 /**
  * @swagger
- * /api/v1/upload/images:
+ * /upload/images:
  *  post:
  *    tags: [Upload]
- *    summary: Tải nhiều ảnh
+ *    summary: "[User] Tải nhiều ảnh"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -109,10 +92,10 @@ export const uploadRouter = router;
 //! Xóa ảnh
 /**
  * @swagger
- * /api/v1/upload/{fileName}:
+ * /upload/{fileName}:
  *  delete:
  *    tags: [Upload]
- *    summary: Xóa ảnh thông qua tên file
+ *    summary: "[User] Xóa ảnh"
  *    security:
  *      - BearerToken: []
  *    parameters:
