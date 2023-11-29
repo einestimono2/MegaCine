@@ -7,7 +7,7 @@ import { fareController } from '../controllers';
 const router = express.Router();
 const adminRoles = [Roles.Manager, Roles.Admin];
 
-// ....api/v1/fare
+//! .../api/v1/fare
 
 // [POST] Add Fare
 router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), fareController.createFare);
@@ -16,30 +16,20 @@ router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), fareContr
 router.get('/theater/:id', fareController.getFareByTheater);
 
 // [PUT] Update Fare
-router.put(
-  '/details/:id',
-  // isAuthenticated,
-  // authorizeRoles(...adminRoles),
-  fareController.updateFare
-);
+router.put('/details/:id', isAuthenticated, authorizeRoles(...adminRoles), fareController.updateFare);
 
 // [DELETE] Delete Fare
-router.delete(
-  '/details/:id',
-  // isAuthenticated,
-  // authorizeRoles(...adminRoles),
-  fareController.deleteFare
-);
+router.delete('/details/:id', isAuthenticated, authorizeRoles(...adminRoles), fareController.deleteFare);
 
 export const fareRouter = router;
 
 //! Thêm mới giá vé
 /**
  * @swagger
- * /api/v1/fare/create:
+ * /fare/create:
  *  post:
  *    tags: [Fare]
- *    summary: Thêm mới giá vé
+ *    summary: "[Manager] Thêm mới giá vé"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -250,10 +240,10 @@ export const fareRouter = router;
 //! Cập nhật giá vé
 /**
  * @swagger
- * /api/v1/fare/details/{id}:
+ * /fare/details/{id}:
  *  put:
  *    tags: [Fare]
- *    summary: Cập nhật bảng giá vé
+ *    summary: "[Manager] Cập nhật bảng giá vé"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -387,12 +377,10 @@ export const fareRouter = router;
 //! Lấy bảng giá của rạp
 /**
  * @swagger
- * /api/v1/fare/theater/{id}:
+ * /fare/theater/{id}:
  *  get:
  *    tags: [Fare]
- *    summary: Lấy bảng giá của rạp
- *    security:
- *      - BearerToken: []
+ *    summary: "[All] Lấy bảng giá của rạp"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -416,10 +404,10 @@ export const fareRouter = router;
 //! Xóa bảng giá
 /**
  * @swagger
- * /api/v1/fare/details/{id}:
+ * /fare/details/{id}:
  *  delete:
  *    tags: [Fare]
- *    summary: Xóa bảng giá
+ *    summary: "[Manager] Xóa bảng giá"
  *    security:
  *      - BearerToken: []
  *    parameters:

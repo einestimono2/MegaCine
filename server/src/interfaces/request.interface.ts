@@ -100,6 +100,20 @@ export interface IUpdateFareRequest {
   surcharge?: Array<{ name: string; value: number }>;
 }
 
+export interface IUpdateRoomRequest {
+  type?: string;
+  name?: string;
+  capacity?: number;
+  seats?: Array<{
+    row: string;
+    col: number;
+    coordinates: [number, number];
+    type?: string;
+    status?: string;
+  }>;
+  isActive?: boolean;
+}
+
 export interface IOTPRequest {
   id: string;
   name?: string;

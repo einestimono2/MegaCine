@@ -15,23 +15,23 @@ router.post(
   uploadImage.single('poster'),
   movieController.createMovie
 );
-router.get('/list', isAuthenticated, movieController.getMovies);
+router.get('/list', movieController.getMovies);
 
 router
   .route('/details/:id')
   .put(isAuthenticated, authorizeRoles(...adminRoles), uploadImage.single('poster'), movieController.updateMovie)
   .delete(isAuthenticated, authorizeRoles(...adminRoles), movieController.deleteMovie)
-  .get(isAuthenticated, movieController.getMovie);
+  .get(movieController.getMovie);
 
 export const movieRouter = router;
 
 //! Thêm phim
 /**
  * @swagger
- * /api/v1/movie/create:
+ * /movie/create:
  *  post:
  *    tags: [Movie]
- *    summary: Thêm phim
+ *    summary: "[Manager] Thêm phim"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -135,10 +135,10 @@ export const movieRouter = router;
 //! List Movies
 /**
  * @swagger
- * /api/v1/movie/list:
+ * /movie/list:
  *  get:
  *    tags: [Movie]
- *    summary: Lấy danh sách phim
+ *    summary: "[All] Danh sách phim"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -180,12 +180,10 @@ export const movieRouter = router;
 //! Thông tin phim
 /**
  * @swagger
- * /api/v1/movie/details/{id}:
+ * /movie/details/{id}:
  *  get:
  *    tags: [Movie]
- *    summary: Thông tin chi tiết phim
- *    security:
- *      - BearerToken: []
+ *    summary: "[All] Thông tin chi tiết phim"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -209,10 +207,10 @@ export const movieRouter = router;
 //! Cập nhật phim
 /**
  * @swagger
- * /api/v1/movie/details/{id}:
+ * /movie/details/{id}:
  *  put:
  *    tags: [Movie]
- *    summary: Cập nhật phim
+ *    summary: "[Manager] Cập nhật phim"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -302,10 +300,10 @@ export const movieRouter = router;
 //! Xóa phim
 /**
  * @swagger
- * /api/v1/movie/details/{id}:
+ * /movie/details/{id}:
  *  delete:
  *    tags: [Movie]
- *    summary: Xóa phim
+ *    summary: "[Manager] Xóa phim"
  *    security:
  *      - BearerToken: []
  *    parameters:

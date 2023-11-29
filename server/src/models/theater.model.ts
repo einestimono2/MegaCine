@@ -79,12 +79,6 @@ const theaterSchema: Schema<ITheater> = new mongoose.Schema(
         }
       }
     },
-    rooms: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Room'
-      }
-    ],
     isActive: {
       type: Boolean,
       default: true
@@ -96,16 +90,6 @@ const theaterSchema: Schema<ITheater> = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Review'
-      }
-    ],
-    fare: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Fare'
-    },
-    movies: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Movie'
       }
     ]
   },

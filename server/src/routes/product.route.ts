@@ -16,29 +16,25 @@ router.post(
   uploadImage.single('image'),
   productController.createProduct
 );
-router.get(
-  '/list',
-  // isAuthenticated,
-  productController.getProducts
-);
-router.get('/list/:theaterId', isAuthenticated, productController.getProductsByTheater);
-router.get('/my-theater', isAuthenticated, productController.getProductsByTheater);
+router.get('/list', isAuthenticated, authorizeRoles(Roles.Admin), productController.getProducts);
+router.get('/list/:theaterId', productController.getProductsByTheater);
+router.get('/my-theater', isAuthenticated, authorizeRoles(...adminRoles), productController.getProductsByTheater);
 
 router
   .route('/details/:id')
   .put(isAuthenticated, authorizeRoles(...adminRoles), uploadImage.single('image'), productController.updateProduct)
   .delete(isAuthenticated, authorizeRoles(...adminRoles), productController.deleteProduct)
-  .get(isAuthenticated, productController.getProduct);
+  .get(isAuthenticated, authorizeRoles(...adminRoles), productController.getProduct);
 
 export const productRouter = router;
 
 //! Thêm mới product
 /**
  * @swagger
- * /api/v1/product/create:
+ * /product/create:
  *  post:
  *    tags: [Product]
- *    summary: Thêm mới product
+ *    summary: "[Manager] Thêm mới product"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -87,10 +83,10 @@ export const productRouter = router;
 //! List Product
 /**
  * @swagger
- * /api/v1/product/list:
+ * /product/list:
  *  get:
  *    tags: [Product]
- *    summary: Danh sách product
+ *    summary: "[Manager] Danh sách product"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -132,10 +128,10 @@ export const productRouter = router;
 //! List Product By Theater
 /**
  * @swagger
- * /api/v1/product/my-theater:
+ * /product/my-theater:
  *  get:
  *    tags: [Product]
- *    summary: Danh sách product của rạp
+ *    summary: "[Manager] Danh sách product của rạp"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -156,10 +152,10 @@ export const productRouter = router;
 //! List Product By Theater
 /**
  * @swagger
- * /api/v1/product/list/{theaterId}:
+ * /product/list/{theaterId}:
  *  get:
  *    tags: [Product]
- *    summary: Danh sách product của rạp
+ *    summary: "[All] Danh sách product của rạp"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -171,8 +167,6 @@ export const productRouter = router;
  *        type: string
  *        required: true
  *        description: Product ID
- *    security:
- *      - BearerToken: []
  *    responses:
  *      200:
  *        description: Success
@@ -185,10 +179,10 @@ export const productRouter = router;
 //! Cập nhật product
 /**
  * @swagger
- * /api/v1/product/details/{id}:
+ * /product/details/{id}:
  *  put:
  *    tags: [Product]
- *    summary: Cập nhật product
+ *    summary: "[Manager] Cập nhật product"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -237,12 +231,10 @@ export const productRouter = router;
 //! Lấy thông tin product
 /**
  * @swagger
- * /api/v1/product/details/{id}:
+ * /product/details/{id}:
  *  get:
  *    tags: [Product]
- *    summary: Thông tin chi tiết product
- *    security:
- *      - BearerToken: []
+ *    summary: "[Manager] Thông tin chi tiết product"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -266,10 +258,10 @@ export const productRouter = router;
 //! Xóa product
 /**
  * @swagger
- * /api/v1/product/details/{id}:
+ * /product/details/{id}:
  *  delete:
  *    tags: [Product]
- *    summary: Xóa product
+ *    summary: "[Manager] Xóa product"
  *    security:
  *      - BearerToken: []
  *    parameters:

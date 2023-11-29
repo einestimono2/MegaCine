@@ -38,7 +38,10 @@ export function ErrorMiddleware(err: any, req: Request, res: Response, next: Nex
 
   // Error: Duplicate key in mongoDB
   if (err.code === 11000) {
-    const message = req.translate(Message.s_ALREADY_EXISTS.msg, Object.keys(err.keyValue).toString());
+    const message = req.translate(
+      Message.s_ALREADY_EXISTS.msg,
+      `'${Object.keys(err.keyValue).toString()}:${Object.values(err.keyValue).toString()}'`
+    );
     err = new ConflictError(message);
   }
 

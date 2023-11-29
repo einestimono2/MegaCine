@@ -18,6 +18,7 @@ import { productRouter } from './product.route';
 import { uploadRouter } from './upload.route';
 import { theaterRouter } from './theater.route';
 import { fareRouter } from './fare.route';
+import { roomRouter } from './room.route';
 
 const router = express.Router();
 const v1 = '/api/v1';
@@ -31,6 +32,7 @@ router.use(`${v1}/movie`, movieRouter);
 router.use(`${v1}/product`, productRouter);
 router.use(`${v1}/theater`, theaterRouter);
 router.use(`${v1}/fare`, fareRouter);
+router.use(`${v1}/room`, roomRouter);
 
 router.use(`${v1}/upload`, uploadRouter);
 
@@ -43,7 +45,7 @@ router.use(
     // customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css',
     // customfavIcon: "/assets/favicon.ico"
     customCss:
-      '.swagger-ui .topbar { display: none } .swagger-ui .scheme-container .schemes { justify-content: flex-end }'
+      '.swagger-ui .topbar { display: none } .swagger-ui .scheme-container .schemes { justify-content: space-between }'
   })
 );
 logger.info(`Docs available at http://localhost:${app.port}/api/docs`);
