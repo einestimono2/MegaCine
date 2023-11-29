@@ -40,7 +40,7 @@ export interface IGenre extends Document {
 }
 
 export interface IReview extends Document {
-  user: string;
+  user: string | IUser;
   rating: number;
   messages: string;
   isActive: boolean;
@@ -58,14 +58,11 @@ export interface ITheater extends Document {
   hotline: string;
   logo: ICloudinaryFile;
   images: ICloudinaryFile[];
-  rooms: Array<string | IRoom>;
   isActive: boolean;
   totalFavorites: number;
   ratingAverage: number;
   ratingCount: number;
-  fare: string | IFare;
   reviews: Array<string | IReview>; // type: mongoose.Schema.Types.ObjectId, ref: 'Review'
-  movies: Array<string | IMovie>; // type: mongoose.Schema.Types.ObjectId, ref: 'Movie'
 }
 
 export interface IFare extends Document {
@@ -116,7 +113,6 @@ export interface IMovie extends Document {
   ratingAverage: number;
   ratingCount: number;
   reviews: Array<string | IReview>;
-  theater: Array<string | ITheater>;
 }
 
 export interface IPerson extends Document {
@@ -136,19 +132,20 @@ export interface IProduct extends Document {
 }
 
 export interface IRoom extends Document {
+  theater: string | ITheater;
   type: string;
   name: string;
   capacity: number;
-  seats: Array<string | ISeat>;
+  seats: ISeat[];
+  isActive: boolean;
+  // seats: Array<string | ISeat>;
 }
 
 export interface ISeat extends Document {
   row: string; // unique
   col: number; // unique
-  name: string;
-  theatre: string;
-  room: string;
-  type: string; // VIP, STANDARD, HỎNG, SWEET
+  coordinates: [number, number];
+  type: string; // VIP, STANDARD, SWEET
   status: string; // Để frontend xử lý
 }
 

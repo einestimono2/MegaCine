@@ -9,3 +9,4 @@ export { ManagerModel } from './manager.model';
 export { PersonModel } from './person.model';
 export { ProductModel } from './product.model';
 export { FareModel } from './fare.model';
+export { RoomModel } from './room.model';
