@@ -25,6 +25,9 @@ export const Message = {
   ROOM_NOT_FOUND: {
     msg: 'Room Not Found'
   },
+  SHOWTIME_NOT_FOUND: {
+    msg: 'Showtime Not Found'
+  },
   THEATER_NOT_FOUND: {
     msg: 'Theater Not Found'
   },
@@ -63,8 +66,14 @@ export const Message = {
   INVALID_SEAT_TYPE_s: {
     msg: 'Invalid seat type %s'
   },
-  INVALID_MOVIE_TYPE_s: {
-    msg: 'Invalid movie type %s'
+  INVALID_MOVIE_FORMAT_s: {
+    msg: 'Invalid movie format %s'
+  },
+  INVALID_MOVIE_LANGUAGE_s: {
+    msg: 'Invalid movie language %s'
+  },
+  INVALID_SHOWTIME_TYPE_s: {
+    msg: 'Invalid showtime type %s'
   },
   INVALID_LOGIN_METHOD: {
     msg: 'Invalid login method'
@@ -81,6 +90,18 @@ export const Message = {
   INVALID_ROOM_SEATS_ROW_COL: {
     msg: 'Invalid Room Seats Row Col'
   },
+  INVALID_SHOWTIME_ENDTIME: {
+    msg: 'Invalid Showtime endTime'
+  },
+  INVALID_SHOWTIME_STARTTIME: {
+    msg: 'Invalid Showtime startTime'
+  },
+  INVALID_SHOWTIME_ROOM_TYPE: {
+    msg: 'Invalid Showtime room type'
+  },
+  INVALID_SHOWTIME_LANGUAGES: {
+    msg: 'Invalid Showtime languages'
+  },
 
   // Exist
   s_ALREADY_EXISTS: {
@@ -91,6 +112,9 @@ export const Message = {
   },
   CODE_ALREADY_EXIST: {
     msg: 'Code already exist'
+  },
+  SHOWTIME_ALREADY_EXIST: {
+    msg: 'Showtime already exist'
   },
 
   // Expire

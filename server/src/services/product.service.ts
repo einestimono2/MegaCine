@@ -74,7 +74,7 @@ export const getProductsByTheater = async (req: Request) => {
     localizationFields: ['description']
   });
 
-  return await ProductModel.aggregate(matchPipeline).append(options);
+  return await ProductModel.aggregate(matchPipeline).append(...options);
 };
 
 export const updateProduct = async (id: string, newProduct: IUpdateProductRequest) => {

@@ -16,7 +16,7 @@ router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), roomContr
 // router.get('/list', isAuthenticated, authorizeRoles(Roles.Admin), roomController.getRooms);
 
 // [GET] Rooms Of Theater
-router.get('/list/:theaterId', roomController.getRoomsByTheater);
+router.get('/list-by-theater/:id', roomController.getRoomsByTheater);
 
 // [PUT] Update Room
 router.put('/details/:id', isAuthenticated, authorizeRoles(...adminRoles), roomController.updateRoom);
@@ -103,7 +103,7 @@ export const roomRouter = router;
 //! Rooms Of Theater
 /**
  * @swagger
- * /room/list/{theaterId}:
+ * /room/list-by-theater/{id}:
  *  get:
  *    tags: [Room]
  *    summary: "[All] Lấy danh sách phòng của rạp"
@@ -114,7 +114,7 @@ export const roomRouter = router;
  *        default: vi
  *        description: Ngôn ngữ trả về 'en | vi'
  *      - in: path
- *        name: theaterId
+ *        name: id
  *        type: string
  *        required: true
  *        description: Theater ID

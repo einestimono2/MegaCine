@@ -7,12 +7,15 @@ on:
         branches: ["main", "master", "develop"]
         types:
             - "closed"
+    workflow_dispatch:
 
 jobs:
     build_docker_images:
         name: Build docker images
-        # this job will only run if the PR has been merged or push
-        if: github.event_name == 'push' || github.event.pull_request.merged == true
+        # this job will only run if the PR has been merged or push to develop
+        # if: github.event_name == 'push' || github.event.pull_request.merged == true
+        # Fix lỗi run 2 lần khi merge request
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository

@@ -101,10 +101,10 @@ export interface IMovie extends Document {
   overview: ILocalizationField;
   duration: number;
   releaseDate: Date;
-  type: string;
+  formats: string[];
   directors: Array<string | IPerson>;
   actors: Array<string | IPerson>;
-  language: ILocalizationField;
+  languages: string[];
   ageType: string;
   genres: Array<string | IGenre>;
   totalRate: number;
@@ -150,16 +150,15 @@ export interface ISeat extends Document {
 }
 
 // [startTime, room] --> unique --> không có 2 lịch chiếu nào cùng một phòng
-export interface IShowTime extends Document {
-  movie: string;
-  theater: string;
-  room: string;
+export interface IShowtime extends Document {
+  movie: string | IMovie;
+  theater: string | ITheater;
+  room: string | IRoom;
   startTime: Date;
   endTime: Date;
-  date: Date;
   isActive: boolean;
-  price: number;
-  type: string; // Snakeshow (Suất chiếu sớm / Suất chiếu đặc biệt), Normal
+  language: string;
+  type: string; // Sneakshow (Suất chiếu sớm / Suất chiếu đặc biệt), Normal
 }
 
 export interface IVoucher extends Document {

@@ -8,3 +8,4 @@ export * as uploadController from './upload.controller';
 export * as theaterController from './theater.controller';
 export * as fareController from './fare.controller';
 export * as roomController from './room.controller';
+export * as showtimeController from './showtime.controller';

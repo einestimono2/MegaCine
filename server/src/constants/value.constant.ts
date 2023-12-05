@@ -9,3 +9,7 @@ export const REFRESH_TOKEN = 'refresh_token';
 export const MONITOR_TIMER = 30000; // 30s
 
 export const MAX_DISTANCE_IN_METERS = 10000;
+
+const v1 = '/api/v1';
+export const API_VERSION = v1;
+export const LIST_API_VERSIONS = [v1];

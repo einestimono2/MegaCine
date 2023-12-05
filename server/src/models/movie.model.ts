@@ -1,7 +1,7 @@
 import mongoose, { type Schema } from 'mongoose';
 
 import { type IMovie } from '../interfaces';
-import { Message, AgeTypes, MovieTypes } from '../constants';
+import { Message, AgeTypes, MovieFormats, MovieLanguages } from '../constants';
 
 const movieSchema: Schema<IMovie> = new mongoose.Schema(
   {
@@ -37,13 +37,17 @@ const movieSchema: Schema<IMovie> = new mongoose.Schema(
         required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'overview.vi'`]
       }
     },
-    type: {
-      type: String,
-      enum: {
-        values: Object.values(MovieTypes),
-        message: `'${Message.INVALID_MOVIE_TYPE_s.msg}', '{VALUE}'`
-      },
-      required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'type'`]
+    formats: {
+      type: [
+        {
+          type: String,
+          enum: {
+            values: Object.values(MovieFormats),
+            message: `'${Message.INVALID_MOVIE_FORMAT_s.msg}', '{VALUE}'`
+          }
+        }
+      ],
+      default: [MovieFormats['2D']]
     },
     duration: Number,
     releaseDate: Date,
@@ -61,15 +65,17 @@ const movieSchema: Schema<IMovie> = new mongoose.Schema(
         required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'actors'`]
       }
     ],
-    language: {
-      en: {
-        type: String,
-        required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'language.en'`]
-      },
-      vi: {
-        type: String,
-        required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'language.vi'`]
-      }
+    languages: {
+      type: [
+        {
+          type: String,
+          enum: {
+            values: Object.values(MovieLanguages),
+            message: `'${Message.INVALID_MOVIE_LANGUAGE_s.msg}', '{VALUE}'`
+          }
+        }
+      ],
+      default: [MovieLanguages.Subtitles]
     },
     ageType: {
       type: String,

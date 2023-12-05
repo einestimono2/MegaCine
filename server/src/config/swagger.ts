@@ -1,8 +1,8 @@
 import path from 'path';
 import swaggerJsdoc from 'swagger-jsdoc';
 
+import { LIST_API_VERSIONS } from '../constants';
 const { version } = require('../../package.json'); //! Chuyển sang import sẽ bị lỗi do set rootDir = src ~ không tìm được file package.json
-// import { app } from './env';
 
 const options: swaggerJsdoc.OAS3Options = {
   definition: {
@@ -25,10 +25,15 @@ const options: swaggerJsdoc.OAS3Options = {
       }
     },
     servers: [
-      { url: '/api/v1' }
-      // { url: `http://localhost:${app.port}` },
-      // { url: process.env.HOST_URL ?? 'https://megacine.japaneast.cloudapp.azure.com' }
+      ...LIST_API_VERSIONS.map((api) => {
+        return { url: api };
+      })
     ],
+    // [
+    //   { url: `http://localhost:${app.port}` },
+    //   { url: process.env.HOST_URL ?? 'https://megacine.japaneast.cloudapp.azure.com' }
+    // ],
+
     security: [
       {
         bearerAuth: []
