@@ -44,9 +44,9 @@ export interface IUpdateMovieRequest {
   releaseDate?: Date;
   directors?: string;
   actors?: string;
-  language?: string;
+  languages?: string;
   ageType?: string;
-  type?: string;
+  formats?: string;
   genres?: string;
 }
 
@@ -112,6 +112,14 @@ export interface IUpdateRoomRequest {
     status?: string;
   }>;
   isActive?: boolean;
+}
+
+export interface IUpdateShowtimeRequest {
+  startTime?: Date;
+  endTime?: Date;
+  isActive?: boolean;
+  type?: string;
+  language?: string;
 }
 
 export interface IOTPRequest {

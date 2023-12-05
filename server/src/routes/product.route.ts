@@ -17,7 +17,7 @@ router.post(
   productController.createProduct
 );
 router.get('/list', isAuthenticated, authorizeRoles(Roles.Admin), productController.getProducts);
-router.get('/list/:theaterId', productController.getProductsByTheater);
+router.get('/list-by-theater/:id', productController.getProductsByTheater);
 router.get('/my-theater', isAuthenticated, authorizeRoles(...adminRoles), productController.getProductsByTheater);
 
 router
@@ -152,7 +152,7 @@ export const productRouter = router;
 //! List Product By Theater
 /**
  * @swagger
- * /product/list/{theaterId}:
+ * /product/list-by-theater/{id}:
  *  get:
  *    tags: [Product]
  *    summary: "[All] Danh sách product của rạp"
@@ -163,10 +163,10 @@ export const productRouter = router;
  *        default: vi
  *        description: Ngôn ngữ trả về 'en | vi'
  *      - in: path
- *        name: theaterId
+ *        name: id
  *        type: string
  *        required: true
- *        description: Product ID
+ *        description: Theater ID
  *    responses:
  *      200:
  *        description: Success

@@ -86,11 +86,13 @@ roomSchema.pre('save', function (next, done) {
     // Validate row-col
     if (new Set(this.seats.map((e) => `${e.row}-${e.col}`)).size !== size) {
       next(new ConflictError(Message.INVALID_ROOM_SEATS_ROW_COL));
+      return;
     }
 
     // Validate coordinates
     if (new Set(this.seats.map((e) => e.coordinates.toString())).size !== size) {
       next(new ConflictError(Message.INVALID_ROOM_SEATS_COORDINATES));
+      return;
     }
   }
 

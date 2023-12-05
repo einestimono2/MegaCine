@@ -14,7 +14,7 @@ export const createRoom = CatchAsyncError(async (req: Request, res: Response, ne
 
 // Get list rooms of theater
 export const getRoomsByTheater = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const room = await roomServices.getRoomsByTheater(req.params.theaterId);
+  const room = await roomServices.getRoomsByTheater(req.params.id);
 
   res.sendOK({
     data: room
@@ -28,7 +28,7 @@ export const getRooms = CatchAsyncError(async (req: Request, res: Response, next
 export const getRoomDetails = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const room = await roomServices.getRoomDetails(req.params.id);
 
-  res.sendCREATED({
+  res.sendOK({
     data: room ?? {}
   });
 });

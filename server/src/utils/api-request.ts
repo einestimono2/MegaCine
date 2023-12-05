@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
 import { type Request } from 'express';
+import { type PipelineStage } from 'mongoose';
 
 /**
  * Chuyển đổi tất cả Query Request để áp dụng vào aggregate
@@ -19,7 +20,7 @@ export const convertRequestToPipelineStages = ({
   fieldsApplySearch?: string[];
   localizationFields?: string[];
 }) => {
-  const query: any = [];
+  const query: PipelineStage[] = [];
 
   //! Search
   if (req.query.keyword && fieldsApplySearch) {
@@ -106,18 +107,19 @@ export const convertRequestToPipelineStages = ({
   }
 
   //! Pagination
+  addPaginationPipelineStage({ req, pipeline: query });
+
+  return query;
+};
+
+export const addPaginationPipelineStage = ({ req, pipeline }: { req: Request; pipeline: PipelineStage[] }) => {
+  //! Pagination
   if (req.query.page && req.query.limit) {
     const page = Number(req.query.page);
     const limit = Number(req.query.limit);
     const skip = (page - 1) * limit;
 
-    query.push(
-      // {
-      //   $skip: skip
-      // },
-      // {
-      //   $limit: limit
-      // }
+    pipeline.push(
       {
         $facet: {
           extra: [
@@ -140,7 +142,7 @@ export const convertRequestToPipelineStages = ({
       { $unwind: '$extra' }
     );
   } else {
-    query.push(
+    pipeline.push(
       {
         $facet: {
           extra: [{ $count: 'totalCount' }],
@@ -152,6 +154,4 @@ export const convertRequestToPipelineStages = ({
       { $unwind: '$extra' }
     );
   }
-
-  return query;
 };
