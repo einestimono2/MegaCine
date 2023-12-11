@@ -2,106 +2,45 @@ import express from 'express';
 
 import { isAuthenticated, authorizeRoles } from '../middlewares';
 import { Roles } from '../constants';
-import { showtimeController } from '../controllers';
+import { promotionController } from '../controllers';
 
 const router = express.Router();
 const adminRoles = [Roles.Manager, Roles.Admin];
 
-//! .../api/v1/showtime
+//! .../api/v1/promotion
 
-// [POST] Add Showtime
-router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), showtimeController.createShowtime);
+// [POST] Add Promotion
+router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), promotionController.createPromotion);
 
-// [GET] List Showtime By Movie
-// router.get('/list', showtimeController.getShowtimes);
-// [GET] List Showtime By Movie
-router.get('/list-by-movie/:id', showtimeController.getShowtimesByMovie);
-// [GET] List Showtime By Theater
-router.get('/list-by-theater/:id', showtimeController.getShowtimesByTheater);
+// [GET] List Promotion Of Theater
+router.get('/list-by-theater/:id', promotionController.getPromotionsByTheater);
+// [GET] List Promotion Of My Theater
+router.get('/my-theater', isAuthenticated, authorizeRoles(...adminRoles), promotionController.getMyTheaterPromotions);
 
 router
   .route('/details/:id')
-  // [PATCH] Update Showtime
-  .patch(isAuthenticated, authorizeRoles(...adminRoles), showtimeController.updateShowtime)
-  // [DELETE] Delete Showtime
-  .delete(isAuthenticated, authorizeRoles(...adminRoles), showtimeController.deleteShowtime)
-  // [GET] Showtime Details
-  .get(showtimeController.getShowtimeDetails);
+  // [PATCH] Update Promotion
+  .patch(isAuthenticated, authorizeRoles(...adminRoles), promotionController.updatePromotion)
+  // [DELETE] Delete Promotion
+  .delete(isAuthenticated, authorizeRoles(...adminRoles), promotionController.deletePromotion)
+  // [GET] Promotion Details
+  .get(promotionController.getPromotionDetails);
 
-export const showtimeRouter = router;
+export const promotionRouter = router;
 
-//! Danh sách lịch chiếu theo movie
+//! Danh sách khuyến mãi của rạp
 /**
  * @swagger
- * /showtime/list-by-movie/{id}:
+ * /promotion/list-by-theater/{id}:
  *  get:
- *    tags: [Showtime]
- *    summary: "[All] Lấy danh sách lịch chiếu theo phim"
+ *    tags: [Promotion]
+ *    summary: "[All] Danh sách khuyến mãi của rạp (isActive=true)"
  *    parameters:
  *      - in: query
  *        name: hl
  *        type: string
  *        default: vi
  *        description: Ngôn ngữ trả về 'en | vi'
- *      - in: query
- *        name: date
- *        type: string
- *        description: Tìm theo ngày (YYYY-mm-dd)
- *      - in: query
- *        name: location
- *        type: string
- *        description: Tìm theo địa điểm (Thành phố)
- *      - in: query
- *        name: format
- *        type: string
- *        description: Tìm theo định dạng (2D | 3D)
- *      - in: query
- *        name: page
- *        type: string
- *        description: Trang hiện tại
- *      - in: query
- *        name: limit
- *        type: string
- *        description: Số lượng kết quả mỗi trang
- *      - in: path
- *        name: id
- *        type: string
- *        required: true
- *        description: Movie ID
- *    responses:
- *      200:
- *        description: Success
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/Response'
- */
-
-//! Danh sách lịch chiếu theo theater
-/**
- * @swagger
- * /showtime/list-by-theater/{id}:
- *  get:
- *    tags: [Showtime]
- *    summary: "[All] Lấy danh sách lịch chiếu theo rạp"
- *    parameters:
- *      - in: query
- *        name: hl
- *        type: string
- *        default: vi
- *        description: Ngôn ngữ trả về 'en | vi'
- *      - in: query
- *        name: date
- *        type: string
- *        description: Tìm theo ngày (YYYY-mm-dd)
- *      - in: query
- *        name: page
- *        type: string
- *        description: Trang hiện tại
- *      - in: query
- *        name: limit
- *        type: string
- *        description: Số lượng kết quả mỗi trang
  *      - in: path
  *        name: id
  *        type: string
@@ -116,13 +55,37 @@ export const showtimeRouter = router;
  *              $ref: '#/components/schemas/Response'
  */
 
-//! Thêm lịch chiếu
+//! Danh sách khuyến mãi của rạp tôi
 /**
  * @swagger
- * /showtime/create:
+ * /promotion/my-theater:
+ *  get:
+ *    tags: [Promotion]
+ *    summary: "[Manager] Danh sách khuyến mãi rạp (All)"
+ *    security:
+ *      - BearerToken: []
+ *    parameters:
+ *      - in: query
+ *        name: hl
+ *        type: string
+ *        default: vi
+ *        description: Ngôn ngữ trả về 'en | vi'
+ *    responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Response'
+ */
+
+//! Thêm khuyến mãi
+/**
+ * @swagger
+ * /promotion/create:
  *  post:
- *    tags: [Showtime]
- *    summary: "[Manager] Thêm lịch chiếu"
+ *    tags: [Promotion]
+ *    summary: "[Manager] Thêm khuyến mãi"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -138,19 +101,17 @@ export const showtimeRouter = router;
  *          schema:
  *            type: object
  *            required:
+ *              - title
+ *              - content
  *              - startTime
- *              - movie
- *              - theater
- *              - room
- *              - language
  *            properties:
- *              movie:
+ *              code:
  *                type: string
  *                default: ""
- *              theater:
+ *              title:
  *                type: string
  *                default: ""
- *              room:
+ *              content:
  *                type: string
  *                default: ""
  *              startTime:
@@ -159,14 +120,15 @@ export const showtimeRouter = router;
  *              endTime:
  *                type: string
  *                format: date-time
+ *              thumbnail:
+ *                type: string
+ *                default: ""
+ *              value:
+ *                type: number
  *              type:
  *                type: string
- *                description: "Normal | Sneakshow"
- *                "enum": [ "Normal", "Sneakshow"]
- *              language:
- *                type: string
- *                description: "Subtitles | Dubbing"
- *                "enum": [ "Subtitles", "Dubbing"]
+ *                description: "Amount | Percentage"
+ *                "enum": [ "Amount", "Percentage"]
  *    responses:
  *      201:
  *        description: Success
@@ -176,13 +138,13 @@ export const showtimeRouter = router;
  *              $ref: '#/components/schemas/Response'
  */
 
-//! Cập nhật lịch chiếu
+//! Cập nhật khuyến mãi
 /**
  * @swagger
- * /showtime/details/{id}:
+ * /promotion/details/{id}:
  *  patch:
- *    tags: [Showtime]
- *    summary: "[Manager] Cập nhật lịch chiếu"
+ *    tags: [Promotion]
+ *    summary: "[Manager] Cập nhật khuyến mãi"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -195,7 +157,7 @@ export const showtimeRouter = router;
  *        name: id
  *        type: string
  *        required: true
- *        description: Showtime ID
+ *        description: Promotion ID
  *    requestBody:
  *      required: true
  *      content:
@@ -203,23 +165,33 @@ export const showtimeRouter = router;
  *          schema:
  *            type: object
  *            properties:
+ *              code:
+ *                type: string
+ *                default: ""
+ *              title:
+ *                type: string
+ *                default: ""
+ *              content:
+ *                type: string
+ *                default: ""
  *              startTime:
  *                type: string
  *                format: date-time
  *              endTime:
  *                type: string
  *                format: date-time
+ *              thumbnail:
+ *                type: string
+ *                default: ""
+ *              value:
+ *                type: number
+ *              type:
+ *                type: string
+ *                description: "Amount | Percentage"
+ *                "enum": [ "Amount", "Percentage"]
  *              isActive:
  *                type: boolean
  *                default: true
- *              type:
- *                type: string
- *                description: "Normal | Sneakshow"
- *                "enum": [ "Normal", "Sneakshow"]
- *              language:
- *                type: string
- *                description: "Subtitles | Dubbing"
- *                "enum": [ "Subtitles", "Dubbing"]
  *    responses:
  *      201:
  *        description: Success
@@ -229,13 +201,13 @@ export const showtimeRouter = router;
  *              $ref: '#/components/schemas/Response'
  */
 
-//! Thông tin lịch chiếu
+//! Thông tin khuyến mãi
 /**
  * @swagger
- * /showtime/details/{id}:
+ * /promotion/details/{id}:
  *  get:
- *    tags: [Showtime]
- *    summary: "[All] Thông tin lịch chiếu"
+ *    tags: [Promotion]
+ *    summary: "[All] Chi tiết khuyến mãi"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -246,7 +218,7 @@ export const showtimeRouter = router;
  *        name: id
  *        type: string
  *        required: true
- *        description: Showtime ID
+ *        description: Promotion ID
  *    responses:
  *      200:
  *        description: Success
@@ -256,13 +228,13 @@ export const showtimeRouter = router;
  *              $ref: '#/components/schemas/Response'
  */
 
-//! Xóa lịch chiếu
+//! Xóa khuyến mãi
 /**
  * @swagger
- * /showtime/details/{id}:
+ * /promotion/details/{id}:
  *  delete:
- *    tags: [Showtime]
- *    summary: "[Manager] Xóa lịch chiếu"
+ *    tags: [Promotion]
+ *    summary: "[Manager] Xóa khuyến mãi"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -275,7 +247,7 @@ export const showtimeRouter = router;
  *        name: id
  *        type: string
  *        required: true
- *        description: Showtime ID
+ *        description: Promotion ID
  *    responses:
  *      200:
  *        description: Success

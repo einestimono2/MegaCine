@@ -48,6 +48,7 @@ export interface IUpdateMovieRequest {
   ageType?: string;
   formats?: string;
   genres?: string;
+  isActive?: boolean;
 }
 
 export interface IUpdateProductRequest {
@@ -120,6 +121,18 @@ export interface IUpdateShowtimeRequest {
   isActive?: boolean;
   type?: string;
   language?: string;
+}
+
+export interface IUpdatePromotionRequest {
+  code?: string;
+  title?: string;
+  content?: string;
+  thumbnail?: string;
+  startTime?: Date;
+  endTime?: Date;
+  value?: number;
+  type?: string;
+  isActive?: boolean;
 }
 
 export interface IOTPRequest {

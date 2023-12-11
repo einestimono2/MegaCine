@@ -249,7 +249,7 @@ export const getShowtimesByTheater = async (id: string, req: Request) => {
             $project: {
               _id: 1,
               title: 1,
-              poster: '$poster.url',
+              poster: 1,
               originalTitle: 1,
               type: 1,
               duration: 1,

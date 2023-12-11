@@ -5,10 +5,7 @@ import { productServices } from '../services';
 
 //! Create Product
 export const createProduct = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const product = await productServices.createProduct(
-    { ...req.body, theater: req.userPayload?.theater },
-    req.file?.path
-  );
+  const product = await productServices.createProduct({ ...req.body, theater: req.userPayload?.theater });
 
   res.sendCREATED({
     data: product
@@ -17,7 +14,7 @@ export const createProduct = CatchAsyncError(async (req: Request, res: Response,
 
 //! Update Product
 export const updateProduct = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const product = await productServices.updateProduct(req.params.id, { ...req.body, image: req.file?.path });
+  const product = await productServices.updateProduct(req.params.id, { ...req.body });
 
   res.sendCREATED({
     data: product

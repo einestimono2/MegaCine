@@ -1,7 +1,8 @@
 import mongoose, { type Schema } from 'mongoose';
 
 import { type IPerson } from '../interfaces';
-import { DEFAULT_AVATAR_URL, Message } from '../constants';
+import { DEFAULT_AVATAR_URL, Message, PERSON_UPLOAD_FOLDER } from '../constants';
+import { cloudinaryServices } from '../services';
 
 const personSchema: Schema<IPerson> = new mongoose.Schema(
   {
@@ -14,11 +15,8 @@ const personSchema: Schema<IPerson> = new mongoose.Schema(
       vi: String
     },
     avatar: {
-      public_id: String,
-      url: {
-        type: String,
-        default: DEFAULT_AVATAR_URL
-      }
+      type: String,
+      default: DEFAULT_AVATAR_URL
     },
     movies: [
       {
@@ -29,5 +27,15 @@ const personSchema: Schema<IPerson> = new mongoose.Schema(
   },
   { timestamps: true, versionKey: false }
 );
+
+// Middleware khi gọi findByIdAndDelete
+personSchema.post('findOneAndDelete', async function (doc) {
+  if (doc) {
+    await cloudinaryServices.destroy({
+      public_id: doc._id,
+      folder: PERSON_UPLOAD_FOLDER
+    });
+  }
+});
 
 export const PersonModel = mongoose.model<IPerson>('Person', personSchema);

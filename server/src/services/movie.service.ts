@@ -2,13 +2,13 @@ import { type Request } from 'express';
 import { type PipelineStage, type Types } from 'mongoose';
 import dayjs from 'dayjs';
 
-import { Message } from '../constants';
+import { MOVIE_UPLOAD_FOLDER, Message } from '../constants';
 import { type IPerson, type IMovie, type IUpdateMovieRequest } from '../interfaces';
 import { MovieModel, NotFoundError } from '../models';
 import { addPaginationPipelineStage, convertRequestToPipelineStages, convertToMongooseId } from '../utils';
 import { cloudinaryServices, personServices, genreServices } from './';
 
-export const createMovie = async (movie: IMovie, poster: string | undefined) => {
+export const createMovie = async (movie: IMovie) => {
   // Lưu lại list person để gán id của phim đó vào
   const persons: Array<IPerson & { _id: Types.ObjectId }> = [];
 
@@ -31,18 +31,13 @@ export const createMovie = async (movie: IMovie, poster: string | undefined) => 
     movie.genres[i] = await genreServices.getOrCreateGenre(movie.genres[i] as string);
   }
 
-  // Convert --> Object
-  if (movie.overview && typeof movie.overview === 'string') {
-    try {
-      movie.overview = JSON.parse(movie.overview);
-    } catch (_) {}
-  }
-
-  if (poster) {
-    movie.poster = await cloudinaryServices.uploadImage(poster, 'posters');
-  }
-
   const newMovie = new MovieModel(movie);
+
+  newMovie.poster = await cloudinaryServices.uploadImage({
+    public_id: newMovie._id,
+    file: movie.poster,
+    folder: MOVIE_UPLOAD_FOLDER
+  });
 
   for (let i = 0; i < persons.length; i++) {
     if (!persons[i].movies.includes(newMovie._id)) {
@@ -52,44 +47,32 @@ export const createMovie = async (movie: IMovie, poster: string | undefined) => 
   }
 
   return await newMovie.save().catch(async (err) => {
-    await cloudinaryServices.destroy(movie.poster.public_id); // Xóa ảnh
+    await cloudinaryServices.destroy({
+      public_id: newMovie._id,
+      folder: MOVIE_UPLOAD_FOLDER
+    }); // Xóa ảnh
 
     throw err;
   });
 };
 
 export const updateMovie = async (id: string, newMovie: IUpdateMovieRequest) => {
-  const movie = await getMovieById(id);
+  // Xóa thumbnail mới khỏi obj nếu có
+  const poster = newMovie.poster;
+  if (poster) delete newMovie.poster;
 
-  if (newMovie.poster)
-    movie.poster = await cloudinaryServices.replaceImage(movie.poster.public_id, newMovie.poster, 'posters');
-  if (newMovie.overview) {
-    try {
-      movie.overview = JSON.parse(newMovie.overview);
-    } catch (_) {}
-  }
-
-  if (newMovie.title) movie.title = newMovie.title;
-  if (newMovie.originalTitle) movie.originalTitle = newMovie.originalTitle;
-  if (newMovie.trailer) movie.trailer = newMovie.trailer;
-  if (newMovie.duration) movie.duration = newMovie.duration;
-  if (newMovie.releaseDate) movie.releaseDate = newMovie.releaseDate;
-  if (newMovie.directors) movie.directors = newMovie.directors.split(',');
-  if (newMovie.actors) movie.actors = newMovie.actors.split(',');
-  if (newMovie.ageType) movie.ageType = newMovie.ageType;
-  if (newMovie.formats) movie.formats = newMovie.formats.split(',');
-  if (newMovie.languages) movie.languages = newMovie.languages.split(',');
-  if (newMovie.genres) movie.genres = newMovie.genres.split(',');
-
-  await movie.save();
-
-  return movie;
-};
-
-export const getMovieById = async (id: string) => {
-  const movie = await MovieModel.findById(id);
+  const movie = await MovieModel.findByIdAndUpdate(id, newMovie, { new: true, runValidators: true });
   if (!movie) {
     throw new NotFoundError(Message.MOVIE_NOT_FOUND);
+  }
+
+  // Ghi đè ảnh cũ
+  if (poster) {
+    await cloudinaryServices.uploadImage({
+      public_id: movie._id,
+      file: poster,
+      folder: MOVIE_UPLOAD_FOLDER
+    });
   }
 
   return movie;
@@ -109,7 +92,7 @@ export const getMovieDetails = async (id: string, lang: string) => {
         localField: 'directors',
         foreignField: '_id',
         as: 'directors',
-        pipeline: [{ $project: { _id: 1, fullName: 1, avatar: '$avatar.url' } }]
+        pipeline: [{ $project: { _id: 1, fullName: 1, avatar: 1 } }]
       }
     },
     {
@@ -127,7 +110,7 @@ export const getMovieDetails = async (id: string, lang: string) => {
         localField: 'actors',
         foreignField: '_id',
         as: 'actors',
-        pipeline: [{ $project: { _id: 1, fullName: 1, avatar: '$avatar.url' } }]
+        pipeline: [{ $project: { _id: 1, fullName: 1, avatar: 1 } }]
       }
     }
   ]);
@@ -183,7 +166,7 @@ export const getNowShowingMovies = async (req: Request) => {
         _id: 1,
         title: 1,
         originalTitle: 1,
-        poster: '$poster.url',
+        poster: 1,
         duration: 1,
         releaseDate: 1,
         ageType: 1,
@@ -262,7 +245,7 @@ export const getComingSoonMovies = async (req: Request) => {
         _id: 1,
         title: 1,
         originalTitle: 1,
-        poster: '$poster.url',
+        poster: 1,
         duration: 1,
         releaseDate: 1,
         ageType: 1,
@@ -319,7 +302,7 @@ export const getSneakShowMovies = async (req: Request) => {
         title: 1,
         overview: 1,
         originalTitle: 1,
-        poster: '$poster.url',
+        poster: 1,
         duration: 1,
         releaseDate: 1,
         ageType: 1,
@@ -369,10 +352,14 @@ export const getSneakShowMovies = async (req: Request) => {
 };
 
 export const getMostRateMovies = async (req: Request) => {
-  const _limit = req.query.limit ? Number(req.query.limit) : 5;
+  const _limit = req.query.top ? Number(req.query.top) : 5;
+
+  const _match = req.query.movieId
+    ? { _id: { $ne: convertToMongooseId(req.query.movieId as string) }, isActive: true }
+    : { isActive: true };
 
   const pipeline: PipelineStage[] = [
-    { $match: { isActive: true } },
+    { $match: _match },
     // Nối bảng để lấy thông tin genre
     {
       $lookup: {
@@ -390,14 +377,14 @@ export const getMostRateMovies = async (req: Request) => {
         _id: 1,
         title: 1,
         originalTitle: 1,
-        poster: '$poster.url',
+        poster: 1,
         duration: 1,
         releaseDate: 1,
         ageType: 1,
         genres: 1
       }
     },
-    { $sort: { ratingAverage: -1 } },
+    { $sort: { ratingAverage: -1, ratingCount: -1, totalFavorites: -1 } },
     { $limit: _limit }
   ];
 
@@ -431,20 +418,8 @@ export const getMovies = async (req: Request) => {
 };
 
 export const deleteMovie = async (id: string) => {
-  const movie = await getMovieById(id);
-
-  // Xóa ảnh trên cloudinary
-  await cloudinaryServices.destroy(movie.poster.public_id);
-
-  // Xóa movie id của từng diễn viên
-  for (let i = 0; i < movie.directors.length; i++) {
-    await personServices.deleteMovieFromPerson(movie.directors[i] as string, movie._id);
+  const doc = await MovieModel.findByIdAndDelete(id);
+  if (!doc) {
+    throw new NotFoundError(Message.MOVIE_NOT_FOUND);
   }
-  for (let i = 0; i < movie.actors.length; i++) {
-    await personServices.deleteMovieFromPerson(movie.actors[i] as string, movie._id);
-  }
-
-  // TODO: Xóa id rạp tương ứng or lúc api trả lại phim k tồn tại
-
-  await movie.deleteOne();
 };

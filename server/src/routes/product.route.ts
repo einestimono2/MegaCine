@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { productController } from '../controllers';
-import { isAuthenticated, authorizeRoles, uploadImage } from '../middlewares';
+import { isAuthenticated, authorizeRoles } from '../middlewares';
 import { Roles } from '../constants';
 
 const router = express.Router();
@@ -9,20 +9,14 @@ const adminRoles = [Roles.Manager, Roles.Admin];
 
 //! .../api/v1/product
 
-router.post(
-  '/create',
-  isAuthenticated,
-  authorizeRoles(...adminRoles),
-  uploadImage.single('image'),
-  productController.createProduct
-);
-router.get('/list', isAuthenticated, authorizeRoles(Roles.Admin), productController.getProducts);
+router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), productController.createProduct);
+// router.get('/list', isAuthenticated, authorizeRoles(Roles.Admin), productController.getProducts);
 router.get('/list-by-theater/:id', productController.getProductsByTheater);
 router.get('/my-theater', isAuthenticated, authorizeRoles(...adminRoles), productController.getProductsByTheater);
 
 router
   .route('/details/:id')
-  .put(isAuthenticated, authorizeRoles(...adminRoles), uploadImage.single('image'), productController.updateProduct)
+  .put(isAuthenticated, authorizeRoles(...adminRoles), productController.updateProduct)
   .delete(isAuthenticated, authorizeRoles(...adminRoles), productController.deleteProduct)
   .get(isAuthenticated, authorizeRoles(...adminRoles), productController.getProduct);
 
@@ -46,7 +40,7 @@ export const productRouter = router;
  *    requestBody:
  *      required: true
  *      content:
- *        multipart/form-data:
+ *        application/json:
  *          schema:
  *            type: object
  *            required:
@@ -70,7 +64,7 @@ export const productRouter = router;
  *                type: number
  *              image:
  *                type: string
- *                format: base64
+ *                example: ""
  *    responses:
  *      201:
  *        description: Success
@@ -199,7 +193,7 @@ export const productRouter = router;
  *    requestBody:
  *      required: true
  *      content:
- *        multipart/form-data:
+ *        application/json:
  *          schema:
  *            type: object
  *            properties:
@@ -218,7 +212,10 @@ export const productRouter = router;
  *                type: number
  *              image:
  *                type: string
- *                format: base64
+ *                example: ''
+ *              isActive:
+ *                type: boolean
+ *                default: true
  *    responses:
  *      201:
  *        description: Success

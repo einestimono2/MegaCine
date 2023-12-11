@@ -22,6 +22,12 @@ export const Message = {
   FARE_NOT_FOUND: {
     msg: 'Fare Not Found'
   },
+  PROMOTION_NOT_FOUND: {
+    msg: 'Promotion Not Found'
+  },
+  REVIEW_NOT_FOUND: {
+    msg: 'Review Not Found'
+  },
   ROOM_NOT_FOUND: {
     msg: 'Room Not Found'
   },
@@ -75,6 +81,15 @@ export const Message = {
   INVALID_SHOWTIME_TYPE_s: {
     msg: 'Invalid showtime type %s'
   },
+  INVALID_PROMOTION_TYPE_s: {
+    msg: 'Invalid promotion type %s'
+  },
+  INVALID_MOVIE_RATING: {
+    msg: 'Invalid movie rating'
+  },
+  INVALID_THEATER_RATING: {
+    msg: 'Invalid theater rating'
+  },
   INVALID_LOGIN_METHOD: {
     msg: 'Invalid login method'
   },
@@ -115,6 +130,9 @@ export const Message = {
   },
   SHOWTIME_ALREADY_EXIST: {
     msg: 'Showtime already exist'
+  },
+  PROMOTION_CODE_EXIST: {
+    msg: 'Promotion code already exist'
   },
 
   // Expire

@@ -16,7 +16,7 @@ export const getProfile = CatchAsyncError(async (req: Request, res: Response, ne
 });
 
 export const updateProfile = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const user = await userServices.updateProfile(req.userPayload!.id, { ...req.body, avatar: req.file?.path });
+  const user = await userServices.updateProfile(req.userPayload!.id, { ...req.body });
 
   res.sendOK({
     data: user
@@ -24,12 +24,12 @@ export const updateProfile = CatchAsyncError(async (req: Request, res: Response,
 });
 
 export const updateAvatar = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  if (!req.file) {
+  if (!req.body.avatar) {
     next(new NotFoundError(Message.AVATAR_EMPTY));
     return;
   }
 
-  const user = await userServices.updateProfile(req.userPayload!.id, { avatar: req.file.path });
+  const user = await userServices.updateProfile(req.userPayload!.id, { avatar: req.body.avatar });
 
   res.sendOK({
     data: user
