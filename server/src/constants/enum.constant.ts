@@ -69,3 +69,8 @@ export enum ShowtimeTypes {
   Normal = 'Normal',
   Sneakshow = 'Sneakshow'
 }
+
+export enum DiscountTypes {
+  Amount = 'Amount',
+  Percentage = 'Percentage'
+}

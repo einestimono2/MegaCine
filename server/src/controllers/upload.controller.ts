@@ -15,6 +15,7 @@ export const uploadImage = CatchAsyncError(async (req: Request, res: Response, n
 
   res.sendCREATED({
     data: {
+      path: req.file.path,
       file: req.file.filename
     }
   });
@@ -27,11 +28,14 @@ export const uploadImages = CatchAsyncError(async (req: Request, res: Response, 
     return;
   }
 
-  const files: string[] = [];
+  const files: object[] = [];
   const requestFiles = req.files as Express.Multer.File[];
 
   for (const file of requestFiles) {
-    files.push(file.filename);
+    files.push({
+      path: file.path,
+      file: file.filename
+    });
   }
 
   res.sendCREATED({

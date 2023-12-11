@@ -1,43 +1,60 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+
 import { cloudinary } from '../config';
-import { type CloudinaryResponse } from '../interfaces';
 import { Message } from '../constants';
 import { BadRequestError } from '../models';
-import { unlinkFileFromPath } from '../utils';
+// import { unlinkFileFromPath } from '../utils';
 
-export const replaceImage = async (
-  imgID: string | null,
-  file: string,
-  folder: string
-): Promise<CloudinaryResponse> => {
-  if (imgID) await destroy(imgID);
+/*
+  Sử dụng public_id của image là mongodb ID luôn
+  --> Khi up ảnh cùng public_id thì sẽ override ảnh trc đó có cùng public_id
+  --> Update thuận tiện hơn (Không cần xóa cũ, up mới mà chỉ cần up mới luôn)
+*/
 
-  return await uploadImage(file, folder);
+export const replaceImage = async ({
+  imgID,
+  public_id,
+  file,
+  folder
+}: {
+  imgID: string | null | undefined;
+  public_id: string | undefined;
+  file: string;
+  folder: string;
+}): Promise<string> => {
+  if (imgID) await destroy({ folder, public_id: public_id! });
+
+  return await uploadImage({ file, folder, public_id });
 };
 
-export const uploadImage = async (file: string, folder: string): Promise<CloudinaryResponse> => {
-  const myCloud = await cloudinary.uploader.upload(file, {
-    folder: `MegaCine/${folder}`,
-    width: 150,
-    crop: 'scale'
-  });
+export const uploadImage = async ({
+  public_id,
+  file,
+  folder
+}: {
+  public_id: string | undefined;
+  file: string;
+  folder: string;
+}): Promise<string> => {
+  try {
+    const myCloud = await cloudinary.uploader.upload(file, {
+      public_id,
+      folder: `MegaCine/${folder}`,
+      width: 150,
+      crop: 'scale'
+    });
 
-  if (!myCloud) {
+    // Xóa ảnh ở folder uploads
+    // unlinkFileFromPath(file);
+
+    return myCloud.secure_url;
+  } catch (_) {
     throw new BadRequestError(Message.UPLOAD_FAILED);
   }
-
-  // Xóa ảnh ở folder uploads
-  unlinkFileFromPath(file);
-
-  return {
-    public_id: myCloud.public_id,
-    url: myCloud.secure_url
-  };
 };
 
-export const destroy = async (id?: string) => {
-  if (!id) return;
-
-  await cloudinary.uploader.destroy(id);
+export const destroy = async ({ public_id, folder }: { public_id: string; folder: string }) => {
+  await cloudinary.uploader.destroy(`MegaCine/${folder}/${public_id}`);
 };
 
 export const resizeImage = (id: string, height: number, width: number, format: string = 'jpg') => {

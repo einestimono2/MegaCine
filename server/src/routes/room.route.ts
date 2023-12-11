@@ -190,6 +190,9 @@ export const roomRouter = router;
  *                type: string
  *                description: "2D | 3D"
  *                "enum": [ "2D", "3D"]
+ *              isActive:
+ *                type: boolean
+ *                default: true
  *              seats:
  *                type: array
  *                items:

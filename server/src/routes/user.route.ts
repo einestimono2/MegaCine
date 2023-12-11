@@ -1,18 +1,15 @@
 import express from 'express';
 
 import { getProfile, updateProfile, updatePassword, updateAvatar } from '../controllers';
-import { isAuthenticated, uploadImage } from '../middlewares';
+import { isAuthenticated } from '../middlewares';
 
 const router = express.Router();
 
 //! .../api/v1/user
 
-router
-  .route('/me')
-  .get(isAuthenticated, getProfile)
-  .patch(isAuthenticated, uploadImage.single('avatar'), updateProfile);
+router.route('/me').get(isAuthenticated, getProfile).patch(isAuthenticated, updateProfile);
 
-router.patch('/avatar', isAuthenticated, uploadImage.single('avatar'), updateAvatar);
+router.patch('/avatar', isAuthenticated, updateAvatar);
 
 router.patch('/update-password', isAuthenticated, updatePassword);
 
@@ -60,7 +57,7 @@ export const userRouter = router;
  *    requestBody:
  *      required: true
  *      content:
- *        multipart/form-data:
+ *        application/json:
  *          schema:
  *            type: object
  *            required:
@@ -68,7 +65,7 @@ export const userRouter = router;
  *            properties:
  *              avatar:
  *                type: string
- *                format: base64
+ *                example: ""
  *    responses:
  *      200:
  *        description: Success
@@ -96,7 +93,7 @@ export const userRouter = router;
  *    requestBody:
  *      required: true
  *      content:
- *        multipart/form-data:
+ *        application/json:
  *          schema:
  *            type: object
  *            properties:
@@ -104,9 +101,6 @@ export const userRouter = router;
  *                type: string
  *              phoneNumber:
  *                type: string
- *              avatar:
- *                type: string
- *                format: base64
  *    responses:
  *      200:
  *        description: Success

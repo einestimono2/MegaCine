@@ -1,10 +1,5 @@
 import { type Document } from 'mongoose';
 
-export interface ICloudinaryFile {
-  public_id: string;
-  url: string;
-}
-
 export interface ILocalizationField {
   en: string;
   vi: string;
@@ -15,7 +10,7 @@ export interface IUser extends Document {
   email: string;
   phoneNumber: string;
   password: string;
-  avatar: ICloudinaryFile;
+  avatar: string;
   role: string;
   isVerified: boolean;
   provider: string;
@@ -42,8 +37,10 @@ export interface IGenre extends Document {
 export interface IReview extends Document {
   user: string | IUser;
   rating: number;
-  messages: string;
+  message: string;
   isActive: boolean;
+  theater: string | ITheater;
+  movie: string | IMovie;
 }
 
 export interface ITheater extends Document {
@@ -56,13 +53,12 @@ export interface ITheater extends Document {
   email: string;
   description: ILocalizationField;
   hotline: string;
-  logo: ICloudinaryFile;
-  images: ICloudinaryFile[];
+  logo: string;
+  images: string[];
   isActive: boolean;
   totalFavorites: number;
   ratingAverage: number;
   ratingCount: number;
-  reviews: Array<string | IReview>; // type: mongoose.Schema.Types.ObjectId, ref: 'Review'
 }
 
 export interface IFare extends Document {
@@ -97,7 +93,7 @@ export interface IMovie extends Document {
   title: string;
   originalTitle: string;
   trailer: string;
-  poster: ICloudinaryFile;
+  poster: string;
   overview: ILocalizationField;
   duration: number;
   releaseDate: Date;
@@ -112,11 +108,10 @@ export interface IMovie extends Document {
   totalFavorites: number;
   ratingAverage: number;
   ratingCount: number;
-  reviews: Array<string | IReview>;
 }
 
 export interface IPerson extends Document {
-  avatar: ICloudinaryFile;
+  avatar: string;
   fullName: string;
   summary: ILocalizationField;
   movies: Array<string | IMovie>;
@@ -126,7 +121,7 @@ export interface IProduct extends Document {
   name: string;
   description: ILocalizationField;
   price: number;
-  image: ICloudinaryFile;
+  image: string;
   isActive: boolean;
   theater: string | ITheater;
 }
@@ -161,75 +156,49 @@ export interface IShowtime extends Document {
   type: string; // Sneakshow (Suất chiếu sớm / Suất chiếu đặc biệt), Normal
 }
 
-export interface IVoucher extends Document {
-  code: string;
-  name: string;
-  value: number;
-  type: string; // Amount | Percentage
-  startTime: Date;
-  endTime: Date;
-  showTime: string;
-  theater: string;
-  movie: string;
-  maxUse: number; // Số lượng tối đa
-  useCount: number; // so luong đã sd
-  minValue: number; // Giá trị min để có thể sử dụng
-  userUsed: string[];
-  isActive: boolean;
-}
-
 export interface IPromotion extends Document {
   // Thông tin
+  code: string;
   title: string;
-  description: string;
-  thumbnail: ICloudinaryFile;
+  content: string;
+  thumbnail: string | string;
   // Phạm vi + Thời gian
   startTime: Date;
   endTime: Date;
-  movie: string; // NULL - áp dụng all
-  showTime: string;
-  theater: string;
+  //
+  theater: string | ITheater;
   // Giá trị giảm giá
   value: number;
   type: string; // Amount | Percentage
   // Trạng thái
-  scope: string; // Áp dụng cho all | user
   userUsed: string[];
   isActive: boolean;
 }
 
 export interface IBooking extends Document {
-  reservation: string | IReservation;
+  showTime: string;
+  theater: string;
+  room: string;
+  seat: string[];
 
   products: Array<{
     quantity: number;
     items: string | IProduct;
   }>;
 
-  user: string | null;
+  user: string | IUser;
   email: string;
   phoneNumber: string;
 
-  promotion: string;
-  vourcher: string | IVoucher;
-
-  totalPrice: number;
-  finalPrice: number;
-
-  paymentInfo: {
-    id: string;
-    status: string;
-  };
-  paidAt: Date;
+  payment: string | IPayment;
 
   qrcode: string;
 }
 
-export interface IReservation {
-  user: string | null;
-  showTime: string;
-  theater: string;
-  room: string;
-  seat: Array<string | ISeat>;
-  // status: string;
+export interface IPayment {
+  promotion: string | IPromotion;
+  discountAmount: number;
+  totalPrice: number;
+  method: string;
+  paidAt: Date;
 }

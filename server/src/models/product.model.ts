@@ -1,13 +1,13 @@
 import mongoose, { type Schema } from 'mongoose';
 
 import { type IProduct } from '../interfaces';
-import { Message } from '../constants';
+import { Message, PRODUCT_UPLOAD_FOLDER } from '../constants';
+import { cloudinaryServices } from '../services';
 
 const productSchema: Schema<IProduct> = new mongoose.Schema(
   {
     name: {
       type: String,
-      unique: true,
       trim: true,
       required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'name'`]
     },
@@ -22,11 +22,8 @@ const productSchema: Schema<IProduct> = new mongoose.Schema(
       }
     },
     image: {
-      public_id: String,
-      url: {
-        type: String,
-        required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'image.url'`]
-      }
+      type: String,
+      required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'image'`]
     },
     price: {
       type: Number,
@@ -44,5 +41,17 @@ const productSchema: Schema<IProduct> = new mongoose.Schema(
   },
   { timestamps: true, versionKey: false }
 );
+
+productSchema.index({ name: 1, theater: 1 }, { unique: true });
+
+// Middleware khi gọi findByIdAndDelete
+productSchema.post('findOneAndDelete', async function (doc) {
+  if (doc) {
+    await cloudinaryServices.destroy({
+      public_id: doc._id,
+      folder: PRODUCT_UPLOAD_FOLDER
+    });
+  }
+});
 
 export const ProductModel = mongoose.model<IProduct>('Product', productSchema);

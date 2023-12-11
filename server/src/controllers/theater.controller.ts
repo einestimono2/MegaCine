@@ -5,11 +5,7 @@ import { theaterServices } from '../services';
 
 //! Add Theater
 export const createTheater = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const theater = await theaterServices.createTheater(
-    { ...req.body },
-    req.userPayload,
-    req.files as Record<string, Express.Multer.File[]>
-  );
+  const theater = await theaterServices.createTheater({ ...req.body }, req.userPayload);
 
   res.sendCREATED({
     data: theater
@@ -23,19 +19,7 @@ export const deleteTheater = CatchAsyncError(async (req: Request, res: Response,
 });
 
 export const updateTheater = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const files = req.files as Record<string, Express.Multer.File[]>;
-
-  const logo = files.logo?.at(0)?.path;
-  let images: string[] | undefined;
-  if (files.images?.length) {
-    images = [];
-
-    for (const image of files.images) {
-      images.push(image.path);
-    }
-  }
-
-  const theater = await theaterServices.updateTheater(req.params.id, { ...req.body, logo, images });
+  const theater = await theaterServices.updateTheater(req.params.id, { ...req.body });
 
   res.sendCREATED({
     data: theater
@@ -56,6 +40,23 @@ export const getTheaters = CatchAsyncError(async (req: Request, res: Response, n
   res.sendOK({
     data: payload?.data ?? [],
     extra: payload?.extra ?? { totalCount: 0 }
+  });
+});
+
+export const getTheatersByCity = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+  const [payload] = await theaterServices.getTheatersByCity(req); // [ { extra: {}, data: [] } ]
+
+  res.sendOK({
+    data: payload?.data ?? [],
+    extra: payload?.extra ?? { totalCount: 0 }
+  });
+});
+
+export const getMostRateTheaters = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+  const theaters = await theaterServices.getMostRateTheaters(req); // [ { extra: {}, data: [] } ]
+
+  res.sendOK({
+    data: theaters
   });
 });
 

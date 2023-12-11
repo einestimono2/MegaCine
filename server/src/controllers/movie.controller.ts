@@ -5,13 +5,7 @@ import { movieServices } from '../services';
 
 //! Create a movie
 export const createMovie = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  req.body.directors = req.body.directors.split(',');
-  req.body.actors = req.body.actors.split(',');
-  req.body.genres = req.body.genres.split(',');
-  req.body.formats = req.body.formats.split(',');
-  req.body.languages = req.body.languages.split(',');
-
-  const movie = await movieServices.createMovie({ ...req.body }, req.file?.path);
+  const movie = await movieServices.createMovie({ ...req.body });
 
   res.sendCREATED({
     data: movie
@@ -77,7 +71,7 @@ export const getMovieDetails = CatchAsyncError(async (req: Request, res: Respons
 
 //! Update movie
 export const updateMovie = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const newMovie = await movieServices.updateMovie(req.params.id, { ...req.body, poster: req.file?.path });
+  const newMovie = await movieServices.updateMovie(req.params.id, { ...req.body });
 
   res.sendCREATED({
     data: newMovie
