@@ -1,12 +1,12 @@
-/* eslint-disable react/no-array-index-key */
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import ROUTES from '../constants/routes';
 import HomePage from '../pages/Home';
 import NotFoundPage from '../pages/NotFoundPage';
+import BaseLayout from '../components/base-layout/layout';
 
 const routes = [
-  { path: ROUTES.HOME, element: <HomePage /> },
+  { path: ROUTES.HOME, element: <BaseLayout><HomePage /></BaseLayout> },
   {
     path: '*',
     element: <NotFoundPage />,
