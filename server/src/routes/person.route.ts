@@ -1,19 +1,19 @@
 import express from 'express';
 
 import { createPerson, updatePerson, deletePerson, getPerson, getPersons } from '../controllers/person.controller';
-import { isAuthenticated, authorizeRoles, uploadImage } from '../middlewares';
+import { isAuthenticated, authorizeRoles } from '../middlewares';
 import { Roles } from '../constants';
 
 const router = express.Router();
 const adminRoles = [Roles.Manager, Roles.Admin];
 
 //! .../api/v1/person
-router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), uploadImage.single('avatar'), createPerson);
+router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), createPerson);
 router.get('/list', isAuthenticated, authorizeRoles(...adminRoles), getPersons);
 
 router
   .route('/details/:id')
-  .put(isAuthenticated, authorizeRoles(...adminRoles), uploadImage.single('avatar'), updatePerson)
+  .put(isAuthenticated, authorizeRoles(...adminRoles), updatePerson)
   .delete(isAuthenticated, authorizeRoles(...adminRoles), deletePerson)
   .get(getPerson);
 
@@ -37,7 +37,7 @@ export const personRouter = router;
  *    requestBody:
  *      required: true
  *      content:
- *        multipart/form-data:
+ *        application/json:
  *          schema:
  *            type: object
  *            required:
@@ -56,7 +56,7 @@ export const personRouter = router;
  *                    example: ''
  *              avatar:
  *                type: string
- *                format: base64
+ *                example: ''
  *    responses:
  *      201:
  *        description: Success
@@ -134,7 +134,7 @@ export const personRouter = router;
  *    requestBody:
  *      required: true
  *      content:
- *        multipart/form-data:
+ *        application/json:
  *          schema:
  *            type: object
  *            required:
@@ -153,7 +153,7 @@ export const personRouter = router;
  *                    example: ''
  *              avatar:
  *                type: string
- *                format: base64
+ *                example: ''
  *    responses:
  *      201:
  *        description: Success

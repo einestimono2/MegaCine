@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { isAuthenticated, authorizeRoles, uploadImage } from '../middlewares';
+import { isAuthenticated, authorizeRoles } from '../middlewares';
 import { movieController } from '../controllers';
 import { Roles } from '../constants';
 
@@ -8,15 +8,9 @@ const router = express.Router();
 const adminRoles = [Roles.Manager, Roles.Admin];
 
 //! .../api/v1/movie
-router.post(
-  '/create',
-  isAuthenticated,
-  authorizeRoles(...adminRoles),
-  uploadImage.single('poster'),
-  movieController.createMovie
-);
+router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), movieController.createMovie);
 
-router.get('/list', movieController.getMovies);
+router.get('/list', isAuthenticated, authorizeRoles(...adminRoles), movieController.getMovies);
 router.get('/now-showing', movieController.getNowShowingMovies);
 router.get('/coming-soon', movieController.getComingSoonMovies);
 router.get('/sneak-show', movieController.getSneakShowMovies);
@@ -25,7 +19,7 @@ router.get('/most-rate', movieController.getMostRateMovies);
 
 router
   .route('/details/:id')
-  .put(isAuthenticated, authorizeRoles(...adminRoles), uploadImage.single('poster'), movieController.updateMovie)
+  .put(isAuthenticated, authorizeRoles(...adminRoles), movieController.updateMovie)
   .delete(isAuthenticated, authorizeRoles(...adminRoles), movieController.deleteMovie)
   .get(movieController.getMovieDetails);
 
@@ -37,7 +31,7 @@ export const movieRouter = router;
  * /movie/list:
  *  get:
  *    tags: [Movie]
- *    summary: "[All] Danh sách phim"
+ *    summary: "[Manager] Danh sách phim"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -105,8 +99,6 @@ export const movieRouter = router;
  *        name: limit
  *        type: string
  *        description: Số lượng kết quả mỗi trang
- *    security:
- *      - BearerToken: []
  *    responses:
  *      200:
  *        description: Success
@@ -141,8 +133,6 @@ export const movieRouter = router;
  *        name: limit
  *        type: string
  *        description: Số lượng kết quả mỗi trang
- *    security:
- *      - BearerToken: []
  *    responses:
  *      200:
  *        description: Success
@@ -173,8 +163,6 @@ export const movieRouter = router;
  *        name: limit
  *        type: string
  *        description: Số lượng kết quả mỗi trang
- *    security:
- *      - BearerToken: []
  *    responses:
  *      200:
  *        description: Success
@@ -190,7 +178,7 @@ export const movieRouter = router;
  * /movie/most-rate:
  *  get:
  *    tags: [Movie]
- *    summary: "[All] Danh sách đánh giá cao"
+ *    summary: "[All] Top phim đánh giá cao"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -198,11 +186,13 @@ export const movieRouter = router;
  *        default: vi
  *        description: Ngôn ngữ trả về 'en | vi'
  *      - in: query
- *        name: limit
+ *        name: movieId
  *        type: string
- *        description: Số lượng kết
- *    security:
- *      - BearerToken: []
+ *        description: Bỏ qua movie chỉ định (Lấy list đánh giá cao ngoài movie đó)
+ *      - in: query
+ *        name: top
+ *        type: string
+ *        description: Số lượng kết quả
  *    responses:
  *      200:
  *        description: Success
@@ -230,7 +220,7 @@ export const movieRouter = router;
  *    requestBody:
  *      required: true
  *      content:
- *        multipart/form-data:
+ *        application/json:
  *          schema:
  *            type: object
  *            required:
@@ -248,29 +238,28 @@ export const movieRouter = router;
  *            properties:
  *              title:
  *                type: string
- *                example: "NĂM ĐÊM KINH HOÀNG"
+ *                example: ""
  *              originalTitle:
  *                type: string
- *                example: "FIVE NIGHTS AT FREDDY'S"
+ *                example: ""
  *              overview:
  *                type: object
  *                properties:
  *                  en:
  *                    type: string
- *                    example: "A troubled security guard begins working at Freddy Fazbear's Pizza. During his first night on the job, he realizes that the night shift won't be so easy to get through. Pretty soon he will unveil what actually happened at Freddy's."
+ *                    example: ""
  *                  vi:
  *                    type: string
- *                    example: "Nhân viên bảo vệ Mike bắt đầu làm việc tại Freddy Fazbear's Pizza. Trong đêm làm việc đầu tiên, anh nhận ra mình sẽ không dễ gì vượt qua được ca đêm ở đây. Chẳng mấy chốc, anh sẽ vén màn sự thật đã xảy ra tại Freddy's."
+ *                    example: ""
  *              trailer:
  *                description: Đường dẫn tới video trailer
  *                type: string
- *                example: 'https://www.youtube.com/watch?v=J7XVzwEdUNw&embeds_referring_euri=https%3A%2F%2Fwww.cgv.vn%2F&source_ve_path=Mjg2NjY&feature=emb_logo'
+ *                example: ''
  *              poster:
  *                type: string
- *                format: base64
+ *                default: ""
  *              duration:
  *                type: number
- *                example: 105
  *              releaseDate:
  *                description: "YYYY-MM-DD"
  *                type: string
@@ -281,18 +270,17 @@ export const movieRouter = router;
  *                description: Tên hoặc objectId
  *                items:
  *                  type: string
- *                example: [Matthew Lillard, Josh Hutcherson, Mary Stuart Masterson]
+ *                example: []
  *              actors:
  *                type: array
  *                items:
  *                  type: string
- *                example: [Emma Tammi]
+ *                example: []
  *              languages:
  *                type: array
  *                items:
  *                  type: string
  *                  "enum": [ "Subtitles", "Dubbing"]
- *                example: [Subtitles]
  *              ageType:
  *                type: string
  *                description: "P (All) | K | T13 (13+) | T16 (16+) | T18 (18+) | C"
@@ -302,12 +290,12 @@ export const movieRouter = router;
  *                items:
  *                  type: string
  *                  "enum": [ "2D", "3D"]
- *                example: [2D]
  *              genres:
  *                description: Tên hoặc objectId
  *                type: array
  *                items:
  *                  type: string
+ *                example: []
  *    responses:
  *      201:
  *        description: Success
@@ -367,14 +355,16 @@ export const movieRouter = router;
  *    requestBody:
  *      required: true
  *      content:
- *        multipart/form-data:
+ *        application/json:
  *          schema:
  *            type: object
  *            properties:
  *              title:
  *                type: string
+ *                example: ""
  *              originalTitle:
  *                type: string
+ *                example: ""
  *              overview:
  *                type: object
  *                properties:
@@ -387,9 +377,10 @@ export const movieRouter = router;
  *              trailer:
  *                description: Đường dẫn tới video trailer
  *                type: string
+ *                example: ""
  *              poster:
  *                type: string
- *                format: base64
+ *                example: ""
  *              duration:
  *                type: number
  *              releaseDate:
@@ -402,10 +393,12 @@ export const movieRouter = router;
  *                description: objectId
  *                items:
  *                  type: string
+ *                example: []
  *              actors:
  *                type: array
  *                items:
  *                  type: string
+ *                example: []
  *              languages:
  *                type: array
  *                items:
@@ -425,6 +418,9 @@ export const movieRouter = router;
  *                type: array
  *                items:
  *                  type: string
+ *              isActive:
+ *                type: boolean
+ *                default: true
  *    responses:
  *      201:
  *        description: Success

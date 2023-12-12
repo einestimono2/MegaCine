@@ -1,27 +1,28 @@
 import { type Request } from 'express';
 import { type Types, isValidObjectId } from 'mongoose';
 
-import { Message } from '../constants';
+import { Message, PERSON_UPLOAD_FOLDER } from '../constants';
 import { type IUpdatePersonRequest, type IPerson } from '../interfaces';
 import { NotFoundError, PersonModel } from '../models';
 import { convertRequestToPipelineStages, convertToMongooseId } from '../utils';
 import { cloudinaryServices } from '.';
 
-export const createPerson = async (person: IPerson, avatar?: string) => {
-  if (person.summary && typeof person.summary === 'string') {
-    try {
-      person.summary = JSON.parse(person.summary);
-    } catch (_) {}
-  }
-
-  if (avatar) {
-    person.avatar = await cloudinaryServices.uploadImage(avatar, 'avatars');
-  }
-
+export const createPerson = async (person: IPerson) => {
   const newPerson = new PersonModel(person);
 
+  if (person.avatar) {
+    newPerson.avatar = await cloudinaryServices.uploadImage({
+      public_id: newPerson._id,
+      folder: PERSON_UPLOAD_FOLDER,
+      file: person.avatar
+    });
+  }
+
   return await newPerson.save().catch(async (err) => {
-    await cloudinaryServices.destroy(person.avatar.public_id);
+    await cloudinaryServices.destroy({
+      public_id: newPerson._id,
+      folder: PERSON_UPLOAD_FOLDER
+    });
 
     throw err;
   });
@@ -86,27 +87,30 @@ export const getPersons = async (req: Request) => {
 };
 
 export const updatePerson = async (id: string, newPerson: IUpdatePersonRequest) => {
+  // Xóa ảnh mới khỏi obj nếu có
+  const avatar = newPerson.avatar;
+  if (avatar) delete newPerson.avatar;
+
   const person = await getPersonById(id);
 
-  if (newPerson.fullName) person.fullName = newPerson.fullName;
-  if (newPerson.summary) {
-    try {
-      person.summary = JSON.parse(newPerson.summary);
-    } catch (_) {}
-  }
-  if (newPerson.avatar)
-    person.avatar = await cloudinaryServices.replaceImage(person.avatar.public_id, newPerson.avatar, 'people');
+  Object.assign(person, newPerson);
+  await person.validate();
+
+  if (avatar)
+    person.avatar = await cloudinaryServices.uploadImage({
+      public_id: person._id,
+      file: avatar,
+      folder: PERSON_UPLOAD_FOLDER
+    });
 
   return await person.save();
 };
 
 export const deletePerson = async (id: string) => {
-  const person = await getPersonById(id);
-
-  // Xóa ảnh trên cloudinary
-  await cloudinaryServices.destroy(person.avatar.public_id);
-
-  await person.deleteOne();
+  const doc = await PersonModel.findByIdAndDelete(id);
+  if (!doc) {
+    throw new NotFoundError(Message.PERSON_NOT_FOUND);
+  }
 };
 
 export const deleteMovieFromPerson = async (id: string, movieId: string) => {

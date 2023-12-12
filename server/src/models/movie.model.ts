@@ -1,7 +1,8 @@
 import mongoose, { type Schema } from 'mongoose';
 
 import { type IMovie } from '../interfaces';
-import { Message, AgeTypes, MovieFormats, MovieLanguages } from '../constants';
+import { Message, AgeTypes, MovieFormats, MovieLanguages, MOVIE_UPLOAD_FOLDER } from '../constants';
+import { cloudinaryServices, personServices } from '../services';
 
 const movieSchema: Schema<IMovie> = new mongoose.Schema(
   {
@@ -18,14 +19,8 @@ const movieSchema: Schema<IMovie> = new mongoose.Schema(
       required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'trailer'`]
     },
     poster: {
-      public_id: {
-        type: String,
-        required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'poster.public_id'`]
-      },
-      url: {
-        type: String,
-        required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'poster.url'`]
-      }
+      type: String,
+      required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'poster.public_id'`]
     },
     overview: {
       en: {
@@ -99,15 +94,28 @@ const movieSchema: Schema<IMovie> = new mongoose.Schema(
       default: true
     },
     ratingAverage: Number,
-    ratingCount: Number,
-    reviews: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Review'
-      }
-    ]
+    ratingCount: Number
   },
   { timestamps: true, versionKey: false }
 );
+
+// Middleware khi gọi findByIdAndDelete
+movieSchema.post('findOneAndDelete', async function (doc) {
+  if (doc) {
+    // Xóa movie id của từng diễn viên
+    for (let i = 0; i < doc.directors.length; i++) {
+      await personServices.deleteMovieFromPerson(doc.directors[i] as string, doc._id);
+    }
+
+    for (let i = 0; i < doc.actors.length; i++) {
+      await personServices.deleteMovieFromPerson(doc.actors[i] as string, doc._id);
+    }
+
+    await cloudinaryServices.destroy({
+      public_id: doc._id,
+      folder: MOVIE_UPLOAD_FOLDER
+    });
+  }
+});
 
 export const MovieModel = mongoose.model<IMovie>('Movie', movieSchema);

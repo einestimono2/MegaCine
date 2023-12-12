@@ -5,7 +5,7 @@ import { personServices } from '../services';
 
 //! Add Person
 export const createPerson = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const person = await personServices.createPerson({ ...req.body }, req.file?.path);
+  const person = await personServices.createPerson({ ...req.body });
 
   res.sendCREATED({
     data: person
@@ -14,7 +14,7 @@ export const createPerson = CatchAsyncError(async (req: Request, res: Response, 
 
 //! Update Person
 export const updatePerson = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const person = await personServices.updatePerson(req.params.id, { ...req.body, avatar: req.file?.path });
+  const person = await personServices.updatePerson(req.params.id, { ...req.body });
 
   res.sendCREATED({
     data: person
