@@ -15,6 +15,8 @@ import {
   faTags,
 } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
+import RoomPage from "../RoomPage";
+import MoviePage from "../MoviePage";
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -39,9 +41,9 @@ export default function AdminPage() {
       case "2":
         return "ýeys";
       case "5":
-        return "test";
+        return <MoviePage mode="create" />;
       case "6":
-        return <p onClick={() => setSelectedKey("5")}>hí</p>;
+        return <MoviePage mode="list" />;
       default:
         return <></>;
     }
@@ -51,7 +53,7 @@ export default function AdminPage() {
       case "1":
         return <Dashboard />;
       case "2":
-        return "hiehif";
+        return <RoomPage />;
       case "5":
         return "test";
       case "6":
