@@ -1,6 +1,14 @@
-.navbar-brand{
-    font-weight: bold;
+.navbar-brand > img{
+    width: 3.5rem;
+    height: 3.5rem;
 }
 .navbar{
-    background-color: rgb(200, 250, 255) !important;
+    background-color: var(--background-color) !important;
+}
+.nav-link{
+    color: var(--main-color-light) !important;
+    font-weight: 500;
+}
+.icon-button{
+    color: var(--main-color-light);
 }

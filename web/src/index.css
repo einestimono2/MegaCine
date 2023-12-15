@@ -9,3 +9,12 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+:root{
+  --main-color: #011f4b;
+  --second-color: #03396c;
+  --main-color-light: #005b96;
+  --second-color-light: #6497b1;
+  --background-color-dark: #b3cde0;
+  --background-color: 	#e4edf2;
+}
