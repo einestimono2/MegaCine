@@ -2,6 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

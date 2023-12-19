@@ -7,7 +7,6 @@ export default function BaseLayout(props) {
   return (
     <div>
         <Header/>
-        <Banner/>
         {props.children}
         <Footer/>
     </div>
