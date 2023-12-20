@@ -5,18 +5,14 @@ import { movieServices } from '../services';
 
 //! Create a movie
 export const createMovie = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  req.body.directors = req.body.directors.split(',');
-  req.body.actors = req.body.actors.split(',');
-  req.body.genres = req.body.genres.split(',');
-
-  const movie = await movieServices.createMovie({ ...req.body }, req.file?.path);
+  const movie = await movieServices.createMovie({ ...req.body });
 
   res.sendCREATED({
     data: movie
   });
 });
 
-//! List movies
+//! Danh sách phim
 export const getMovies = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const [payload] = await movieServices.getMovies(req); // [ { extra: {}, data: [] } ]
 
@@ -26,8 +22,46 @@ export const getMovies = CatchAsyncError(async (req: Request, res: Response, nex
   });
 });
 
+//! Phim đang chiếu
+export const getNowShowingMovies = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+  const [payload] = await movieServices.getNowShowingMovies(req); // [ { extra: {}, data: [] } ]
+
+  res.sendOK({
+    data: payload?.data ?? [],
+    extra: payload?.extra ?? { totalCount: 0 }
+  });
+});
+
+//! Phim sắp chiếu
+export const getComingSoonMovies = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+  const [payload] = await movieServices.getComingSoonMovies(req); // [ { extra: {}, data: [] } ]
+
+  res.sendOK({
+    data: payload?.data ?? [],
+    extra: payload?.extra ?? { totalCount: 0 }
+  });
+});
+
+//! Phim chiếu sớm
+export const getSneakShowMovies = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+  const movies = await movieServices.getSneakShowMovies(req); // [ { extra: {}, data: [] } ]
+
+  res.sendOK({
+    data: movies
+  });
+});
+
+//! Phim đánh giá cao
+export const getMostRateMovies = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+  const movies = await movieServices.getMostRateMovies(req);
+
+  res.sendOK({
+    data: movies
+  });
+});
+
 //! Movie details
-export const getMovie = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const getMovieDetails = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const movie = await movieServices.getMovieDetails(req.params.id, req.getLocale());
 
   res.sendOK({
@@ -37,7 +71,7 @@ export const getMovie = CatchAsyncError(async (req: Request, res: Response, next
 
 //! Update movie
 export const updateMovie = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const newMovie = await movieServices.updateMovie(req.params.id, { ...req.body, poster: req.file?.path });
+  const newMovie = await movieServices.updateMovie(req.params.id, { ...req.body });
 
   res.sendCREATED({
     data: newMovie

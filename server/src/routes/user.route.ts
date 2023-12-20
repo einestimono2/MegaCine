@@ -1,29 +1,27 @@
 import express from 'express';
 
 import { getProfile, updateProfile, updatePassword, updateAvatar } from '../controllers';
-import { isAuthenticated, uploadImage } from '../middlewares';
+import { isAuthenticated } from '../middlewares';
 
 const router = express.Router();
 
-// .../api/v1/user
-router
-  .route('/me')
-  .get(isAuthenticated, getProfile)
-  .put(isAuthenticated, uploadImage.single('avatar'), updateProfile);
+//! .../api/v1/user
 
-router.put('/avatar', isAuthenticated, uploadImage.single('avatar'), updateAvatar);
+router.route('/me').get(isAuthenticated, getProfile).patch(isAuthenticated, updateProfile);
 
-router.put('/update-password', isAuthenticated, updatePassword);
+router.patch('/avatar', isAuthenticated, updateAvatar);
+
+router.patch('/update-password', isAuthenticated, updatePassword);
 
 export const userRouter = router;
 
 //! My Profile
 /**
  * @swagger
- * /api/v1/user/me:
+ * /user/me:
  *  get:
  *    tags: [User]
- *    summary: Lấy thông tin tài khoản
+ *    summary: "[User] Lấy thông tin tài khoản"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -44,10 +42,10 @@ export const userRouter = router;
 //! Cập nhật avatar
 /**
  * @swagger
- * /api/v1/user/avatar:
- *  put:
+ * /user/avatar:
+ *  patch:
  *    tags: [User]
- *    summary: Cập nhật avatar người dùng
+ *    summary: "[User] Cập nhật avatar người dùng"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -59,7 +57,7 @@ export const userRouter = router;
  *    requestBody:
  *      required: true
  *      content:
- *        multipart/form-data:
+ *        application/json:
  *          schema:
  *            type: object
  *            required:
@@ -67,7 +65,7 @@ export const userRouter = router;
  *            properties:
  *              avatar:
  *                type: string
- *                format: base64
+ *                example: ""
  *    responses:
  *      200:
  *        description: Success
@@ -80,10 +78,10 @@ export const userRouter = router;
 //! Cập nhật thông tin tài khoản
 /**
  * @swagger
- * /api/v1/user/me:
- *  put:
+ * /user/me:
+ *  patch:
  *    tags: [User]
- *    summary: Cập nhật thông tin tài khoản
+ *    summary: "[User] Cập nhật thông tin tài khoản"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -95,7 +93,7 @@ export const userRouter = router;
  *    requestBody:
  *      required: true
  *      content:
- *        multipart/form-data:
+ *        application/json:
  *          schema:
  *            type: object
  *            properties:
@@ -103,9 +101,6 @@ export const userRouter = router;
  *                type: string
  *              phoneNumber:
  *                type: string
- *              avatar:
- *                type: string
- *                format: base64
  *    responses:
  *      200:
  *        description: Success
@@ -118,10 +113,10 @@ export const userRouter = router;
 //! Đổi mật khẩu
 /**
  * @swagger
- * /api/v1/user/update-password:
- *  put:
+ * /user/update-password:
+ *  patch:
  *    tags: [User]
- *    summary: Thay đổi mật khẩu tài khoản
+ *    summary: "[User] Thay đổi mật khẩu tài khoản"
  *    security:
  *      - BearerToken: []
  *    parameters:

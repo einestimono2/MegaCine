@@ -1,31 +1,31 @@
 import express from 'express';
 
 import { createPerson, updatePerson, deletePerson, getPerson, getPersons } from '../controllers/person.controller';
-import { isAuthenticated, authorizeRoles, uploadImage } from '../middlewares';
+import { isAuthenticated, authorizeRoles } from '../middlewares';
 import { Roles } from '../constants';
 
 const router = express.Router();
 const adminRoles = [Roles.Manager, Roles.Admin];
 
 //! .../api/v1/person
-router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), uploadImage.single('avatar'), createPerson);
-router.get('/list', isAuthenticated, getPersons);
+router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), createPerson);
+router.get('/list', isAuthenticated, authorizeRoles(...adminRoles), getPersons);
 
 router
   .route('/details/:id')
-  .put(isAuthenticated, authorizeRoles(...adminRoles), uploadImage.single('avatar'), updatePerson)
+  .put(isAuthenticated, authorizeRoles(...adminRoles), updatePerson)
   .delete(isAuthenticated, authorizeRoles(...adminRoles), deletePerson)
-  .get(isAuthenticated, getPerson);
+  .get(getPerson);
 
 export const personRouter = router;
 
 //! Thêm mới nghệ sỹ
 /**
  * @swagger
- * /api/v1/person/create:
+ * /person/create:
  *  post:
  *    tags: [Person]
- *    summary: Thêm mới nghệ sỹ
+ *    summary: "[Manager] Thêm mới nghệ sỹ"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -37,7 +37,7 @@ export const personRouter = router;
  *    requestBody:
  *      required: true
  *      content:
- *        multipart/form-data:
+ *        application/json:
  *          schema:
  *            type: object
  *            required:
@@ -56,7 +56,7 @@ export const personRouter = router;
  *                    example: ''
  *              avatar:
  *                type: string
- *                format: base64
+ *                example: ''
  *    responses:
  *      201:
  *        description: Success
@@ -69,10 +69,12 @@ export const personRouter = router;
 //! List Person
 /**
  * @swagger
- * /api/v1/person/list:
+ * /person/list:
  *  get:
  *    tags: [Person]
- *    summary: Lấy danh sách nghệ sỹ
+ *    summary: "[Manager] Lấy danh sách nghệ sỹ"
+ *    security:
+ *      - BearerToken: []
  *    parameters:
  *      - in: query
  *        name: hl
@@ -100,8 +102,6 @@ export const personRouter = router;
  *        name: fields
  *        type: string
  *        description: Giới hạn trường trả về (cách nhau bởi dấu phẩy)
- *    security:
- *      - BearerToken: []
  *    responses:
  *      200:
  *        description: Success
@@ -114,10 +114,10 @@ export const personRouter = router;
 //! Cập nhật thông tin nghệ sỹ
 /**
  * @swagger
- * /api/v1/person/details/{id}:
+ * /person/details/{id}:
  *  put:
  *    tags: [Person]
- *    summary: Cập nhật thông tin nghệ sỹ
+ *    summary: "[Manager] Cập nhật thông tin nghệ sỹ"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -134,7 +134,7 @@ export const personRouter = router;
  *    requestBody:
  *      required: true
  *      content:
- *        multipart/form-data:
+ *        application/json:
  *          schema:
  *            type: object
  *            required:
@@ -153,7 +153,7 @@ export const personRouter = router;
  *                    example: ''
  *              avatar:
  *                type: string
- *                format: base64
+ *                example: ''
  *    responses:
  *      201:
  *        description: Success
@@ -166,12 +166,10 @@ export const personRouter = router;
 //! Lấy thông tin nghệ sỹ
 /**
  * @swagger
- * /api/v1/person/details/{id}:
+ * /person/details/{id}:
  *  get:
  *    tags: [Person]
- *    summary: Thông tin chi tiết nghệ sỹ
- *    security:
- *      - BearerToken: []
+ *    summary: "[All] Thông tin chi tiết nghệ sỹ"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -195,10 +193,10 @@ export const personRouter = router;
 //! Xóa nghệ sỹ
 /**
  * @swagger
- * /api/v1/person/details/{id}:
+ * /person/details/{id}:
  *  delete:
  *    tags: [Person]
- *    summary: Xóa nghệ sỹ
+ *    summary: "[Manager] Xóa nghệ sỹ"
  *    security:
  *      - BearerToken: []
  *    parameters:

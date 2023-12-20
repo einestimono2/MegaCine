@@ -7,16 +7,16 @@ import { Roles } from '../constants';
 const router = express.Router();
 const adminRoles = [Roles.Manager, Roles.Admin];
 
-// ....api/v1/genre
+//! .../api/v1/genre
 
 // [POST] Add Genre
 router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), createGenre);
 
 // [GET] List Genres
-router.get('/list', isAuthenticated, getGenres);
+router.get('/list', getGenres);
 
 // [GET] Genre
-router.get('/details/:id', isAuthenticated, getGenre);
+router.get('/details/:id', getGenre);
 
 // [PUT] Update Genre
 router.put('/details/:id', isAuthenticated, authorizeRoles(...adminRoles), updateGenre);
@@ -29,10 +29,10 @@ export const genreRouter = router;
 //! Thêm mới 1 thể loại
 /**
  * @swagger
- * /api/v1/genre/create:
+ * /genre/create:
  *  post:
  *    tags: [Genre]
- *    summary: Thêm mới một thể loại
+ *    summary: "[Manager] Thêm mới một thể loại"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -88,10 +88,10 @@ export const genreRouter = router;
 //! List Genre
 /**
  * @swagger
- * /api/v1/genre/list:
+ * /genre/list:
  *  get:
  *    tags: [Genre]
- *    summary: Lấy danh sách thể loại
+ *    summary: "[All] Lấy danh sách thể loại"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -133,12 +133,10 @@ export const genreRouter = router;
 //! Lấy tên của thể loại
 /**
  * @swagger
- * /api/v1/genre/details/{id}:
+ * /genre/details/{id}:
  *  get:
  *    tags: [Genre]
- *    summary: Lấy tên của thể loại
- *    security:
- *      - BearerToken: []
+ *    summary: "[All] Lấy tên của thể loại"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -162,10 +160,10 @@ export const genreRouter = router;
 //! Cập nhật tên thể loại
 /**
  * @swagger
- * /api/v1/genre/details/{id}:
+ * /genre/details/{id}:
  *  put:
  *    tags: [Genre]
- *    summary: Cập nhật tên thể loại
+ *    summary: "[Manager] Cập nhật tên thể loại"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -225,10 +223,10 @@ export const genreRouter = router;
 //! Xóa thể loại
 /**
  * @swagger
- * /api/v1/genre/details/{id}:
+ * /genre/details/{id}:
  *  delete:
  *    tags: [Genre]
- *    summary: Xóa thể loại
+ *    summary: "[Manager] Xóa thể loại"
  *    security:
  *      - BearerToken: []
  *    parameters:

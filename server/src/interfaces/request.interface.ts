@@ -44,10 +44,11 @@ export interface IUpdateMovieRequest {
   releaseDate?: Date;
   directors?: string;
   actors?: string;
-  language?: string;
+  languages?: string;
   ageType?: string;
-  type?: string;
+  formats?: string;
   genres?: string;
+  isActive?: boolean;
 }
 
 export interface IUpdateProductRequest {
@@ -99,6 +100,44 @@ export interface IUpdateFareRequest {
   }>;
   surcharge?: Array<{ name: string; value: number }>;
 }
+
+export interface IUpdateRoomRequest {
+  type?: string;
+  name?: string;
+  capacity?: number;
+  seats?: Array<{
+    row: string;
+    col: number;
+    coordinates: [number, number];
+    type?: string;
+    status?: string;
+  }>;
+  isActive?: boolean;
+}
+
+export interface IUpdateShowtimeRequest {
+  startTime?: Date;
+  endTime?: Date;
+  isActive?: boolean;
+  type?: string;
+  language?: string;
+}
+
+export interface IUpdatePromotionRequest {
+  code?: string;
+  title?: string;
+  content?: string;
+  thumbnail?: string;
+  startTime?: Date;
+  endTime?: Date;
+  value?: number;
+  type?: string;
+  isActive?: boolean;
+}
+
+// export interface IUpdateBookingRequest {
+
+// }
 
 export interface IOTPRequest {
   id: string;

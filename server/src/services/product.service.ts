@@ -1,24 +1,30 @@
 import { type Request } from 'express';
 
-import { Message } from '../constants';
+import { Message, PRODUCT_UPLOAD_FOLDER } from '../constants';
 import { type IUpdateProductRequest, type IProduct } from '../interfaces';
 import { NotFoundError, ProductModel } from '../models';
 import { convertRequestToPipelineStages, convertToMongooseId } from '../utils';
 import { cloudinaryServices } from '.';
 
-export const createProduct = async (product: IProduct, image?: string) => {
+export const createProduct = async (product: IProduct) => {
   if (!product.theater) {
     throw new NotFoundError(Message.MANAGER_THEATER_EMPTY);
   }
 
-  // Upload ảnh
-  if (image) {
-    product.image = await cloudinaryServices.uploadImage(image, 'products');
-  }
-
   const newProduct = new ProductModel(product);
+
+  // Upload ảnh
+  newProduct.image = await cloudinaryServices.uploadImage({
+    folder: PRODUCT_UPLOAD_FOLDER,
+    public_id: newProduct._id,
+    file: product.image
+  });
+
   return await newProduct.save().catch(async (err) => {
-    await cloudinaryServices.destroy(product.image.public_id);
+    await cloudinaryServices.destroy({
+      folder: PRODUCT_UPLOAD_FOLDER,
+      public_id: newProduct._id
+    });
 
     throw err;
   });
@@ -74,31 +80,33 @@ export const getProductsByTheater = async (req: Request) => {
     localizationFields: ['description']
   });
 
-  return await ProductModel.aggregate(matchPipeline).append(options);
+  return await ProductModel.aggregate(matchPipeline).append(...options);
 };
 
 export const updateProduct = async (id: string, newProduct: IUpdateProductRequest) => {
-  const product = await getProductById(id);
+  // Xóa thumbnail mới khỏi obj nếu có
+  const image = newProduct.image;
+  if (image) delete newProduct.image;
 
-  if (newProduct.name) product.name = newProduct.name;
-  if (newProduct.description) {
-    try {
-      product.description = JSON.parse(newProduct.description);
-    } catch (_) {}
+  const product = await ProductModel.findByIdAndUpdate(id, newProduct, { new: true, runValidators: true });
+  if (!product) {
+    throw new NotFoundError(Message.PRODUCT_NOT_FOUND);
   }
-  if (newProduct.image)
-    product.image = await cloudinaryServices.replaceImage(product.image.public_id, newProduct.image, 'products');
-  if (newProduct.price) product.price = newProduct.price;
-  if (newProduct.isActive) product.isActive = newProduct.isActive;
 
-  return await product.save();
+  if (image) {
+    await cloudinaryServices.uploadImage({
+      public_id: product._id,
+      file: image,
+      folder: PRODUCT_UPLOAD_FOLDER
+    });
+  }
+
+  return product;
 };
 
 export const deleteProduct = async (id: string) => {
-  const product = await getProductById(id);
-
-  // Xóa ảnh trên cloudinary
-  await cloudinaryServices.destroy(product.image.public_id);
-
-  await product.deleteOne();
+  const doc = await ProductModel.findByIdAndDelete(id);
+  if (!doc) {
+    throw new NotFoundError(Message.PRODUCT_NOT_FOUND);
+  }
 };

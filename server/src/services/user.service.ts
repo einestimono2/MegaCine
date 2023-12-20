@@ -9,7 +9,7 @@ import {
 } from '../interfaces';
 import { BadRequestError, NotFoundError, UserModel } from '../models';
 import logger, { SendMail, omitIsNil } from '../utils';
-import { Message } from '../constants';
+import { AVATAR_UPLOAD_FOLDER, Message } from '../constants';
 import { cloudinaryServices } from '.';
 
 export const createUser = async (user: IUser) => {
@@ -55,16 +55,24 @@ export const getUser = async (filters: any, password: boolean = false) => {
 };
 
 export const updateProfile = async (id: string, newProfile: IUpdateProfileRequest) => {
+  // Xóa ảnh mới khỏi obj nếu có
+  const avatar = newProfile.avatar;
+  if (avatar) delete newProfile.avatar;
+
   const user = await getUserById(id);
 
-  if (newProfile.name) user.name = newProfile.name;
-  if (newProfile.phoneNumber) user.phoneNumber = newProfile.phoneNumber;
-  if (newProfile.avatar)
-    user.avatar = await cloudinaryServices.replaceImage(user.avatar.public_id, newProfile.avatar, 'avatars');
+  Object.assign(user, newProfile);
+  await user.validate();
 
-  await user.save();
+  if (avatar) {
+    user.avatar = await cloudinaryServices.uploadImage({
+      public_id: user._id,
+      file: avatar,
+      folder: AVATAR_UPLOAD_FOLDER
+    });
+  }
 
-  return user;
+  return await user.save();
 };
 
 export const sendActivationOTP = async (payload: IOTPRequest): Promise<IActivationToken> => {

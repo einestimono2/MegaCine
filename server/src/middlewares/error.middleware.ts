@@ -1,5 +1,4 @@
 import { type NextFunction, type Request, type Response } from 'express';
-import { transpile } from 'typescript';
 
 import logger, { unlinkRequestFile, unlinkRequestFiles } from '../utils';
 import { HttpStatusCode, Message } from '../constants';
@@ -23,7 +22,7 @@ export function ErrorMiddleware(err: any, req: Request, res: Response, next: Nex
 
     try {
       // eslint-disable-next-line no-eval
-      message = eval(transpile(`req.translate(${firstError})`)); // Trường hợp có thêm value kèm
+      message = eval(`req.translate(${firstError})`); // Trường hợp có thêm value kèm
     } catch (error: any) {
       message = req.translate(firstError); // Trường hợp chỉ có key
     }
@@ -39,7 +38,10 @@ export function ErrorMiddleware(err: any, req: Request, res: Response, next: Nex
 
   // Error: Duplicate key in mongoDB
   if (err.code === 11000) {
-    const message = req.translate(Message.s_ALREADY_EXISTS.msg, Object.keys(err.keyValue).toString());
+    const message = req.translate(
+      Message.s_ALREADY_EXISTS.msg,
+      `'${Object.keys(err.keyValue).toString()}:${Object.values(err.keyValue).toString()}'`
+    );
     err = new ConflictError(message);
   }
 

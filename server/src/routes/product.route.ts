@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { productController } from '../controllers';
-import { isAuthenticated, authorizeRoles, uploadImage } from '../middlewares';
+import { isAuthenticated, authorizeRoles } from '../middlewares';
 import { Roles } from '../constants';
 
 const router = express.Router();
@@ -9,36 +9,26 @@ const adminRoles = [Roles.Manager, Roles.Admin];
 
 //! .../api/v1/product
 
-router.post(
-  '/create',
-  isAuthenticated,
-  authorizeRoles(...adminRoles),
-  uploadImage.single('image'),
-  productController.createProduct
-);
-router.get(
-  '/list',
-  // isAuthenticated,
-  productController.getProducts
-);
-router.get('/list/:theaterId', isAuthenticated, productController.getProductsByTheater);
-router.get('/my-theater', isAuthenticated, productController.getProductsByTheater);
+router.post('/create', isAuthenticated, authorizeRoles(...adminRoles), productController.createProduct);
+// router.get('/list', isAuthenticated, authorizeRoles(Roles.Admin), productController.getProducts);
+router.get('/list-by-theater/:id', productController.getProductsByTheater);
+router.get('/my-theater', isAuthenticated, authorizeRoles(...adminRoles), productController.getProductsByTheater);
 
 router
   .route('/details/:id')
-  .put(isAuthenticated, authorizeRoles(...adminRoles), uploadImage.single('image'), productController.updateProduct)
+  .put(isAuthenticated, authorizeRoles(...adminRoles), productController.updateProduct)
   .delete(isAuthenticated, authorizeRoles(...adminRoles), productController.deleteProduct)
-  .get(isAuthenticated, productController.getProduct);
+  .get(isAuthenticated, authorizeRoles(...adminRoles), productController.getProduct);
 
 export const productRouter = router;
 
 //! Thêm mới product
 /**
  * @swagger
- * /api/v1/product/create:
+ * /product/create:
  *  post:
  *    tags: [Product]
- *    summary: Thêm mới product
+ *    summary: "[Manager] Thêm mới product"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -50,7 +40,7 @@ export const productRouter = router;
  *    requestBody:
  *      required: true
  *      content:
- *        multipart/form-data:
+ *        application/json:
  *          schema:
  *            type: object
  *            required:
@@ -74,7 +64,7 @@ export const productRouter = router;
  *                type: number
  *              image:
  *                type: string
- *                format: base64
+ *                example: ""
  *    responses:
  *      201:
  *        description: Success
@@ -87,10 +77,10 @@ export const productRouter = router;
 //! List Product
 /**
  * @swagger
- * /api/v1/product/list:
+ * /product/list:
  *  get:
  *    tags: [Product]
- *    summary: Danh sách product
+ *    summary: "[Manager] Danh sách product"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -132,10 +122,10 @@ export const productRouter = router;
 //! List Product By Theater
 /**
  * @swagger
- * /api/v1/product/my-theater:
+ * /product/my-theater:
  *  get:
  *    tags: [Product]
- *    summary: Danh sách product của rạp
+ *    summary: "[Manager] Danh sách product của rạp"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -156,10 +146,10 @@ export const productRouter = router;
 //! List Product By Theater
 /**
  * @swagger
- * /api/v1/product/list/{theaterId}:
+ * /product/list-by-theater/{id}:
  *  get:
  *    tags: [Product]
- *    summary: Danh sách product của rạp
+ *    summary: "[All] Danh sách product của rạp"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -167,12 +157,10 @@ export const productRouter = router;
  *        default: vi
  *        description: Ngôn ngữ trả về 'en | vi'
  *      - in: path
- *        name: theaterId
+ *        name: id
  *        type: string
  *        required: true
- *        description: Product ID
- *    security:
- *      - BearerToken: []
+ *        description: Theater ID
  *    responses:
  *      200:
  *        description: Success
@@ -185,10 +173,10 @@ export const productRouter = router;
 //! Cập nhật product
 /**
  * @swagger
- * /api/v1/product/details/{id}:
+ * /product/details/{id}:
  *  put:
  *    tags: [Product]
- *    summary: Cập nhật product
+ *    summary: "[Manager] Cập nhật product"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -205,7 +193,7 @@ export const productRouter = router;
  *    requestBody:
  *      required: true
  *      content:
- *        multipart/form-data:
+ *        application/json:
  *          schema:
  *            type: object
  *            properties:
@@ -224,7 +212,10 @@ export const productRouter = router;
  *                type: number
  *              image:
  *                type: string
- *                format: base64
+ *                example: ''
+ *              isActive:
+ *                type: boolean
+ *                default: true
  *    responses:
  *      201:
  *        description: Success
@@ -237,12 +228,10 @@ export const productRouter = router;
 //! Lấy thông tin product
 /**
  * @swagger
- * /api/v1/product/details/{id}:
+ * /product/details/{id}:
  *  get:
  *    tags: [Product]
- *    summary: Thông tin chi tiết product
- *    security:
- *      - BearerToken: []
+ *    summary: "[Manager] Thông tin chi tiết product"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -266,10 +255,10 @@ export const productRouter = router;
 //! Xóa product
 /**
  * @swagger
- * /api/v1/product/details/{id}:
+ * /product/details/{id}:
  *  delete:
  *    tags: [Product]
- *    summary: Xóa product
+ *    summary: "[Manager] Xóa product"
  *    security:
  *      - BearerToken: []
  *    parameters:

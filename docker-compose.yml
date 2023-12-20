@@ -1,0 +1,45 @@
+version: "3.8"
+services:
+    web:
+        container_name: megacine-web
+        image: einestimono2/megacine:web
+        env_file: ./web/.env
+
+    server:
+        container_name: megacine-server
+        image: einestimono2/megacine:server
+        env_file: ./server/.env
+
+    nginx:
+        container_name: megacine-nginx
+        image: nginx:stable-alpine
+        restart: always
+        volumes:
+            - ./nginx/configs:/etc/nginx/conf.d
+            - /home/azureuser/Workspace/certbot/conf:/etc/letsencrypt
+            - /home/azureuser/Workspace/certbot/www:/var/www/certbot
+        # reload its configuration (and certificates) every 6 hours in background and launches nginx in foreground
+        command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+        depends_on:
+            - web
+            - server
+        ports:
+            - 80:80
+            - 443:443
+
+    # - Cần setup nginx default trước tiên (http)
+    #   Sau đó bỏ comment "entrypoint" và chạy certbot để lấy chứng chỉ lần đầu
+    #   Sau khi đã có chứng chỉ thì uncomment "entrypoint" và setup http, https tại nginx
+    # - Hoặc chạy init-letsencrypt tại nginx/certbot
+    certbot:
+        container_name: "megacine-certbot"
+        image: certbot/certbot
+        command: certonly --webroot -w /var/www/certbot -d megacine.japaneast.cloudapp.azure.com --text --agree-tos --email dtiiee2@gmail.com --rsa-key-size 4096 --verbose --keep-until-expiring --preferred-challenges=http
+        # certonly --webroot -w /var/www/certbot --force-renewal --email dtiiee2@gmail.com -d megacine.japaneast.cloudapp.azure.com --agree-tos
+        # check if your certificate is up for renewal every 12 hours
+        entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+        volumes:
+            - /home/azureuser/Workspace/certbot/conf:/etc/letsencrypt
+            - /home/azureuser/Workspace/certbot/www:/var/www/certbot
+        environment:
+            - TERM=xterm

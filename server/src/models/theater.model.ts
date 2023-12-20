@@ -1,7 +1,9 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { type Schema } from 'mongoose';
 
 import { type ITheater } from '../interfaces';
-import { Message, LocationTypes, EMAIL_REGEX_PATTERN } from '../constants';
+import { Message, LocationTypes, EMAIL_REGEX_PATTERN, MOVIE_UPLOAD_FOLDER } from '../constants';
+import { cloudinaryServices } from '../services';
+import { FareModel } from './fare.model';
 
 const theaterSchema: Schema<ITheater> = new mongoose.Schema(
   {
@@ -33,19 +35,8 @@ const theaterSchema: Schema<ITheater> = new mongoose.Schema(
       unique: true,
       required: [true, `'${Message.FIELD_s_EMPTY.msg}','hotline'`]
     },
-    logo: {
-      public_id: String,
-      url: String
-    },
-    images: [
-      new Schema(
-        {
-          public_id: String,
-          url: String
-        },
-        { _id: false }
-      )
-    ],
+    logo: String,
+    images: [String],
     address: {
       type: String,
       trim: true,
@@ -79,39 +70,43 @@ const theaterSchema: Schema<ITheater> = new mongoose.Schema(
         }
       }
     },
-    rooms: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Room'
-      }
-    ],
     isActive: {
       type: Boolean,
       default: true
     },
     totalFavorites: Number,
     ratingAverage: Number,
-    ratingCount: Number,
-    reviews: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Review'
-      }
-    ],
-    fare: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Fare'
-    },
-    movies: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Movie'
-      }
-    ]
+    ratingCount: Number
   },
   { timestamps: true, versionKey: false }
 );
 
 theaterSchema.index({ location: '2dsphere' });
+
+// Middleware khi gọi findByIdAndDelete
+theaterSchema.post('findOneAndDelete', async function (doc) {
+  if (doc) {
+    // Xóa logo
+    if (doc.logo) {
+      await cloudinaryServices.destroy({
+        public_id: `${doc._id}_logo`,
+        folder: MOVIE_UPLOAD_FOLDER
+      });
+    }
+
+    // Xóa images
+    if (doc.images.length) {
+      for (let idx = 0; idx < doc.images.length; idx++) {
+        await cloudinaryServices.destroy({
+          public_id: `${doc._id}_images_${idx}`,
+          folder: MOVIE_UPLOAD_FOLDER
+        });
+      }
+    }
+
+    // Xóa bảng fare
+    await FareModel.findOneAndDelete({ theater: doc._id });
+  }
+});
 
 export const TheaterModel = mongoose.model<ITheater>('Theater', theaterSchema);

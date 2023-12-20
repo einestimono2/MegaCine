@@ -64,6 +64,27 @@ export const isAuthenticated = CatchAsyncError(async (req: Request, res: Respons
   next();
 });
 
+//! Lấy token nếu đăng nhập, còn không thì null
+export const isAuthenticatedOrNot = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+  const accessToken = req.headers.authorization?.split(' ')[1];
+  if (!accessToken) {
+    next();
+    return;
+  }
+
+  // Giải mã lấy id
+  const payload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET as string) as JwtPayload;
+  if (!payload) {
+    next();
+    return;
+  }
+
+  req.userPayload = payload;
+  req.accessToken = accessToken;
+
+  next();
+});
+
 export const verifyRefreshToken = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const refreshToken = req.body.refreshToken;
   if (!refreshToken) {

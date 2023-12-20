@@ -29,10 +29,10 @@ export const managerRouter = router;
 //! Login
 /**
  * @swagger
- * /api/v1/manager/login:
+ * /manager/login:
  *  post:
  *    tags: [Manager]
- *    summary: Đăng nhập tài khoản
+ *    summary: "[All] Đăng nhập tài khoản"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -81,10 +81,10 @@ export const managerRouter = router;
 //! Register
 /**
  * @swagger
- * /api/v1/manager/register:
+ * /manager/register:
  *  post:
  *    tags: [Manager]
- *    summary: Đăng ký tài khoản
+ *    summary: "[All] Đăng ký tài khoản"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -133,10 +133,10 @@ export const managerRouter = router;
 //! Đổi mật khẩu
 /**
  * @swagger
- * /api/v1/manager/update-password:
+ * /manager/update-password:
  *  put:
  *    tags: [Manager]
- *    summary: Thay đổi mật khẩu
+ *    summary: "[User] Thay đổi mật khẩu"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -185,10 +185,10 @@ export const managerRouter = router;
 //! Activate
 /**
  * @swagger
- * /api/v1/manager/activate/{id}:
+ * /manager/activate/{id}:
  *  get:
  *    tags: [Manager]
- *    summary: Kích hoạt tài khoản
+ *    summary: "[Admin] Kích hoạt tài khoản"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -214,10 +214,10 @@ export const managerRouter = router;
 //! List Managers
 /**
  * @swagger
- * /api/v1/manager/list:
+ * /manager/list:
  *  get:
  *    tags: [Manager]
- *    summary: Lấy danh sách quản lý
+ *    summary: "[Admin] Lấy danh sách quản lý"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -264,10 +264,10 @@ export const managerRouter = router;
 //! Lấy thông tin quản lý
 /**
  * @swagger
- * /api/v1/manager/details/{id}:
+ * /manager/details/{id}:
  *  get:
  *    tags: [Manager]
- *    summary: Lấy thông tin quản lý
+ *    summary: "[Admin] Lấy thông tin quản lý"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -293,10 +293,10 @@ export const managerRouter = router;
 //! Cập nhật role quản lý
 /**
  * @swagger
- * /api/v1/manager/details/{id}:
+ * /manager/details/{id}:
  *  put:
  *    tags: [Manager]
- *    summary: Cập nhật role
+ *    summary: "[Admin] Cập nhật role"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -341,13 +341,13 @@ export const managerRouter = router;
  *              $ref: '#/components/schemas/Response'
  */
 
-//! Xóa thể loại
+//! Xóa quản lý
 /**
  * @swagger
- * /api/v1/manager/details/{id}:
+ * /manager/details/{id}:
  *  delete:
  *    tags: [Manager]
- *    summary: Xóa quản lý
+ *    summary: "[Admin] Xóa quản lý"
  *    security:
  *      - BearerToken: []
  *    parameters:

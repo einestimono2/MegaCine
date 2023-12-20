@@ -16,7 +16,6 @@ const prod = {
   }
 };
 
-const configs = { dev, prod };
-const _env = process.env.NODE_ENV ?? 'dev';
+const configs = process.env.NODE_ENV === 'prod' ? prod : dev;
 
-export const { app, mongodb } = configs[_env];
+export const { app, mongodb } = configs;

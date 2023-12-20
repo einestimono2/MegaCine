@@ -1,5 +1,6 @@
 // const enum: giữ nguyên các giá trị enum thay vì tạo một đối tượng enum riêng biệt
 // can't index it by an arbitrary value
+
 export const enum LoggerTypes {
   Debug = 'debug',
   Info = 'info',
@@ -28,9 +29,14 @@ export enum RoomTypes {
   '3D' = '3D'
 }
 
-export enum MovieTypes {
+export enum MovieFormats {
   '2D' = '2D',
   '3D' = '3D'
+}
+
+export enum MovieLanguages {
+  Subtitles = 'Subtitles',
+  Dubbing = 'Dubbing'
 }
 
 export enum AgeTypes {
@@ -48,7 +54,29 @@ export enum SeatTypes {
   Sweetbox = 'Sweetbox'
 }
 
+export enum SeatStatus {
+  Available = 'Available',
+  Booked = 'Booked',
+  Locked = 'Locked'
+}
+
 export enum SurchargeTypes {
   Sneakshow = 'Sneakshow', // Suất chiếu sớm/đặc biệt
   Blockbuster = 'Blockbuster' // Phim bom tấn
+}
+
+export enum ShowtimeTypes {
+  Normal = 'Normal',
+  Sneakshow = 'Sneakshow'
+}
+
+export enum DiscountTypes {
+  Amount = 'Amount',
+  Percentage = 'Percentage'
+}
+
+export enum PaymentMethods {
+  Cash = 'Cash',
+  Card = 'Card',
+  Vnpay = 'Vnpay'
 }

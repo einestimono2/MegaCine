@@ -37,10 +37,10 @@ export const authRouter = router;
 //! Login
 /**
  * @swagger
- * /api/v1/login:
+ * /login:
  *  post:
  *    tags: [Auth]
- *    summary: Đăng nhập tài khoản
+ *    summary: "[All] Đăng nhập tài khoản"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -89,10 +89,10 @@ export const authRouter = router;
 //! Social Auth
 /**
  * @swagger
- * /api/v1/social-auth:
+ * /social-auth:
  *  post:
  *    tags: [Auth]
- *    summary: Đăng nhập bằng MXH
+ *    summary: "[All] Đăng nhập bằng MXH"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -158,10 +158,10 @@ export const authRouter = router;
 //! Register
 /**
  * @swagger
- * /api/v1/register:
+ * /register:
  *  post:
  *    tags: [Auth]
- *    summary: Đăng ký tài khoản
+ *    summary: "[All] Đăng ký tài khoản"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -218,10 +218,10 @@ export const authRouter = router;
 //! Activate
 /**
  * @swagger
- * /api/v1/activate:
+ * /activate:
  *  post:
  *    tags: [Auth]
- *    summary: Kích hoạt tài khoản
+ *    summary: "[All] Kích hoạt tài khoản"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -268,10 +268,10 @@ export const authRouter = router;
 //! Resend Activate
 /**
  * @swagger
- * /api/v1/resend-activate:
+ * /resend-activate:
  *  post:
  *    tags: [Auth]
- *    summary: Gửi lại mã OTP kích hoạt tài khoản
+ *    summary: "[All] Gửi lại mã OTP kích hoạt tài khoản"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -312,10 +312,10 @@ export const authRouter = router;
 //! Logout
 /**
  * @swagger
- * /api/v1/logout:
+ * /logout:
  *  get:
  *    tags: [All]
- *    summary: Đăng xuất
+ *    summary: "[User] Đăng xuất"
  *    security:
  *      - BearerToken: []
  *    parameters:
@@ -336,10 +336,10 @@ export const authRouter = router;
 //! Refresh
 /**
  * @swagger
- * /api/v1/refresh:
+ * /refresh:
  *  post:
  *    tags: [All]
- *    summary: Gia hạn assetToken
+ *    summary: "[User] Gia hạn assetToken"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -379,10 +379,10 @@ export const authRouter = router;
 //! Forgot
 /**
  * @swagger
- * /api/v1/forgot-password:
+ * /forgot-password:
  *  post:
  *    tags: [Auth]
- *    summary: Quên mật khẩu
+ *    summary: "[All] Quên mật khẩu"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -423,10 +423,10 @@ export const authRouter = router;
 //! Reset
 /**
  * @swagger
- * /api/v1/reset-password:
+ * /reset-password:
  *  put:
  *    tags: [Auth]
- *    summary: Đặt lại mật khẩu
+ *    summary: "[All] Đặt lại mật khẩu"
  *    parameters:
  *      - in: query
  *        name: hl
