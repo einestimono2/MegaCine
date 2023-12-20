@@ -13,7 +13,6 @@ export default async function apiCaller({
   errorHandler = defaultErrorHandler,
 }) {
   try {
-    // store.dispatch(loadingHandler(true));
     const response = await request();
     return response;
   } catch (error) {
@@ -21,13 +20,9 @@ export default async function apiCaller({
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       localStorage.removeItem('role');
-    //   store.dispatch(removeUser());
-    //   store.dispatch(updateLoginState(false));
-    //   store.dispatch(tokenHandler(true));
     }
     errorHandler(error);
   } finally {
-    // store.dispatch(loadingHandler(false));
   }
   return null;
 }

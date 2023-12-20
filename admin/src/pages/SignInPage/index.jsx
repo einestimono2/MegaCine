@@ -1,11 +1,23 @@
 import { Button, Form, Input } from "antd";
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import {
+  useLocation,
+  useNavigate,
+  unstable_HistoryRouter,
+} from "react-router-dom";
 import { authApi } from "../../apis/authApi";
 import apiCaller from "../../apis/apiCaller";
+import { ROUTE } from "../../constants/router";
 
 export default function SignInPage() {
   const navigate = useNavigate();
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate(-1);
+    }
+  }, []);
+
   const handleSignUp = () => {
     navigate("/signup");
   };
@@ -21,8 +33,16 @@ export default function SignInPage() {
       request: authApi.login(data),
       errorHandler,
     });
+    console.log(response);
     if (response) {
-      console.log("Success: ", response);
+      localStorage.setItem("access_token", response.data.accessToken);
+      localStorage.setItem("refresh_token", response.data.refreshToken);
+      localStorage.setItem("isLoggedIn", true);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      navigate(
+        ROUTE.ADMIN.replace(":id", response.data.user.role.toLowerCase()),
+        { replace: true }
+      );
     }
   };
   return (
@@ -30,9 +50,7 @@ export default function SignInPage() {
       <Form layout="vertical" className="w-1/4" onFinish={handleSignIn}>
         <Form.Item
           name={"username"}
-          rules={[
-            { required: true, message: "Please input your username!" },
-          ]}
+          rules={[{ required: true, message: "Please input your username!" }]}
           label="Username"
         >
           <Input placeholder="Username" />

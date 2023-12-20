@@ -1,12 +1,7 @@
 import { Button, Table } from "antd";
 import React from "react";
-import { useDispatch } from "react-redux";
 
-export default function ListMovie() {
-  const dispatch = useDispatch();
-  const createMovie = () => {
-    dispatch({ type: "admin/addSelectedKey", payload: { selectedKey: "5" } });
-  };
+export default function ProductPage() {
   const columns = [
     {
       title: "Name",
@@ -51,8 +46,8 @@ export default function ListMovie() {
   return (
     <div>
       <div className="flex justify-between">
-        <p className="text-3xl font-bold mt-0">Movie Page</p>
-        <Button onClick={createMovie}>Create Movie</Button>
+        <p className="text-3xl font-bold mt-0">Product Page</p>
+        <Button>Create Product</Button>
       </div>
       <Table columns={columns} dataSource={dataTable}></Table>
     </div>
