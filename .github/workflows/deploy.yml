@@ -90,6 +90,7 @@ jobs:
             #       cache-to: type=local,dest=/tmp/.buildx-cache-new
 
             - name: Update cache
+              if: steps.filter.outputs.web == 'true' || steps.filter.outputs.server == 'true'
               run: |
                   rm -rf /tmp/.buildx-cache
                   mv /tmp/.buildx-cache-new /tmp/.buildx-cache
@@ -110,6 +111,7 @@ jobs:
               uses: dorny/paths-filter@v2
               id: filter
               with:
+                  base: ${{ github.ref }}
                   filters: |
                       server:
                         - 'server/**'
