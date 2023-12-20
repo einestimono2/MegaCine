@@ -1,0 +1,9 @@
+.screen {
+  transform: rotateX(-25deg);
+}
+.container-screen {
+  perspective: 100px;
+}
+.seat:hover{
+transform: scale(1.1);
+}
