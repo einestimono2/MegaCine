@@ -1,5 +1,10 @@
 version: "3.8"
 services:
+    admin:
+        container_name: megacine-admin
+        image: einestimono2/megacine:admin
+        env_file: ./admin/.env
+
     web:
         container_name: megacine-web
         image: einestimono2/megacine:web
@@ -22,6 +27,7 @@ services:
         command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
         depends_on:
             - web
+            - admin
             - server
         ports:
             - 80:80

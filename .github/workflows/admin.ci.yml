@@ -1,0 +1,45 @@
+name: Admin CI
+
+on:
+    push:
+        branches: ["main", "develop"]
+        paths: ["admin/**"]
+    pull_request:
+        branches: ["main", "develop"]
+        paths: ["admin/**"]
+    workflow_dispatch:
+
+jobs:
+    test:
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [20.x]
+        defaults:
+            run:
+                working-directory: admin
+        steps:
+            - name: ADMIN - Checkout repository
+              uses: actions/checkout@v4
+
+            - name: ADMIN - Set up Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  cache: "yarn"
+                  cache-dependency-path: "./admin/yarn.lock"
+
+            - name: Cache node modules
+              uses: actions/cache@v3
+              with:
+                  path: node_modules
+                  key: ${{ runner.os }}-yarn-admin-${{ hashFiles('**/yarn.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-yarn-admin-
+
+            - name: ADMIN - Install dependencies
+              run: yarn --frozen-lockfile
+
+            - name: ADMIN - Lint check
+              run: yarn lint
