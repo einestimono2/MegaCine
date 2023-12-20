@@ -44,6 +44,9 @@ export const Message = {
     ec: 3000,
     msg: 'File not found'
   },
+  BOOKING_NOT_FOUND: {
+    msg: 'Booking Not Found'
+  },
 
   // Invalid
   TOKEN_IS_INVALID_TRY_AGAIN: {
@@ -83,6 +86,9 @@ export const Message = {
   },
   INVALID_PROMOTION_TYPE_s: {
     msg: 'Invalid promotion type %s'
+  },
+  INVALID_PAYMENT_METHOD_s: {
+    msg: 'Invalid payment method %s'
   },
   INVALID_MOVIE_RATING: {
     msg: 'Invalid movie rating'

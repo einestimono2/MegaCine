@@ -12,3 +12,4 @@ export * from './db-check-connect';
 export * from './unlink-file';
 export * from './check-url';
 export * from './garbage-collection';
+export * from './qrcode';

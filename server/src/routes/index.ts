@@ -22,6 +22,7 @@ import { roomRouter } from './room.route';
 import { showtimeRouter } from './showtime.route';
 import { promotionRouter } from './promotion.route';
 import { reviewRouter } from './review.route';
+import { bookingRouter } from './booking.route';
 
 const router = express.Router();
 
@@ -38,6 +39,7 @@ router.use(`${API_VERSION}/room`, roomRouter);
 router.use(`${API_VERSION}/showtime`, showtimeRouter);
 router.use(`${API_VERSION}/promotion`, promotionRouter);
 router.use(`${API_VERSION}/review`, reviewRouter);
+router.use(`${API_VERSION}/booking`, bookingRouter);
 
 router.use(`${API_VERSION}/upload`, uploadRouter);
 
