@@ -1,0 +1,37 @@
+.menu {
+  background-color: #f3f6f9 !important;
+  .ant-menu {
+    border: none !important;
+    background-color: #f3f6f9 !important;
+  }
+  .ant-menu-item-selected {
+    background-color: #ffffff !important;
+    .ant-menu-item-icon {
+      background-color: #eaeaea !important;
+    }
+  }
+  .ant-menu-submenu-open {
+    .ant-menu-submenu-title {
+      background-color: #ffffff !important;
+      .ant-menu-item-icon {
+        background-color: #eaeaea !important;
+      }
+    }
+  }
+  .ant-menu-item,
+  .ant-menu-submenu-title {
+    height: 50px !important;
+    .ant-menu-submenu-arrow{
+      font-size: 16px !important;
+    }
+    .ant-menu-item-icon {
+      font-weight: 600 !important;
+      padding: 9px;
+      background-color: #ffffff;
+      border-radius: 99px;
+    }
+  }
+  .ant-menu-title-content {
+    font-weight: 600 !important;
+  }
+}
