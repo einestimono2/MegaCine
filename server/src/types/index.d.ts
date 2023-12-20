@@ -1,8 +1,8 @@
-import { type TranslateOptions, type Replacements } from 'i18n';
-
-import { type ISuccessResponse } from '../interfaces';
-
 declare global {
+  // namespace NodeJS {
+  //   let io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
+  // }
+
   namespace Express {
     interface Request {
       accessToken?: string;
@@ -23,3 +23,5 @@ declare global {
     }
   }
 }
+
+export default global;

@@ -176,14 +176,14 @@ export interface IPromotion extends Document {
 }
 
 export interface IBooking extends Document {
-  showTime: string;
-  theater: string;
-  room: string;
-  seat: string[];
+  showtime: string | IShowtime;
+  theater: string | ITheater;
+  room: string | IRoom;
+  seats: Array<string | ISeat>;
 
   products: Array<{
     quantity: number;
-    items: string | IProduct;
+    item: string | IProduct;
   }>;
 
   user: string | IUser;

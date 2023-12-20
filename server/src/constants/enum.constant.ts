@@ -74,3 +74,9 @@ export enum DiscountTypes {
   Amount = 'Amount',
   Percentage = 'Percentage'
 }
+
+export enum PaymentMethods {
+  Cash = 'Cash',
+  Card = 'Card',
+  Vnpay = 'Vnpay'
+}

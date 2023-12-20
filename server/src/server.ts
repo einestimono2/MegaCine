@@ -1,16 +1,20 @@
+import { createServer } from 'http';
+
 import app from './app';
-import logger, { imageCleaningSchedule } from './utils';
-import { app as appConfig } from './config/env';
+import logger from './utils';
+import { app as appConfig } from './config';
+import { SocketServer } from './socket';
 
 const PORT = appConfig.port;
+const httpServer = createServer(app);
 
-// Server
-const server = app.listen(PORT, () => {
+//! Socket Server
+SocketServer.getInstance(httpServer);
+
+//! Http Server
+const server = httpServer.listen(PORT, () => {
   logger.info(`Server is running at http://localhost:${PORT}  [env: ${app.get('env')}]`);
 });
-
-// Dọn dẹp hình ảnh mỗi 12h đêm hàng ngày
-imageCleaningSchedule.start();
 
 process.on('SIGINT', () => {
   server.close(() => {
