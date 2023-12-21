@@ -25,6 +25,7 @@ jobs:
               uses: dorny/paths-filter@v2
               id: filter
               with:
+                  base: ${{ github.ref }}
                   filters: |
                       server:
                         - 'server/**'
@@ -32,12 +33,16 @@ jobs:
                         - 'web/**'
                       nginx:
                         - 'nginx/**'
+                      admin:
+                        - 'admin/**'
 
             - name: Set up Docker Buildx
+              if: steps.filter.outputs.web == 'true' || steps.filter.outputs.server == 'true' || steps.filter.outputs.admin == 'true'
               id: buildx
               uses: docker/setup-buildx-action@v3
 
             - name: Cache Docker layers
+              if: steps.filter.outputs.web == 'true' || steps.filter.outputs.server == 'true' || steps.filter.outputs.admin == 'true'
               uses: actions/cache@v3
               with:
                   path: /tmp/.buildx-cache
@@ -46,6 +51,7 @@ jobs:
                       ${{ runner.os }}-buildx-
 
             - name: Login to DockerHub
+              if: steps.filter.outputs.web == 'true' || steps.filter.outputs.server == 'true' || steps.filter.outputs.admin == 'true'
               uses: docker/login-action@v3
               with:
                   username: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -76,6 +82,18 @@ jobs:
                   cache-from: type=local,src=/tmp/.buildx-cache
                   cache-to: type=local,dest=/tmp/.buildx-cache-new
 
+            - name: Build admin image
+              if: steps.filter.outputs.admin == 'true'
+              uses: docker/build-push-action@v5
+              with:
+                  context: ./admin
+                  file: ./admin/Dockerfile
+                  builder: ${{ steps.buildx.outputs.name }}
+                  push: true
+                  tags: ${{ secrets.DOCKER_HUB_USERNAME }}/megacine:admin
+                  cache-from: type=local,src=/tmp/.buildx-cache
+                  cache-to: type=local,dest=/tmp/.buildx-cache-new
+
             # - name: Build nginx image
             #   if: steps.filter.outputs.nginx == 'true'
             #   uses: docker/build-push-action@v5
@@ -89,6 +107,7 @@ jobs:
             #       cache-to: type=local,dest=/tmp/.buildx-cache-new
 
             - name: Update cache
+              if: steps.filter.outputs.web == 'true' || steps.filter.outputs.server == 'true' || steps.filter.outputs.admin == 'true'
               run: |
                   rm -rf /tmp/.buildx-cache
                   mv /tmp/.buildx-cache-new /tmp/.buildx-cache
@@ -109,6 +128,7 @@ jobs:
               uses: dorny/paths-filter@v2
               id: filter
               with:
+                  base: ${{ github.ref }}
                   filters: |
                       server:
                         - 'server/**'
@@ -116,6 +136,8 @@ jobs:
                         - 'web/**'
                       nginx:
                         - 'nginx/**'
+                      admin:
+                        - 'admin/**'
 
             - name: Update server container
               if: steps.filter.outputs.server == 'true'
@@ -125,6 +147,10 @@ jobs:
               if: steps.filter.outputs.web == 'true'
               run: docker compose up -d --pull=always --force-recreate --no-deps --build web
 
+            - name: Update admin container
+              if: steps.filter.outputs.admin == 'true'
+              run: docker compose up -d --pull=always --force-recreate --no-deps --build admin
+
             - name: Update nginx container
               if: steps.filter.outputs.nginx == 'true'
               run: |
@@ -132,4 +158,5 @@ jobs:
                   docker compose up -d --force-recreate --no-deps --build certbot
 
             - name: Remove unused data
+              if: steps.filter.outputs.web == 'true' || steps.filter.outputs.server == 'true' || steps.filter.outputs.admin == 'true'
               run: docker system prune -f

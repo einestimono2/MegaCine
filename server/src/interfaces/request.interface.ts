@@ -135,6 +135,10 @@ export interface IUpdatePromotionRequest {
   isActive?: boolean;
 }
 
+// export interface IUpdateBookingRequest {
+
+// }
+
 export interface IOTPRequest {
   id: string;
   name?: string;

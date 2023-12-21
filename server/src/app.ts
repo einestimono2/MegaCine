@@ -8,7 +8,7 @@ import compression from 'compression';
 
 import { ErrorMiddleware } from './middlewares';
 import { i18n } from './config'; //! Import sau cookie-parser
-import { checkOverload } from './utils';
+import { checkOverload, imageCleaningSchedule } from './utils';
 import routers from './routes';
 import { instanceDb } from './dbs';
 
@@ -23,7 +23,7 @@ app.use(timeout('15s'));
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(compression()); // Nén dữ liệu - Giảm kích thước response trả về
-app.use(cors({ origin: process.env.ORIGIN })); // Cors - Cross Origin Resource Sharing
+app.use(cors()); // Cors - Cross Origin Resource Sharing
 app.use(express.json({ limit: '50mb' })); // Read JSON data
 app.use(express.urlencoded({ extended: true })); // Can Read another data
 app.use(i18n.init);
@@ -32,6 +32,9 @@ app.use(haltOnTimedout);
 //! Database
 instanceDb.connect();
 checkOverload();
+
+//! Dọn dẹp hình ảnh mỗi 12h đêm hàng ngày
+imageCleaningSchedule.start();
 
 //! Routes + Unknown route
 app.use('', routers);
