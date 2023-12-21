@@ -1,5 +1,5 @@
 export const ROUTE = {
-  ADMIN: "/:id",
-  SIGNIN: "/",
-  SIGNUP: "/signup",
+  ADMIN: '/:id',
+  SIGNIN: '/',
+  SIGNUP: '/signup',
 };

@@ -33,7 +33,3 @@ export const getRoomDetails = async (id: string) => {
 
   return rooms;
 };
-
-export const updateSeat = async (id: string) => {
-  //
-};

@@ -1,10 +1,11 @@
-import { Button, Result } from "antd";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { ROUTE } from "../../constants/router";
+import { Button, Result } from 'antd';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE } from '../../constants/router';
 
 export default function PrivateRouter(props) {
-  const isLoggedIn = localStorage.getItem("isLoggedIn");
+  const { children } = props;
+  const isLoggedIn = localStorage.getItem('isLoggedIn');
   const navigate = useNavigate();
   const onClick = () => {
     navigate(ROUTE.SIGNIN);
@@ -12,7 +13,7 @@ export default function PrivateRouter(props) {
   return (
     <div>
       {isLoggedIn ? (
-        props.children
+        children
       ) : (
         <Result
           status="403"

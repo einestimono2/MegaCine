@@ -1,7 +1,5 @@
-import React from 'react'
+import React from 'react';
 
 export default function CreateMovie() {
-  return (
-    <div>CreateMovie</div>
-  )
+  return <div>CreateMovie</div>;
 }

@@ -42,6 +42,10 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       type: String,
       default: DEFAULT_AVATAR_URL
     },
+    isBlocked: {
+      type: Boolean,
+      default: false
+    },
     phoneNumber: String,
     role: {
       type: String,

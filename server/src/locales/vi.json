@@ -94,6 +94,7 @@
   "Internal Server Error": "Server không phản hồi, vui lòng thử lại!",
   "Account Not Activated": "Tài khoản chưa được kích hoạt!",
   "Account Activated": "Tài khoản đã được kích hoạt!",
+  "Account Blocked": "Tài khoản của bạn hiện đang bị chặn, vui lòng liên hệ QTV để mở khóa!",
   "Response timeout": "Server không phản hồi, vui lòng thử lại!",
   "Upload Failed": "Upload thất bại. Vui lòng kiểm tra lại đường dẫn file!",
   "": ""

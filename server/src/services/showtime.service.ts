@@ -2,10 +2,10 @@ import { type Request } from 'express';
 import { type PipelineStage } from 'mongoose';
 import dayjs from 'dayjs';
 
-import { Message } from '../constants';
+import { Message, RoomTypes } from '../constants';
 import { type IUpdateShowtimeRequest, type IShowtime } from '../interfaces';
-import { NotFoundError, ShowtimeModel } from '../models';
-import { addPaginationPipelineStage, convertToMongooseId } from '../utils';
+import { FareModel, NotFoundError, ShowtimeModel } from '../models';
+import { addPaginationPipelineStage, isSpecialDay, convertToMongooseId } from '../utils';
 
 export const createShowtime = async (showtime: IShowtime) => {
   const _showtime = new ShowtimeModel(showtime); // Custom Validate trong middleware
@@ -24,15 +24,6 @@ export const updateShowtime = async (id: string, showtime: IUpdateShowtimeReques
 
 export const deleteShowtime = async (id: string) => {
   return await ShowtimeModel.findByIdAndDelete(id);
-};
-
-export const getShowtimeDetails = async (id: string) => {
-  const _showtime = await ShowtimeModel.findById(id).populate(['movie', 'theater', 'room']);
-  if (!_showtime) {
-    throw new NotFoundError(Message.SHOWTIME_NOT_FOUND);
-  }
-
-  return _showtime;
 };
 
 // Groupby date
@@ -285,4 +276,43 @@ export const getShowtimesByTheater = async (id: string, req: Request) => {
   addPaginationPipelineStage({ req, pipeline });
 
   return await ShowtimeModel.aggregate(pipeline);
+};
+
+export const getShowtimeDetails = async (id: string) => {
+  const _showtime = await ShowtimeModel.findOne({ _id: id, isActive: true })
+    .populate('movie', { title: 1, originalTitle: 1, poster: 1, ageType: 1, formats: 1 })
+    .populate('theater', { name: 1 })
+    .populate('room', { name: 1, type: 1 });
+  if (!_showtime) {
+    throw new NotFoundError(Message.SHOWTIME_NOT_FOUND);
+  }
+
+  // Lấy bảng giá
+  const is2D = (_showtime.room as any).type === RoomTypes['2D'];
+  const project = is2D
+    ? { weekend: 1, specialDay: 1, surcharge: 1, _2d: 1 }
+    : { weekend: 1, specialDay: 1, surcharge: 1, _3d: 1 };
+
+  const fare = await FareModel.findOne<any>({ theater: _showtime.theater }, project);
+  if (!fare) throw new NotFoundError(Message.FARE_NOT_FOUND);
+
+  const hhmm = new Date(_showtime.startTime).toLocaleTimeString(undefined, {
+    hour12: false,
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+
+  const _isSpecialDay = isSpecialDay(_showtime.startTime, fare.weekend, fare.specialDay);
+  const price = fare[`${is2D ? '_2d' : '_3d'}`].find((e) => {
+    const greaterThanLeft = e.from === '' ? true : hhmm >= e.from;
+    const lessThanRight = e.to === '' ? true : hhmm <= e.to;
+    return lessThanRight && greaterThanLeft;
+  })?.seat;
+
+  const _price: Record<string, any> = {};
+  price.forEach((e) => {
+    _price[e.type] = _isSpecialDay ? e.specialDayPrice : e.normalDayPrice;
+  });
+
+  return { price: _price, showtime: _showtime };
 };

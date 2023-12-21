@@ -271,6 +271,9 @@ export const Message = {
   ACCOUNT_NOT_ACTIVATED: {
     msg: 'Account Not Activated'
   },
+  ACCOUNT_BLOCKED: {
+    msg: 'Account Blocked'
+  },
   ACCOUNT_ACTIVATED: {
     msg: 'Account Activated'
   },

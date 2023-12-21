@@ -68,3 +68,20 @@ export const updatePassword = CatchAsyncError(async (req: Request, res: Response
     data: user
   });
 });
+
+export const getUsers = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+  const [payload] = await userServices.getUsers(req);
+
+  res.sendOK({
+    data: payload?.data ?? [],
+    extra: payload?.extra ?? { totalCount: 0 }
+  });
+});
+
+export const toggleBlock = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+  const user = await userServices.toggleBlock(req.params.id);
+
+  res.sendOK({
+    data: user
+  });
+});

@@ -13,3 +13,5 @@ export * from './unlink-file';
 export * from './check-url';
 export * from './garbage-collection';
 export * from './qrcode';
+export * from './date';
+export * from './solar-lunar-date';

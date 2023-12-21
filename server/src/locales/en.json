@@ -94,6 +94,7 @@
   "Internal Server Error": "Internal Server Error!",
   "Account Not Activated": "Account Not Activated!",
   "Account Activated": "Account has been activated!",
+  "Account Blocked": "Your account has been blocked!",
   "Response timeout": "Timeout!",
   "Upload Failed": "Upload Failed. Please check the file path again!",
   "": ""

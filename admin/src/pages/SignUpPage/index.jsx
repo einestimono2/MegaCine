@@ -1,6 +1,6 @@
-import React from "react";
-import "./style.css";
-import { Button, Form, Input } from "antd";
+import React from 'react';
+import './style.css';
+import { Button, Form, Input } from 'antd';
 
 export default function SignUpPage() {
   return (
@@ -13,23 +13,17 @@ export default function SignUpPage() {
             rules={[
               {
                 required: true,
-                message: "Please input your email!",
-                type: "email",
+                message: 'Please input your email!',
+                type: 'email',
               },
             ]}
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            label="Username"
-            rules={[{ required: true, message: "Please input your username!" }]}
-          >
+          <Form.Item label="Username" rules={[{ required: true, message: 'Please input your username!' }]}>
             <Input />
           </Form.Item>
-          <Form.Item
-            label="Password"
-            rules={[{ required: true, message: "Please input your password!" }]}
-          >
+          <Form.Item label="Password" rules={[{ required: true, message: 'Please input your password!' }]}>
             <Input.Password />
           </Form.Item>
           <Form.Item className="text-center mb-0">

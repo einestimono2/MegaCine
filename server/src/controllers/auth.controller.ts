@@ -7,7 +7,7 @@ import { CatchAsyncError } from '../middlewares';
 import { sendToken } from '../utils';
 import { HttpStatusCode, Message } from '../constants';
 import { redis } from '../config/redis';
-import { BadRequestError } from '../models';
+import { BadRequestError, ForbiddenError } from '../models';
 
 //! Đăng ký tài khoản
 export const register = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -103,6 +103,11 @@ export const login = CatchAsyncError(async (req: Request, res: Response, next: N
     return;
   }
 
+  if (user.isBlocked) {
+    next(new ForbiddenError(Message.ACCOUNT_BLOCKED));
+    return;
+  }
+
   await sendToken(user, HttpStatusCode.OK_200, res);
 });
 
@@ -114,6 +119,11 @@ export const socialAuth = CatchAsyncError(async (req: Request, res: Response, ne
     const newUser = await userServices.createUser({ ...req.body, isVerified: true });
     await sendToken(newUser, HttpStatusCode.OK_200, res);
   } else {
+    if (user.isBlocked) {
+      next(new ForbiddenError(Message.ACCOUNT_BLOCKED));
+      return;
+    }
+
     await sendToken(user, HttpStatusCode.OK_200, res);
   }
 });
@@ -168,6 +178,11 @@ export const forgotPassword = CatchAsyncError(async (req: Request, res: Response
 
   if (!user.isVerified) {
     next(new BadRequestError(Message.ACCOUNT_NOT_ACTIVATED));
+    return;
+  }
+
+  if (user.isBlocked) {
+    next(new ForbiddenError(Message.ACCOUNT_BLOCKED));
     return;
   }
 
