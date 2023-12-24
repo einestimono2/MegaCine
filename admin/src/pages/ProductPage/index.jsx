@@ -1,46 +1,46 @@
-import { Button, Table } from "antd";
-import React from "react";
+import { Button, Table } from 'antd';
+import React from 'react';
 
 export default function ProductPage() {
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
+      title: 'Name',
+      dataIndex: 'name',
     },
     {
-      title: "Age",
-      dataIndex: "age",
+      title: 'Age',
+      dataIndex: 'age',
       sorter: (a, b) => a.age - b.age,
     },
     {
-      title: "Address",
-      dataIndex: "address",
+      title: 'Address',
+      dataIndex: 'address',
     },
   ];
   const dataTable = [
     {
-      key: "1",
-      name: "John Brown",
+      key: '1',
+      name: 'John Brown',
       age: 32,
-      address: "New York No. 1 Lake Park",
+      address: 'New York No. 1 Lake Park',
     },
     {
-      key: "2",
-      name: "Jim Green",
+      key: '2',
+      name: 'Jim Green',
       age: 42,
-      address: "London No. 1 Lake Park",
+      address: 'London No. 1 Lake Park',
     },
     {
-      key: "3",
-      name: "Joe Black",
+      key: '3',
+      name: 'Joe Black',
       age: 32,
-      address: "Sydney No. 1 Lake Park",
+      address: 'Sydney No. 1 Lake Park',
     },
     {
-      key: "4",
-      name: "Jim Red",
+      key: '4',
+      name: 'Jim Red',
       age: 32,
-      address: "London No. 2 Lake Park",
+      address: 'London No. 2 Lake Park',
     },
   ];
   return (
@@ -49,7 +49,7 @@ export default function ProductPage() {
         <p className="text-3xl font-bold mt-0">Product Page</p>
         <Button>Create Product</Button>
       </div>
-      <Table columns={columns} dataSource={dataTable}></Table>
+      <Table columns={columns} dataSource={dataTable} />
     </div>
   );
 }

@@ -1,16 +1,16 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  selectedKey: "1",
+  selectedKey: '1',
 };
 
 export const adminSlide = createSlice({
-  name: "admin",
+  name: 'admin',
   initialState,
   reducers: {
     addSelectedKey: (state, action) => {
-      const { selectedKey = "" } = action.payload;
-      state.selectedKey = selectedKey ? selectedKey : state.selectedKey;
+      const { selectedKey = '' } = action.payload;
+      state.selectedKey = selectedKey || state.selectedKey;
     },
   },
 });

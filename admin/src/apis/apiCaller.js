@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { message } from 'antd';
 // import {
 //   loadingHandler,
@@ -8,10 +7,7 @@ import { message } from 'antd';
 // } from 'src/redux/auth/action';
 // import store from 'src/redux/store';
 
-export default async function apiCaller({
-  request,
-  errorHandler = defaultErrorHandler,
-}) {
+export default async function apiCaller({ request, errorHandler = defaultErrorHandler }) {
   try {
     const response = await request();
     return response;
@@ -22,7 +18,6 @@ export default async function apiCaller({
       localStorage.removeItem('role');
     }
     errorHandler(error);
-  } finally {
   }
   return null;
 }

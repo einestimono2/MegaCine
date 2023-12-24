@@ -13,6 +13,7 @@ export interface IUser extends Document {
   avatar: string;
   role: string;
   isVerified: boolean;
+  isBlocked: boolean;
   provider: string;
   comparePassword: (password: string) => Promise<boolean>;
   signAccessToken: () => string;

@@ -1,17 +1,13 @@
-import { Button, Form, Input } from "antd";
-import React, { useEffect } from "react";
-import {
-  useLocation,
-  useNavigate,
-  unstable_HistoryRouter,
-} from "react-router-dom";
-import { authApi } from "../../apis/authApi";
-import apiCaller from "../../apis/apiCaller";
-import { ROUTE } from "../../constants/router";
+import { Button, Form, Input } from 'antd';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { authApi } from '../../apis/authApi';
+import apiCaller from '../../apis/apiCaller';
+import { ROUTE } from '../../constants/router';
 
 export default function SignInPage() {
   const navigate = useNavigate();
-  const isLoggedIn = localStorage.getItem("isLoggedIn");
+  const isLoggedIn = localStorage.getItem('isLoggedIn');
   useEffect(() => {
     if (isLoggedIn) {
       navigate(-1);
@@ -19,15 +15,15 @@ export default function SignInPage() {
   }, []);
 
   const handleSignUp = () => {
-    navigate("/signup");
+    navigate('/signup');
   };
   const handleSignIn = async (value) => {
     const data = {
-      code: value.username,
+      code: value.code,
       password: value.password,
     };
     const errorHandler = (error) => {
-      console.log("Fail: ", error);
+      console.log('Fail: ', error);
     };
     const response = await apiCaller({
       request: authApi.login(data),
@@ -35,35 +31,34 @@ export default function SignInPage() {
     });
     console.log(response);
     if (response) {
-      localStorage.setItem("access_token", response.data.accessToken);
-      localStorage.setItem("refresh_token", response.data.refreshToken);
-      localStorage.setItem("isLoggedIn", true);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      navigate(
-        ROUTE.ADMIN.replace(":id", response.data.user.role.toLowerCase()),
-        { replace: true }
-      );
+      localStorage.setItem('access_token', response.data.accessToken);
+      localStorage.setItem('refresh_token', response.data.refreshToken);
+      localStorage.setItem('isLoggedIn', true);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      navigate(ROUTE.ADMIN.replace(':id', response.data.user.role.toLowerCase()), { replace: true });
     }
   };
   return (
     <div className="flex justify-center items-center h-screen">
       <Form layout="vertical" className="w-1/4" onFinish={handleSignIn}>
         <Form.Item
-          name={"username"}
-          rules={[{ required: true, message: "Please input your username!" }]}
-          label="Username"
+          name="code"
+          initialValue="admin"
+          rules={[{ required: true, message: 'Please input your code!' }]}
+          label="Code"
         >
-          <Input placeholder="Username" />
+          <Input placeholder="Code" />
         </Form.Item>
         <Form.Item
-          name={"password"}
+          name="password"
+          initialValue="123456"
           label="Password"
           rules={[
-            { required: true, message: "Please input your password!" },
+            { required: true, message: 'Please input your password!' },
             {
-              type: "string",
+              type: 'string',
               min: 6,
-              message: "Password must be at least 6 characters",
+              message: 'Password must be at least 6 characters',
             },
           ]}
         >

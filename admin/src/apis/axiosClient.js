@@ -1,11 +1,12 @@
-import axios from "axios";
-import { REACT_APP_BASE_URL } from "../configs";
+import axios from 'axios';
+import { REACT_APP_BASE_URL } from '../configs';
 
 const axiosClient = axios.create({
   baseURL: REACT_APP_BASE_URL,
 });
+
 axiosClient.interceptors.request.use(async (config) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('access_token');
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -23,17 +24,17 @@ axiosClient.interceptors.response.use(
   },
   (error) => {
     if (!error.response) {
-      console.error("Unknown error:", error.message);
+      console.error('Unknown error:', error.message);
       return;
     }
 
     const { status, data } = error.response;
     if (status >= 500) {
       // TODO: Show server error message
-    } else if (400 <= status && status < 500) {
+    } else if (status >= 400 && status < 500) {
       throw data;
     }
-  }
+  },
 );
 
 export default axiosClient;

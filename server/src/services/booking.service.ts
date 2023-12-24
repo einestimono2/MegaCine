@@ -63,3 +63,15 @@ export const getBookings = async (req: Request) => {
 
   return await BookingModel.aggregate(pipeline);
 };
+
+export const getBookedSeats = async (showtime: string, room: string) => {
+  const data = await BookingModel.find({ showtime, room });
+
+  const bookedSeats: any[] = [];
+
+  data.forEach((e) => {
+    bookedSeats.push(...e.seats);
+  });
+
+  return bookedSeats;
+};

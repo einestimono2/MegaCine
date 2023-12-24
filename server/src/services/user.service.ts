@@ -1,4 +1,5 @@
 import jwt, { type Secret } from 'jsonwebtoken';
+import { type Request } from 'express';
 
 import {
   type IActivationToken,
@@ -8,7 +9,7 @@ import {
   type IUpdateProfileRequest
 } from '../interfaces';
 import { BadRequestError, NotFoundError, UserModel } from '../models';
-import logger, { SendMail, omitIsNil } from '../utils';
+import logger, { SendMail, convertRequestToPipelineStages, omitIsNil } from '../utils';
 import { AVATAR_UPLOAD_FOLDER, Message } from '../constants';
 import { cloudinaryServices } from '.';
 
@@ -25,6 +26,26 @@ export const createUser = async (user: IUser) => {
 
 export const findUserByEmail = async (email: string, password: boolean = false) => {
   return await UserModel.findOne({ email }).select(password ? '+password' : '-password');
+};
+
+export const getUsers = async (req: Request) => {
+  const options = convertRequestToPipelineStages({
+    req,
+    fieldsApplySearch: ['email', 'name', 'phoneNumber', 'provider']
+  });
+
+  return await UserModel.aggregate(options);
+};
+
+export const toggleBlock = async (id: string) => {
+  const user = await UserModel.findById(id);
+  if (!user) {
+    throw new NotFoundError(Message.EMAIL_ALREADY_EXIST);
+  }
+
+  user.isBlocked = !user.isBlocked;
+
+  return await user.save();
 };
 
 export const getUserByEmail = async (email: string, password: boolean = false) => {

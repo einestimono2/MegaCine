@@ -1,5 +1,5 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import adminReducer from "./reducer/adminSlide";
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import adminReducer from './reducer/adminSlide';
 
 const rootReducer = combineReducers({
   admin: adminReducer,

@@ -1,7 +1,7 @@
-import { Button, Dropdown, Form, Modal, Select, Table } from "antd";
-import Input from "antd/es/input/Input";
-import React, { useEffect, useState } from "react";
-import "./style.css";
+import { Button, Dropdown, Form, Modal, Select, Table } from 'antd';
+import Input from 'antd/es/input/Input';
+import React, { useEffect, useState } from 'react';
+import './style.css';
 
 export default function RoomPage() {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,7 +15,7 @@ export default function RoomPage() {
     for (let i = 0; i < initialRows; i++) {
       const row = Array.from({ length: initialColumns }, (_, j) => ({
         label: String.fromCharCode(65 + i) + (j + 1),
-        type: "Standard",
+        type: 'Standard',
       }));
       initialMatrix.push(row);
     }
@@ -23,29 +23,20 @@ export default function RoomPage() {
   });
 
   const addRow = () => {
-    const newRow = Array.from(
-      { length: matrix[0]?.length || initialColumns },
-      (_, j) => ({
-        label: String.fromCharCode(65 + matrix.length) + (j + 1),
-        type: "Standard",
-      })
-    );
+    const newRow = Array.from({ length: matrix[0]?.length || initialColumns }, (_, j) => ({
+      label: String.fromCharCode(65 + matrix.length) + (j + 1),
+      type: 'Standard',
+    }));
     setMatrix((prevMatrix) => [...prevMatrix, newRow]);
   };
 
   const addColumn = () => {
     setMatrix((prevMatrix) => {
-      const newColumn = Array.from(
-        { length: prevMatrix.length || initialRows },
-        (_, i) => ({
-          label: String.fromCharCode(65 + i) + (prevMatrix[0]?.length + 1),
-          type: "Standard",
-        })
-      );
-      const newMatrix = prevMatrix.map((row, index) => [
-        ...row,
-        newColumn[index],
-      ]);
+      const newColumn = Array.from({ length: prevMatrix.length || initialRows }, (_, i) => ({
+        label: String.fromCharCode(65 + i) + (prevMatrix[0]?.length ?? 0 + 1),
+        type: 'Standard',
+      }));
+      const newMatrix = prevMatrix.map((row, index) => [...row, newColumn[index]]);
       return newMatrix;
     });
   };
@@ -59,58 +50,59 @@ export default function RoomPage() {
   };
 
   const getTotalSeats = () => {
-    let totalSeats = 0;
+    let _totalSeats = 0;
 
     matrix.forEach((row) => {
-      totalSeats += row.length;
+      _totalSeats += row.length;
     });
 
-    return totalSeats;
+    return _totalSeats;
   };
+
   useEffect(() => {
-    const totalSeats = getTotalSeats();
-    setTotalSeats(totalSeats);
+    const _totalSeats = getTotalSeats();
+    setTotalSeats(_totalSeats);
   }, [matrix]);
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
+      title: 'Name',
+      dataIndex: 'name',
     },
     {
-      title: "Age",
-      dataIndex: "age",
+      title: 'Age',
+      dataIndex: 'age',
       sorter: (a, b) => a.age - b.age,
     },
     {
-      title: "Address",
-      dataIndex: "address",
+      title: 'Address',
+      dataIndex: 'address',
     },
   ];
   const dataTable = [
     {
-      key: "1",
-      name: "John Brown",
+      key: '1',
+      name: 'John Brown',
       age: 32,
-      address: "New York No. 1 Lake Park",
+      address: 'New York No. 1 Lake Park',
     },
     {
-      key: "2",
-      name: "Jim Green",
+      key: '2',
+      name: 'Jim Green',
       age: 42,
-      address: "London No. 1 Lake Park",
+      address: 'London No. 1 Lake Park',
     },
     {
-      key: "3",
-      name: "Joe Black",
+      key: '3',
+      name: 'Joe Black',
       age: 32,
-      address: "Sydney No. 1 Lake Park",
+      address: 'Sydney No. 1 Lake Park',
     },
     {
-      key: "4",
-      name: "Jim Red",
+      key: '4',
+      name: 'Jim Red',
       age: 32,
-      address: "London No. 2 Lake Park",
+      address: 'London No. 2 Lake Park',
     },
   ];
   const openModal = () => {
@@ -121,26 +113,26 @@ export default function RoomPage() {
   };
   const items = [
     {
-      label: "VIP",
-      key: "1",
+      label: 'VIP',
+      key: '1',
     },
     {
-      label: "Standard",
-      key: "2",
+      label: 'Standard',
+      key: '2',
     },
     {
-      label: "Sweetbox",
-      key: "3",
+      label: 'Sweetbox',
+      key: '3',
     },
   ];
   const itemsType = [
     {
-      label: "2D",
-      key: "1",
+      label: '2D',
+      key: '1',
     },
     {
-      label: "3D",
-      key: "2",
+      label: '3D',
+      key: '2',
     },
   ];
   const handleMenuClick = (e) => {
@@ -152,8 +144,7 @@ export default function RoomPage() {
 
   const menuProps = {
     items,
-    onClick: (e, cell, rowIndex, columnIndex) =>
-      handleMenuClick(e, rowIndex, columnIndex),
+    onClick: (e, cell, rowIndex, columnIndex) => handleMenuClick(e, rowIndex, columnIndex),
   };
   return (
     <div>
@@ -162,7 +153,7 @@ export default function RoomPage() {
         <Button onClick={openModal}>Create Room</Button>
       </div>
       <div>
-        <Table columns={columns} dataSource={dataTable}></Table>
+        <Table columns={columns} dataSource={dataTable} />
       </div>
 
       <Modal
@@ -190,21 +181,15 @@ export default function RoomPage() {
                 <div className="bg-black h-12 w-[90%] flex items-center justify-center text-2xl font-bold shadow-xl screen">
                   <div className="bg-white h-[95%] w-[95%] flex items-center justify-around text-2xl font-bold shadow-xl screen">
                     <div className="flex items-center">
-                      <div
-                        className={`bg-gray-200 w-[40px]  h-[25px]  rounded-t-2xl`}
-                      ></div>
+                      <div className="bg-gray-200 w-[40px]  h-[25px]  rounded-t-2xl" />
                       <span className="ml-3"> Standard</span>
                     </div>
                     <div className="flex items-center ">
-                      <div
-                        className={`bg-red-400 w-[40px]  h-[25px]  rounded-t-2xl`}
-                      ></div>
+                      <div className="bg-red-400 w-[40px]  h-[25px]  rounded-t-2xl" />
                       <span className="ml-3"> VIP</span>
                     </div>
                     <div className="flex items-center ">
-                      <div
-                        className={`bg-pink-300 w-[40px]  h-[25px]  rounded-t-2xl`}
-                      ></div>
+                      <div className="bg-pink-300 w-[40px]  h-[25px]  rounded-t-2xl" />
                       <span className="ml-3"> Sweetbox</span>
                     </div>
                   </div>
@@ -216,19 +201,19 @@ export default function RoomPage() {
                         <tr key={rowIndex}>
                           {row.map((cell, columnIndex) => (
                             <td key={columnIndex} className="p-1">
-                              <Dropdown menu={menuProps} trigger={["click"]}>
+                              <Dropdown menu={menuProps} trigger={['click']}>
                                 <div
                                   onClick={() => {
                                     setSelected([rowIndex, columnIndex]);
                                   }}
                                   className={`${
-                                    cell.type === "VIP"
-                                      ? "bg-red-400"
-                                      : cell.type === "Standard"
-                                      ? "bg-gray-200"
-                                      : "bg-pink-300"
+                                    cell.type === 'VIP'
+                                      ? 'bg-red-400'
+                                      : cell.type === 'Standard'
+                                        ? 'bg-gray-200'
+                                        : 'bg-pink-300'
                                   }  p-2 ${
-                                    cell.type === "Sweetbox" ? "w-14" : "w-7"
+                                    cell.type === 'Sweetbox' ? 'w-14' : 'w-7'
                                   }  cursor-pointer seat text-center m-auto   rounded-t-2xl`}
                                 >
                                   {cell.label}
@@ -241,7 +226,7 @@ export default function RoomPage() {
                     </tbody>
                   </table>
                 </div>
-                <div></div>
+                <div />
               </div>
               <div className="col-span-1  ">
                 <div className="flex justify-between flex-col items-center">
@@ -251,9 +236,7 @@ export default function RoomPage() {
                     {matrix.length > 0 && (
                       <>
                         <Button onClick={deleteLastRow}>Delete Row</Button>
-                        <Button onClick={deleteLastColumn}>
-                          Delete Column
-                        </Button>
+                        <Button onClick={deleteLastColumn}>Delete Column</Button>
                       </>
                     )}
                   </div>
