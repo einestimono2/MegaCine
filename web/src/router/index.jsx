@@ -5,10 +5,12 @@ import HomePage from '../pages/Home';
 import NotFoundPage from '../pages/NotFoundPage';
 import BaseLayout from '../components/base-layout/layout';
 import Schedule from '../pages/Schedule/schedule';
+import Login from '../pages/Login/login';
 
 const routes = [
   { path: ROUTES.HOME, element: <BaseLayout><HomePage /></BaseLayout> },
   { path: ROUTES.SCHEDULE, element: <BaseLayout><Schedule /></BaseLayout>},
+  {path: ROUTES.LOGIN, element: <Login/>},
   {
     path: '*',
     element: <NotFoundPage />,

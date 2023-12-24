@@ -21,3 +21,7 @@ code {
   --border-color: #cacaca;
   --border-color-dark: #808080;
 }
+
+a {
+  text-decoration: none;
+}
