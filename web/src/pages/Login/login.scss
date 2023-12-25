@@ -228,8 +228,11 @@ body {
     color: var(--background-color-dark);
   }
   .btn-register{
+    display: flex;
     background-color: var(--background-color-dark);
     border: 1px solid var(--second-color);
+    align-items: center;
+    justify-content: center;
     box-shadow: none;
     color: var(--second-color);
   }

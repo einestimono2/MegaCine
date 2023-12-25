@@ -1,5 +1,7 @@
 import React from 'react';
 import './login.scss';
+import ROUTES from '../../constants/routes';
+import { Link } from 'react-router-dom';
 
 function Login() {
   return  <div class="half bg">
@@ -7,21 +9,21 @@ function Login() {
   <div class="contents">
     <div class="container">
       <div class="row align-items-center justify-content-center" style={{width: "100%"}}>
-        <div class="col-md-6">
+        <div class="col-md-5">
           <div className='loginForm'>
           <div class="mb-4">
             <h3 className='loginTitle'>ĐĂNG NHẬP</h3>
       
           </div>
           <form action="#" method="post">
-            <div class="form-group first">
+            <div class="form-group first mb-3">
               <label for="username"> Email</label>
-              <input type="text" class="form-control" id="email"/>
+              <input type="text" class="form-control" id="email" required/>
 
             </div>
             <div class="form-group last mb-3">
               <label for="password"> Mật khẩu</label>
-              <input type="password" class="form-control" id="password"/>
+              <input type="password" class="form-control" id="password" required/>
               
             </div>
             
@@ -37,7 +39,9 @@ function Login() {
 
             <div className='group-button'>
               <input type="submit" value="Đăng nhập" class="btn btn-block btn-login col-md-5"/>
-              <input type="submit" value="Đăng ký" class="btn btn-block btn-register col-md-5"/>
+              <Link to={ROUTES.REGISTER} class="btn btn-block btn-register col-md-5" style={{textDecoration:"none"}}>
+                Đăng ký
+              </Link>
             </div>
             <span class="d-block my-4 text-center text-muted">&mdash; hoặc &mdash;</span>
             
