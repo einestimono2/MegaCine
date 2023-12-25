@@ -1,20 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Avatar, Button, Input } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { SearchOutlined } from '@ant-design/icons';
 import { faUserLargeSlash, faUserLarge } from '@fortawesome/free-solid-svg-icons';
 import apiCaller from '../../apis/apiCaller';
-import { LIST_USER_PAGE_SIZE } from '../../constants/pagination';
+import { USER_LIST_PAGE_SIZE } from '../../constants/pagination';
 import { userApi } from '../../apis/admin/userApi';
 
 const { Search } = Input;
 
 export default function UserPage() {
   const [currentPage, setCurrrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(1);
+
   const [loading, setLoading] = useState(false);
+  const [blockLoading, setBlockLoading] = useState();
   const [searching, setSearching] = useState(false);
+
   const [data, setData] = useState([]);
 
   const handleSearch = async (key) => {
@@ -22,6 +27,7 @@ export default function UserPage() {
   };
 
   const handleBlock = async (id, index) => {
+    setBlockLoading(index);
     const response = await apiCaller({
       request: userApi.toggleBlockUser(id),
       errorHandler,
@@ -30,13 +36,16 @@ export default function UserPage() {
     if (response) {
       data[index] = response.data;
       setData([...data]);
+      setBlockLoading(undefined);
     }
   };
 
   const errorHandler = (error) => {
     setLoading(false);
     if (searching) setSearching(false);
-    console.log('Fail: ', error);
+    if (blockLoading) setBlockLoading(undefined);
+
+    toast.error(error.message, { autoClose: 3000, theme: 'colored' });
   };
 
   const getListUser = async (keyword) => {
@@ -46,7 +55,7 @@ export default function UserPage() {
     const response = await apiCaller({
       request: userApi.listUser({
         page: currentPage,
-        limit: LIST_USER_PAGE_SIZE,
+        limit: USER_LIST_PAGE_SIZE,
         keyword,
       }),
       errorHandler,
@@ -55,7 +64,7 @@ export default function UserPage() {
     if (response) {
       setLoading(false);
       if (keyword) setSearching(false);
-      setTotalPages(response.extra.totalPages);
+      setTotalCount(response.extra.totalCount);
       setData(response.data);
     }
   };
@@ -83,12 +92,10 @@ export default function UserPage() {
     {
       title: 'Name',
       dataIndex: 'name',
-      sorter: true,
     },
     {
       title: 'Phone Number',
       dataIndex: 'phoneNumber',
-      sorter: true,
     },
     {
       title: 'Provider',
@@ -120,6 +127,7 @@ export default function UserPage() {
       render: (text, record, index) => (
         <Button
           onClick={() => handleBlock(record._id, index)}
+          loading={blockLoading === index}
           shape="circle"
           icon={<FontAwesomeIcon size="xl" icon={text ? faUserLarge : faUserLargeSlash} />}
         />
@@ -136,10 +144,10 @@ export default function UserPage() {
           size="large"
           loading={searching}
           allowClear
-          className="mt-5 mb-3 w-[40%]"
+          className="mt-5 mb-3 w-[45%]"
           addonBefore={<SearchOutlined />}
           onSearch={(e) => handleSearch(e)}
-          placeholder="Email | Name | Phone Number | Provider"
+          placeholder="ID | Email | Name | Phone Number | Provider"
         />
         <Table
           loading={loading}
@@ -149,15 +157,16 @@ export default function UserPage() {
           dataSource={loading ? undefined : data}
           pagination={
             data.length &&
-            totalPages > 1 && {
-              pageSize: LIST_USER_PAGE_SIZE,
+            totalCount > USER_LIST_PAGE_SIZE && {
+              pageSize: USER_LIST_PAGE_SIZE,
               current: currentPage,
-              total: totalPages,
+              total: totalCount,
               onChange: (page) => setCurrrentPage(page),
             }
           }
         />
       </div>
+      <ToastContainer theme="colored" newestOnTop />
     </div>
   );
 }

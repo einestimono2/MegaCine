@@ -24,6 +24,7 @@ import apiCaller from '../../apis/apiCaller';
 import { authApi } from '../../apis/authApi';
 import { ROUTE } from '../../constants/router';
 import UserPage from '../UserPage';
+import ManagerPage from '../ManagerPage';
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -49,6 +50,10 @@ export default function AdminPage() {
         return <DashboardAdmin />;
       case '2':
         return <UserPage />;
+      case '3':
+        return <ManagerPage mode="approval" />;
+      case '4':
+        return <ManagerPage mode="list" />;
       case '5':
         return <MoviePage mode="create" />;
       case '6':

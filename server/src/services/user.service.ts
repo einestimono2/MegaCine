@@ -31,7 +31,7 @@ export const findUserByEmail = async (email: string, password: boolean = false) 
 export const getUsers = async (req: Request) => {
   const options = convertRequestToPipelineStages({
     req,
-    fieldsApplySearch: ['email', 'name', 'phoneNumber', 'provider']
+    fieldsApplySearch: ['_id', 'email', 'name', 'phoneNumber', 'provider']
   });
 
   return await UserModel.aggregate(options);
