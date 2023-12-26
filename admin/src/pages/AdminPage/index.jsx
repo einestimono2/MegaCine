@@ -24,6 +24,10 @@ import apiCaller from '../../apis/apiCaller';
 import { authApi } from '../../apis/authApi';
 import { ROUTE } from '../../constants/router';
 import UserPage from '../UserPage';
+import CategoryPage from '../CategoryPage';
+import PromotionPage from '../PromotionPage';
+import ShowtimePage from '../ShowtimePage';
+import ReviewPage from '../ReviewPage';
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -77,15 +81,15 @@ export default function AdminPage() {
       case '2':
         return <RoomPage />;
       case '3':
-        return 'test';
+        return <CategoryPage />;
       case '4':
-        return 'test';
+        return <PromotionPage />;
       case '5':
         return <ProductPage />;
       case '6':
-        return 'test';
+        return <ShowtimePage />;
       case '7':
-        return 'test';
+        return <ReviewPage />;
       default:
         return <></>;
     }
@@ -111,23 +115,24 @@ export default function AdminPage() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
       localStorage.removeItem('user');
-      localStorage.removeItem('isLoggedIn');
       navigate(ROUTE.SIGNIN, { replace: true });
     }
   };
   return (
     <div className="grid grid-cols-5 ">
-      <div className="col-span-1 menu  h-[100vh]">
-        <p className="text-3xl p-5 font-bold text-blue-500"># {path === 'admin' ? 'ADMIN' : 'MANAGER'}</p>
-        {path === 'manager' ? <div /> : null}
-        <Menu
-          className="custom-menu"
-          mode="inline"
-          items={path === 'admin' ? itemsAdmin : itemsManager}
-          selectedKeys={[selectedKey]}
-          onClick={({ key }) => handleMenuClick(key)}
-        />
-        <Button type="primary" size="large" onClick={logOut} className="fixed bottom-3 left-24">
+      <div className="col-span-1 menu flex flex-col justify-between h-[100vh]">
+        <div>
+          <p className="text-3xl p-5 font-bold text-blue-500"># {path === 'admin' ? 'ADMIN' : 'MANAGER'}</p>
+          {path === 'manager' ? <div /> : null}
+          <Menu
+            className="custom-menu"
+            mode="inline"
+            items={path === 'admin' ? itemsAdmin : itemsManager}
+            selectedKeys={[selectedKey]}
+            onClick={({ key }) => handleMenuClick(key)}
+          />
+        </div>
+        <Button type="primary" size="large" onClick={logOut} className="m-4">
           Logout
         </Button>
       </div>

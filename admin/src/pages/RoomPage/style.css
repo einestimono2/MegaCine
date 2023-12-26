@@ -4,6 +4,6 @@
 .container-screen {
   perspective: 100px;
 }
-.seat:hover{
-transform: scale(1.1);
+.seat:hover {
+  transform: scale(1.1);
 }

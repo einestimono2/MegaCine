@@ -137,7 +137,6 @@ export default function UserPage() {
           loading={searching}
           allowClear
           className="mt-5 mb-3 w-[40%]"
-          addonBefore={<SearchOutlined />}
           onSearch={(e) => handleSearch(e)}
           placeholder="Email | Name | Phone Number | Provider"
         />

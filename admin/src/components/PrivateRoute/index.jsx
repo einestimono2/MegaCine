@@ -4,15 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTE } from '../../constants/router';
 
 export default function PrivateRouter(props) {
+  const access_token = localStorage.getItem('access_token');
   const { children } = props;
-  const isLoggedIn = localStorage.getItem('isLoggedIn');
   const navigate = useNavigate();
   const onClick = () => {
     navigate(ROUTE.SIGNIN);
   };
   return (
     <div>
-      {isLoggedIn ? (
+      {access_token ? (
         children
       ) : (
         <Result

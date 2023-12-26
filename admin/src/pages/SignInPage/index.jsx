@@ -7,9 +7,9 @@ import { ROUTE } from '../../constants/router';
 
 export default function SignInPage() {
   const navigate = useNavigate();
-  const isLoggedIn = localStorage.getItem('isLoggedIn');
+  const access_token = localStorage.getItem('access_token');
   useEffect(() => {
-    if (isLoggedIn) {
+    if (access_token) {
       navigate(-1);
     }
   }, []);
@@ -33,7 +33,6 @@ export default function SignInPage() {
     if (response) {
       localStorage.setItem('access_token', response.data.accessToken);
       localStorage.setItem('refresh_token', response.data.refreshToken);
-      localStorage.setItem('isLoggedIn', true);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       navigate(ROUTE.ADMIN.replace(':id', response.data.user.role.toLowerCase()), { replace: true });
     }
