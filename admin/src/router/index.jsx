@@ -24,6 +24,8 @@ export default function AppRouter() {
             element={
               !access_token && route.path === ROUTE.SIGNIN ? (
                 <SignInPage />
+              ) : !access_token && route.path === ROUTE.SIGNUP ? (
+                <SignUpPage />
               ) : (
                 <PrivateRouter>
                   <Component />

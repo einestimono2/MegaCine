@@ -7,9 +7,9 @@ const router = express.Router();
 
 //! .../api/v1/upload
 
-router.post('/image', isAuthenticated, uploadImage.single('file'), uploadController.uploadImage);
+router.post('/image', uploadImage.single('file'), uploadController.uploadImage);
 
-router.post('/images', isAuthenticated, uploadImage.array('files'), uploadController.uploadImages);
+router.post('/images', uploadImage.array('files'), uploadController.uploadImages);
 
 router.delete('/:fileName', isAuthenticated, uploadController.deleteImage);
 

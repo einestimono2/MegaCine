@@ -1,5 +1,8 @@
 import React from 'react';
 
-export default function ManagerPage() {
-  return <div>Manager Page</div>;
+import Approval from '../../components/Managers/Approval';
+import ListManager from '../../components/Managers/ListManager';
+
+export default function ManagerPage(props) {
+  return props.mode === 'approval' ? <Approval /> : <ListManager />;
 }

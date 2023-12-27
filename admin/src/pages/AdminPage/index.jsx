@@ -28,6 +28,7 @@ import CategoryPage from '../CategoryPage';
 import PromotionPage from '../PromotionPage';
 import ShowtimePage from '../ShowtimePage';
 import ReviewPage from '../ReviewPage';
+import ManagerPage from '../ManagerPage';
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -53,6 +54,10 @@ export default function AdminPage() {
         return <DashboardAdmin />;
       case '2':
         return <UserPage />;
+      case '3':
+        return <ManagerPage mode="approval" />;
+      case '4':
+        return <ManagerPage mode="list" />;
       case '5':
         return <MoviePage mode="create" />;
       case '6':
@@ -115,7 +120,7 @@ export default function AdminPage() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
       localStorage.removeItem('user');
-      navigate(ROUTE.SIGNIN, { replace: true });
+      navigate(ROUTE.SIGNIN);
     }
   };
   return (

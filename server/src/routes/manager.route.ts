@@ -13,6 +13,7 @@ router.post('/login', managerController.login);
 router.put('/update-password', isAuthenticated, managerController.updatePassword);
 
 router.get('/list', isAuthenticated, authorizeRoles(Roles.Admin), managerController.getManagers);
+router.get('/approval-list', isAuthenticated, authorizeRoles(Roles.Admin), managerController.getApprovalList);
 
 router.get('/activate/:id', isAuthenticated, authorizeRoles(Roles.Admin), managerController.activateAccount);
 
@@ -209,6 +210,56 @@ export const managerRouter = router;
  *          application/json:
  *            schema:
  *              $ref: '#/components/schemas/Response'
+ */
+
+//! Danh sách chờ phê duyệt
+/**
+ * @swagger
+ * /manager/approval-list:
+ *  get:
+ *    tags: [Manager]
+ *    summary: "[Admin] Lấy danh quản lý đang đợt phê duyệt"
+ *    parameters:
+ *      - in: query
+ *        name: hl
+ *        type: string
+ *        default: vi
+ *        description: Ngôn ngữ trả về 'en | vi'
+ *      - in: query
+ *        name: keyword
+ *        type: string
+ *        description: Tìm theo tên
+ *      - in: query
+ *        name: page
+ *        type: string
+ *        description: Trang hiện tại
+ *      - in: query
+ *        name: limit
+ *        type: string
+ *        description: Số lượng kết quả mỗi trang
+ *      - in: query
+ *        name: sort
+ *        type: string
+ *        hint: ht
+ *        description: Sắp xếp (\+fullName, fullName, \-fullName)
+ *      - in: query
+ *        name: fields
+ *        type: string
+ *        description: Giới hạn trường trả về (cách nhau bởi dấu phẩy)
+ *      - in: query
+ *        name: role
+ *        type: string
+ *        default: MANAGER
+ *        description: Lấy theo role
+ *    security:
+ *      - BearerToken: []
+ *    responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ListResponse'
  */
 
 //! List Managers

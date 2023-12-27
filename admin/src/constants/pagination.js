@@ -1,1 +1,3 @@
-export const LIST_USER_PAGE_SIZE = 7;
+export const USER_LIST_PAGE_SIZE = 7;
+export const MANAGER_LIST_PAGE_SIZE = 7;
+export const MANAGER_APPROVAL_LIST_PAGE_SIZE = 5;

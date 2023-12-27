@@ -1,35 +1,52 @@
 import React from 'react';
 import './style.css';
-import { Button, Form, Input } from 'antd';
+import { Form, Steps } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+
+import TheaterForm from './TheaterForm';
+import AccountForm from './AccountForm';
+import { addKeySteps } from '../../redux/reducer/signupSlide';
 
 export default function SignUpPage() {
+  const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const currentSteps = useSelector((state) => state.signup.keySteps);
+  const steps = [
+    {
+      title: 'Thông tin rạp',
+      content: <TheaterForm form={form} />,
+    },
+    {
+      title: 'Tài khoản rạp',
+      content: <AccountForm />,
+    },
+  ];
+  const onChange = async (value) => {
+    try {
+      // Wait for the validation to complete
+      await form.validateFields();
+
+      // If validation is successful, dispatch the action
+      dispatch(addKeySteps({ keySteps: value }));
+    } catch (error) {
+      // Validation failed, you can handle errors if needed
+      console.error('Validation failed:', error);
+    }
+  };
+
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="p-4 w-1/4 border rounded-lg shadow-lg">
-        <p className="text-3xl font-bold mt-0">Sign Up</p>
-        <Form layout="vertical">
-          <Form.Item
-            label="Email"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your email!',
-                type: 'email',
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item label="Username" rules={[{ required: true, message: 'Please input your username!' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item label="Password" rules={[{ required: true, message: 'Please input your password!' }]}>
-            <Input.Password />
-          </Form.Item>
-          <Form.Item className="text-center mb-0">
-            <Button>Submit</Button>
-          </Form.Item>
-        </Form>
+    <div className="flex flex-col justify-center items-center mx-8">
+      <p className="text-3xl font-bold my-7">ĐĂNG KÝ RẠP THÀNH VIÊN</p>
+      <div className="h-full w-[62.7%]">
+        <Steps
+          className="w-[60%] mx-auto mb-10"
+          current={currentSteps}
+          items={steps.map((item) => ({ key: item.title, title: item.title }))}
+          labelPlacement="vertical"
+          onChange={onChange}
+        />
+
+        <div className="mb-8">{steps[currentSteps].content}</div>
       </div>
     </div>
   );
