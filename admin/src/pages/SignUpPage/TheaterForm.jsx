@@ -9,7 +9,7 @@ import apiCaller from '../../apis/apiCaller';
 import { uploadApi } from '../../apis/uploadApi';
 import 'react-toastify/dist/ReactToastify.css';
 import Map from '../../components/Map';
-import { addAddresses } from '../../redux/reducer/signupSlide';
+import { addAddresses, addImages, addLogo, addTheater } from '../../redux/reducer/signupSlide';
 import './style.css';
 
 export default function TheaterForm(props) {
@@ -34,13 +34,26 @@ export default function TheaterForm(props) {
   useEffect(() => {
     res();
   }, []);
+  const theaterForm = useSelector((state) => state.signup.addTheater);
+  const logo = useSelector((state) => state.signup.addTheater.logo);
+  const images = useSelector((state) => state.signup.addImages);
+  const thumbnails = useSelector((state) => state.signup.addTheater.thumbnails);
   const listCity = useSelector((state) => state.signup.addresses);
   const handleChange1 = ({ fileList: newFileList }) => {
     if (newFileList.every((file) => checkFile(file))) {
       setFileList1(newFileList);
     }
   };
-
+  useEffect(() => {
+    if (logo) {
+      setFileList1(logo);
+    }
+  }, [logo]);
+  useEffect(() => {
+    if (thumbnails) {
+      setFileList2(thumbnails);
+    }
+  }, [thumbnails]);
   const handleChange2 = ({ fileList: newFileList }) => {
     if (newFileList.every((file) => checkFile(file))) {
       setFileList2(newFileList);
@@ -50,6 +63,30 @@ export default function TheaterForm(props) {
     }
   };
   const handleCancel = () => setPreviewOpen(false);
+  const onRemove = () => {
+    dispatch(addLogo({ addLogo: '' }));
+    dispatch(
+      addTheater({
+        addTheater: {
+          ...theaterForm,
+          logo: [],
+        },
+      }),
+    );
+  };
+  const onRemoves = (file) => {
+    const indexRemove = fileList2.findIndex((val) => val.uid === file.uid);
+
+    if (thumbnails) {
+      const filteredThumbnails = thumbnails.filter((val) => val.uid !== file.uid);
+      dispatch(addTheater({ addTheater: { ...theaterForm, thumbnails: filteredThumbnails } }));
+    }
+
+    if (indexRemove !== -1) {
+      const newImages = images.filter((_, index) => index !== indexRemove);
+      dispatch(addImages({ addImages: newImages }));
+    }
+  };
 
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -76,7 +113,9 @@ export default function TheaterForm(props) {
       request: uploadApi.uploadFiles(data),
       errorHandler,
     });
-    console.log(response);
+    if (response) {
+      dispatch(addImages({ addImages: response.data }));
+    }
   };
   const handleUploadFile = async () => {
     const data = new FormData();
@@ -88,29 +127,37 @@ export default function TheaterForm(props) {
       request: uploadApi.uploadFile(data),
       errorHandler,
     });
-    console.log(response);
+    if (response) {
+      dispatch(addLogo({ addLogo: response.data }));
+    }
   };
+  console.log(useSelector((state) => state.signup));
   const dummyRequest = ({ onSuccess }) => {
     setTimeout(() => {
       onSuccess('ok');
-      if (fileList1.length > 0) {
+      if (fileList1.length) {
         handleUploadFile();
       }
     }, 0);
   };
   const checkFile = (file) => {
-    const isImage = /\.(jpg|jpeg|png)$/.test(file.name.toLowerCase());
-    if (!isImage) {
-      toast.error('Chỉ được tải lên các tệp tin có đuôi là .jpg, .jpeg hoặc .png!');
-    }
+    if (file && file.name) {
+      const isImage = /\.(jpg|jpeg|png)$/.test(file.name.toLowerCase());
+      if (!isImage) {
+        toast.error('Chỉ được tải lên các tệp tin có đuôi là .jpg, .jpeg hoặc .png!');
+      }
 
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      toast.error('Kích thước tệp tin phải nhỏ hơn 2MB!');
-    }
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        toast.error('Kích thước tệp tin phải nhỏ hơn 2MB!');
+      }
 
-    return isImage && isLt2M;
+      return isImage && isLt2M;
+    }
+    toast.error('Tệp tin không hợp lệ!');
+    return false;
   };
+
   useEffect(() => {
     if (city) {
       setDistricts(listCity.filter((element) => element.code === city)[0]?.districts);
@@ -144,9 +191,11 @@ export default function TheaterForm(props) {
             <Upload
               customRequest={dummyRequest}
               listType="picture-card"
+              beforeUpload={checkFile}
               fileList={fileList1}
               onPreview={handlePreview}
               onChange={handleChange1}
+              onRemove={onRemove}
             >
               {fileList1?.length === 1 ? null : (
                 <div>
@@ -165,6 +214,7 @@ export default function TheaterForm(props) {
               fileList={fileList2}
               onPreview={handlePreview}
               onChange={handleChange2}
+              onRemove={onRemoves}
             >
               {fileList2?.length === 5 ? null : (
                 <div>
@@ -181,27 +231,13 @@ export default function TheaterForm(props) {
           name="name"
           rules={[{ required: true, message: 'Please input theater name!' }]}
         >
-          <Input />
+          <Input placeholder="Tên rạp" />
         </Form.Item>
-        <Form.Item
-          labelCol={{ span: 3 }}
-          label="Mô tả"
-          rules={[{ required: true, message: 'Please input your description!' }]}
-        >
-          <div className="grid grid-rows-2 gap-5">
-            <Input.Group className="flex row-span-1">
-              <p className="bg-gray-50 text-gray-400 border-b border-solid border-r-0 border-[#d9d9d9] border-t border-l rounded-s-lg m-0 flex justify-center items-center w-[15%]">
-                Tiếng anh
-              </p>
-              <Input.TextArea placeholder="Mô tả" style={{ width: '100%' }} />
-            </Input.Group>
-            <Input.Group className="flex row-span-1">
-              <p className="bg-gray-50 text-gray-400 border-b border-solid border-r-0 border-[#d9d9d9] border-t border-l rounded-s-lg m-0 flex justify-center items-center w-[15%]">
-                Tiếng việt
-              </p>{' '}
-              <Input.TextArea placeholder="Mô tả" style={{ width: '100%' }} />
-            </Input.Group>
-          </div>
+        <Form.Item labelCol={{ span: 3 }} label="Mô tả (vi)" name="description_vi">
+          <Input.TextArea placeholder="Mô tả bằng tiếng việt" style={{ width: '100%' }} />
+        </Form.Item>
+        <Form.Item labelCol={{ span: 3 }} label="Mô tả (en)" name="description_en">
+          <Input.TextArea placeholder="Mô tả bằng tiếng anh" style={{ width: '100%' }} />
         </Form.Item>
         <div className="grid grid-cols-2 gap-5">
           <Form.Item
@@ -217,29 +253,27 @@ export default function TheaterForm(props) {
               { type: 'email', message: 'Email không hợp lệ!' },
             ]}
           >
-            <Input />
+            <Input placeholder="Email" />
           </Form.Item>
           <Form.Item
             name="hotline"
-            rules={[{ pattern: /^0[0-9]{9,10}$/, message: 'Số điện thoại không hợp lệ!' }]}
+            rules={[
+              { pattern: /^0[0-9]{9,10}$/, message: 'Số điện thoại không hợp lệ!' },
+              {
+                required: true,
+                message: 'Hãy chọn số điện thoại!',
+              },
+            ]}
             labelCol={{ span: 6 }}
             className="w-full"
             label="Số điện thoại"
           >
-            <Input />
+            <Input placeholder="Số điện thoại" />
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-5">
           <div>
             <div>
-              <Form.Item
-                labelCol={{ span: 6 }}
-                name="location"
-                label="Tọa độ"
-                // rules={[{ required: true, message: 'Hãy chọn tạo độ!' }]}
-              >
-                <Input disabled />
-              </Form.Item>
               <Form.Item
                 labelCol={{ span: 6 }}
                 label="Tỉnh/TP"
@@ -252,10 +286,10 @@ export default function TheaterForm(props) {
                     value: _city.code,
                     label: _city.name,
                   }))}
-                  onChange={(value) => {
-                    setCity(value);
-                  }}
-                  value={city}
+                  // onChange={(value) => {
+                  //   setCity(value);
+                  // }}
+                  // value={city}
                 />
               </Form.Item>
               <Form.Item
@@ -270,10 +304,10 @@ export default function TheaterForm(props) {
                     value: _city.code,
                     label: _city.name,
                   }))}
-                  onChange={(value) => {
-                    setDistrict(value);
-                  }}
-                  value={district}
+                  // onChange={(value) => {
+                  //   setDistrict(value);
+                  // }}
+                  // value={district}
                 />
               </Form.Item>
               <Form.Item
@@ -288,19 +322,23 @@ export default function TheaterForm(props) {
                     value: val.code,
                     label: val.name,
                   }))}
-                  onChange={(value) => {
-                    setWard(value);
-                  }}
-                  value={ward}
+                  // onChange={(value) => {
+                  //   setWard(value);
+                  // }}
+                  // value={ward}
                 />
+              </Form.Item>
+              <Form.Item labelCol={{ span: 6 }} label="Số nhà" name="address">
+                <Input placeholder="Số nhà" onChange={(e) => setAddress(e.target.value)} value={address} />
               </Form.Item>
               <Form.Item
                 labelCol={{ span: 6 }}
-                label="Số nhà"
-                name="address"
-                rules={[{ required: true, message: 'Hãy nhập số nhà!' }]}
+                name="location"
+                label="Tọa độ"
+                initialValue={[105.84713, 21.030653]}
+                rules={[{ required: true, message: 'Hãy chọn tọa độ!' }]}
               >
-                <Input placeholder="Số nhà" onChange={(e) => setAddress(e.target.value)} value={address} />
+                <Input disabled />
               </Form.Item>
             </div>
           </div>
