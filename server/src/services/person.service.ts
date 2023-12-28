@@ -1,7 +1,7 @@
 import { type Request } from 'express';
 import { type Types, isValidObjectId } from 'mongoose';
 
-import { Message, PERSON_UPLOAD_FOLDER } from '../constants';
+import { Message, PERSON_UPLOAD_FOLDER, Roles } from '../constants';
 import { type IUpdatePersonRequest, type IPerson } from '../interfaces';
 import { NotFoundError, PersonModel } from '../models';
 import { convertRequestToPipelineStages, convertToMongooseId } from '../utils';
@@ -77,10 +77,12 @@ export const getPersonDetails = async (id: string, lang?: string) => {
 };
 
 export const getPersons = async (req: Request) => {
+  const isManager = req.userPayload?.role !== Roles.User;
+
   const options = convertRequestToPipelineStages({
     req,
     fieldsApplySearch: ['fullName'],
-    localizationFields: ['summary']
+    localizationFields: isManager ? undefined : ['summary']
   });
 
   return await PersonModel.aggregate(options);

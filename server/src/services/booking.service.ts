@@ -7,9 +7,9 @@ import { Message } from '../constants';
 import { addPaginationPipelineStage, convertToMongooseId } from '../utils';
 
 export const createBooking = async (booking: IBooking) => {
-  const _booking = await BookingModel.create(booking);
+  const _booking = new BookingModel(booking);
 
-  return _booking;
+  return await _booking.save();
 };
 
 export const deleteBooking = async (id: string) => {

@@ -3,7 +3,7 @@ import { isValidObjectId } from 'mongoose';
 
 import { GenreModel, NotFoundError } from '../models';
 import { type IGenre } from '../interfaces';
-import { Message } from '../constants';
+import { Message, Roles } from '../constants';
 import { convertRequestToPipelineStages } from '../utils';
 
 export const createGenre = async (genre: IGenre) => {
@@ -47,7 +47,13 @@ export const getOrCreateGenre = async (key: string) => {
 };
 
 export const getGenres = async (req: Request) => {
-  const options = convertRequestToPipelineStages({ req, fieldsApplySearch: ['name'], localizationFields: ['name'] });
+  const isManager = req.userPayload?.role !== Roles.User;
+
+  const options = convertRequestToPipelineStages({
+    req,
+    fieldsApplySearch: ['name'],
+    localizationFields: isManager ? undefined : ['name']
+  });
 
   return await GenreModel.aggregate(options);
 };
@@ -62,6 +68,13 @@ export const getGenreById = async (id: string, lang?: string) => {
   }
 
   return genre;
+};
+
+export const getGenreDetails = async (req: Request) => {
+  const { id } = req.params;
+  const isManager = req.userPayload?.role !== Roles.User;
+
+  return await getGenreById(id, isManager ? undefined : req.getLocale());
 };
 
 export const deleteGenre = async (id: string) => {

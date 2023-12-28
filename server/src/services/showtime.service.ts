@@ -40,7 +40,7 @@ export const getShowtimesByMovie = async (id: string, req: Request) => {
         $expr: {
           $cond: [
             req.query.date,
-            { $eq: [{ $dateToString: { format: '%Y-%m-%d', date: '$startTime' } }, req.query.date] },
+            { $eq: [{ $dateToString: { format: '%Y-%m-%d', date: '$startTime', timezone: '+07' } }, req.query.date] },
             { $gte: ['$startTime', dayjs(new Date()).startOf('day').toDate()] }
           ]
         },
@@ -67,7 +67,7 @@ export const getShowtimesByMovie = async (id: string, req: Request) => {
       }
     },
     // 3. Deconstruct array of objects --> object
-    { $unwind: '$room' },
+    { $unwind: { path: '$room', preserveNullAndEmptyArrays: true } },
     // 4. Filter theo format nếu truyền
     {
       $match: {
@@ -80,7 +80,7 @@ export const getShowtimesByMovie = async (id: string, req: Request) => {
     {
       $group: {
         _id: {
-          date: { $dateToString: { format: '%Y-%m-%d', date: '$startTime' } },
+          date: { $dateToString: { format: '%Y-%m-%d', date: '$startTime', timezone: '+07' } },
           theater: '$theater',
           type: { $concat: ['$room.type', ' ', '$language'] }
         },
@@ -124,7 +124,7 @@ export const getShowtimesByMovie = async (id: string, req: Request) => {
       }
     },
     // 8. Deconstruct array thành từng document (movie quan hệ 1-1 <=> mảng 1 phần tử kiểu obj <=> covert [{}] về {})
-    { $unwind: '$theater' },
+    { $unwind: { path: '$theater', preserveNullAndEmptyArrays: true } },
     // 9. Filter theo thành phố nếu truyền
     {
       $match: {
@@ -174,7 +174,7 @@ export const getShowtimesByTheater = async (id: string, req: Request) => {
         $expr: {
           $cond: [
             req.query.date,
-            { $eq: [{ $dateToString: { format: '%Y-%m-%d', date: '$startTime' } }, req.query.date] },
+            { $eq: [{ $dateToString: { format: '%Y-%m-%d', date: '$startTime', timezone: '+07' } }, req.query.date] },
             { $gte: ['$startTime', dayjs(new Date()).startOf('day').toDate()] }
           ]
         },
@@ -201,12 +201,12 @@ export const getShowtimesByTheater = async (id: string, req: Request) => {
       }
     },
     // 3. Deconstruct array of objects --> object
-    { $unwind: '$room' },
+    { $unwind: { path: '$room', preserveNullAndEmptyArrays: true } },
     // 4. Group lần lượt theo data (y-m-d) --> movie --> type = format + language (vd: 2D Subtitles)
     {
       $group: {
         _id: {
-          date: { $dateToString: { format: '%Y-%m-%d', date: '$startTime' } },
+          date: { $dateToString: { format: '%Y-%m-%d', date: '$startTime', timezone: '+07' } },
           movie: '$movie',
           type: { $concat: ['$room.type', ' ', '$language'] }
         },
@@ -253,7 +253,7 @@ export const getShowtimesByTheater = async (id: string, req: Request) => {
       }
     },
     // 7. Deconstruct array thành từng document (movie quan hệ 1-1 <=> mảng 1 phần tử kiểu obj <=> covert [{}] về {})
-    { $unwind: '$movie' },
+    { $unwind: { path: '$movie', preserveNullAndEmptyArrays: true } },
     // 8. Nhóm movie tương ứng với data (type + list lịch chiếu)
     {
       $group: {

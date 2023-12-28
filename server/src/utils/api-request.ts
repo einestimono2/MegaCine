@@ -37,13 +37,23 @@ export const convertRequestToPipelineStages = ({
       }
     });
 
+    let hasIdField = false;
+
     fields.forEach((field) => {
       const record: Record<string, any> = {};
 
+      if (field === '_id') hasIdField = true;
       record[field] = { $regex: `${req.query.keyword as string}`, $options: 'i' };
 
       map.push(record);
     });
+
+    if (hasIdField)
+      query.push({
+        $addFields: {
+          _id: { $toString: '$_id' }
+        }
+      });
 
     query.push({
       $match: { $or: map }

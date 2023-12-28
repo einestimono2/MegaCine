@@ -180,7 +180,12 @@ export const getNowShowingMovies = async (req: Request) => {
         localField: '_id',
         foreignField: 'movie',
         pipeline: [
-          { $project: { _id: 1, startTime: { $dateToString: { format: '%Y-%m-%d', date: '$startTime' } } } },
+          {
+            $project: {
+              _id: 1,
+              startTime: { $dateToString: { format: '%Y-%m-%d', date: '$startTime', timezone: '+07' } }
+            }
+          },
           { $match: { startTime: { $eq: nowYMD.format('YYYY-MM-DD') } } }
         ],
         as: 'showtimes'
@@ -259,7 +264,12 @@ export const getComingSoonMovies = async (req: Request) => {
         localField: '_id',
         foreignField: 'movie',
         pipeline: [
-          { $project: { _id: 1, startTime: { $dateToString: { format: '%Y-%m-%d', date: '$startTime' } } } },
+          {
+            $project: {
+              _id: 1,
+              startTime: { $dateToString: { format: '%Y-%m-%d', date: '$startTime', timezone: '+07' } }
+            }
+          },
           { $match: { startTime: { $gte: nowYMD } } }
         ],
         as: 'showtimes'
@@ -327,7 +337,12 @@ export const getSneakShowMovies = async (req: Request) => {
         localField: '_id',
         foreignField: 'movie',
         pipeline: [
-          { $project: { _id: 1, startTime: { $dateToString: { format: '%Y-%m-%d', date: '$startTime' } } } },
+          {
+            $project: {
+              _id: 1,
+              startTime: { $dateToString: { format: '%Y-%m-%d', date: '$startTime', timezone: '+07' } }
+            }
+          },
           { $match: { startTime: { $gte: nowYMD } } }
         ],
         as: 'showtimes'

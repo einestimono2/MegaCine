@@ -9,11 +9,10 @@ import { BadRequestError } from '../models';
 
 export const register = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   // Kiểm tra và tạo manager
-  const manager = await managerServices.createManager({ ...req.body });
+  await managerServices.createManagerAndTheater(req);
 
   res.sendCREATED({
-    message: res.translate(Message.WAIT_FOR_REGISTRATION_APPROVAL.msg),
-    data: manager
+    message: res.translate(Message.WAIT_FOR_REGISTRATION_APPROVAL.msg)
   });
 });
 
@@ -95,6 +94,15 @@ export const getManagers = CatchAsyncError(async (req: Request, res: Response, n
   });
 });
 
+export const getApprovalList = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+  const [payload] = await managerServices.getApprovalList(req); // [ { extra: {}, data: [] } ]
+
+  res.sendOK({
+    data: payload?.data ?? [],
+    extra: payload?.extra ?? { totalCount: 0 }
+  });
+});
+
 export const updateRole = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   let manager = await managerServices.getManagerById(req.params.id);
 
@@ -110,7 +118,7 @@ export const updateRole = CatchAsyncError(async (req: Request, res: Response, ne
 });
 
 export const getManager = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const manager = await managerServices.getManagerById(req.params.id);
+  const manager = await managerServices.getManagerDetails(req.params.id);
 
   res.sendOK({
     data: manager

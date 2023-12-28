@@ -39,6 +39,7 @@
   "Invalid review rating": "Invalid rating stars! (0-10)",
   "Invalid theater rating": "Invalid rating stars! (0-5)",
   "Invalid payment method %s": "'%s' is not a valid payment methods! (Cash | Card)",
+  "Invalid number %s": "'%s' is not a valid number!",
   "__________________________________________ EXIST __________________________________________": "",
   "%s already exists": "%s already exists!",
   "Email already exist": "Email already exist!",

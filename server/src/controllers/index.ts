@@ -12,3 +12,4 @@ export * as showtimeController from './showtime.controller';
 export * as promotionController from './promotion.controller';
 export * as reviewController from './review.controller';
 export * as bookingController from './booking.controller';
+export * as reportController from './report.controller';

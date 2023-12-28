@@ -25,7 +25,7 @@ export const createTheater = async (theater: ITheater, managerPayload?: Record<s
     });
   }
 
-  if (theater.images.length) {
+  if (theater.images?.length) {
     for (let idx = 0; idx < theater.images.length; idx++) {
       newtheater.images[idx] = await cloudinaryServices.uploadImage({
         public_id: `${newtheater._id}_images_${idx}`,
