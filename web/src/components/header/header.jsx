@@ -2,6 +2,8 @@ import React from 'react';
 import './header.scss';
 import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
+import ROUTES from '../../constants/routes';
+import { Link } from 'react-router-dom';
 
 
 function Header() {
@@ -21,7 +23,7 @@ function Header() {
           <a class="nav-link" href="#">Đặt vé</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Lịch chiếu</a>
+          <Link class="nav-link" to={ROUTES.SCHEDULE}>Lịch chiếu</Link>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -48,8 +50,8 @@ function Header() {
         <input class="form-control me-2" type="search" placeholder="Từ khóa..." aria-label="Search"/>
       </form>
       <div class = "group-btn-header">
-      <a href="" className='btn btn-language'><i class="fa-solid fa-language icon-button"></i></a>
-      <a href="" className='btn btn-user'><i class="fa-solid fa-user icon-button"></i></a>
+      <Link to={ROUTES.LOGIN} className='btn btn-language'><i class="fa-solid fa-right-to-bracket"></i></Link >
+      <Link  href="" className='btn btn-user'><i class="fa-solid fa-user icon-button"></i></Link >
       </div>
     </div>
   </div>

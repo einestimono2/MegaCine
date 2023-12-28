@@ -1,6 +1,74 @@
 .schedule{
-    margin-top: 10px;
     margin-bottom: 10px;
-    padding-top: 10px;
     background-color: var(--background-color);
+}
+.main-schedule{
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+#background-schedule{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(to left, var(--main-color), var(--main-color-light));
+}
+.title-schedule{
+    font-size: 2rem;
+    color: var(--background-color);
+    font-weight: 500;
+}
+.disable-button{
+    color: var(--second-color-light) !important;
+    background-color: var(--background-color-dark) !important;
+    border-radius: 0 !important;
+}
+.button-schedule{
+    border-radius: 0 !important;
+}
+.button-schedule.active{
+    color: var(--background-color) !important;
+}
+#schedule-time{
+    background-color: var(--background-color-dark);
+}
+.notice-schedule{
+    background-color: rgb(253, 195, 87);
+    padding-top: 15px;
+    border-radius: 5px;
+}
+.fa-circle-info{
+    color: var(--second-color);
+}
+.notice-text{
+    color: var(--second-color);
+}
+.theater-detail{
+    background-color: var(--background-color-dark);
+    padding:15px 15px 5px 15px;
+    border-radius: 5px;
+}
+.theater-name{
+    margin-bottom: 5px !important;
+}
+.theater-address{
+    font-size: 0.8rem;
+    color: var(--border-color-dark);
+}
+.btn-time{
+    border: 1px solid var(--main-color);
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+.img-fluid{
+    height: 100%;
+}
+.description-film{
+    font-size: 0.9rem;
+    margin-bottom: 0 !important;
+}
+.btn-time:hover{
+    color: var(--background-color);
+    background-color: var(--main-color);
 }

@@ -7,6 +7,7 @@ export default function RoomPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [totalSeats, setTotalSeats] = useState(0);
   const [selected, setSelected] = useState([]);
+  const [form] = Form.useForm();
   const initialRows = 5;
   const initialColumns = 5;
 
@@ -128,11 +129,11 @@ export default function RoomPage() {
   const itemsType = [
     {
       label: '2D',
-      key: '1',
+      value: '1',
     },
     {
       label: '3D',
-      key: '2',
+      value: '2',
     },
   ];
   const handleMenuClick = (e) => {
@@ -157,19 +158,29 @@ export default function RoomPage() {
       </div>
 
       <Modal
-        className="max-w-[90%] !w-fit  !-mt-12"
+        className="max-w-[90%] !w-fit  !-mt-14"
         footer={null}
         title="Create Room"
         open={isOpen}
         onCancel={cancelModal}
       >
-        <Form>
+        <Form form={form}>
           <div className="">
-            <div className="grid grid-cols-5 gap-4">
-              <Form.Item label="Name" className="col-span-3">
+            <div className="grid grid-cols-6 gap-4">
+              <Form.Item
+                name="name"
+                rules={[{ required: true, message: 'Please input your name!' }]}
+                label="Name"
+                className="col-span-3"
+              >
                 <Input />
               </Form.Item>
-              <Form.Item label="Type" className="col-span-1">
+              <Form.Item
+                name="type"
+                rules={[{ required: true, message: 'Please input your type!' }]}
+                label="Type"
+                className="col-span-2"
+              >
                 <Select placeholder="Select a type" options={itemsType} />
               </Form.Item>
               <Form.Item label="Capacity" className="col-span-1">
@@ -177,7 +188,7 @@ export default function RoomPage() {
               </Form.Item>
             </div>
             <div className="grid grid-cols-6 gap-5">
-              <div className=" col-span-5 mt-2 flex items-center flex-col container-screen">
+              <div className=" col-span-5 mt-6 flex items-center flex-col container-screen">
                 <div className="bg-black h-12 w-[90%] flex items-center justify-center text-2xl font-bold shadow-xl screen">
                   <div className="bg-white h-[95%] w-[95%] flex items-center justify-around text-2xl font-bold shadow-xl screen">
                     <div className="flex items-center">
@@ -229,7 +240,7 @@ export default function RoomPage() {
                 <div />
               </div>
               <div className="col-span-1  ">
-                <div className="flex justify-between flex-col items-center">
+                <div className="flex justify-between h-full flex-col items-center">
                   <div className="grid grid-rows-5 gap-5">
                     <Button onClick={addRow}>Add Row</Button>
                     <Button onClick={addColumn}>Add Column</Button>
@@ -241,7 +252,9 @@ export default function RoomPage() {
                     )}
                   </div>
                   <Form.Item className="mb-0">
-                    <Button>Submit</Button>
+                    <Button type="primary" htmlType="submit">
+                      Submit
+                    </Button>
                   </Form.Item>
                 </div>
               </div>
