@@ -20,7 +20,6 @@ export default function Map(props) {
     <MapContainer
       center={{ lat: props.lat ?? 21.030653, lng: props.lng ?? 105.84713 }}
       zoom={props.zoom ?? 15}
-      zoomControl={false}
       scrollWheelZoom={false}
       style={mapStyle}
       className="rounded-[4px]"

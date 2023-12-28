@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { SearchOutlined } from '@ant-design/icons';
 import { faUserLargeSlash, faUserLarge } from '@fortawesome/free-solid-svg-icons';
 import apiCaller from '../../apis/apiCaller';
 import { USER_LIST_PAGE_SIZE } from '../../constants/pagination';
@@ -144,8 +143,7 @@ export default function UserPage() {
           size="large"
           loading={searching}
           allowClear
-          className="mt-5 mb-3 w-[45%]"
-          addonBefore={<SearchOutlined />}
+          className="mt-5 mb-3 w-[40%]"
           onSearch={(e) => handleSearch(e)}
           placeholder="ID | Email | Name | Phone Number | Provider"
         />

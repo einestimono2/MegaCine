@@ -110,7 +110,6 @@ function Approval() {
           loading={searching}
           allowClear
           className="mt-5 mb-3 w-[45%]"
-          addonBefore={<SearchOutlined />}
           onSearch={(e) => setKeyword(e)}
           placeholder="ID | Code | Theater (Name | Address | Email | Hotline)"
         />
