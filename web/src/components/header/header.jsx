@@ -30,9 +30,9 @@ function Header() {
             Phim
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#">Đang chiếu</a></li>
-            <li><a class="dropdown-item" href="#">Sắp chiếu</a></li>
-            <li><a class="dropdown-item" href="#">Chiếu sớm</a></li>
+            <li><Link class="dropdown-item" to={ROUTES.MOVIELIST}>Đang chiếu</Link></li>
+            <li><Link class="dropdown-item" to={ROUTES.MOVIELIST}>Sắp chiếu</Link></li>
+            <li><Link class="dropdown-item" to={ROUTES.MOVIELIST}>Chiếu sớm</Link></li>
           </ul>
         </li>
         <li class="nav-item dropdown">
