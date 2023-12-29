@@ -67,7 +67,7 @@ export const getReviewsByMovie = async (req: Request) => {
         as: 'user'
       }
     },
-    { $unwind: '$user' }
+    { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } }
   ];
 
   addPaginationPipelineStage({ req, pipeline });
@@ -87,7 +87,7 @@ export const getReviewsByTheater = async (req: Request) => {
         as: 'user'
       }
     },
-    { $unwind: '$user' }
+    { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } }
   ];
 
   addPaginationPipelineStage({ req, pipeline });

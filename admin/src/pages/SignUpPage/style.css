@@ -1,0 +1,6 @@
+.custom-form {
+  .ant-form-item-no-colon {
+    flex-direction: row-reverse !important;
+    gap: 2px;
+  }
+}

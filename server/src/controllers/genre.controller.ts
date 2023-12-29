@@ -24,9 +24,7 @@ export const getGenres = CatchAsyncError(async (req: Request, res: Response, nex
 
 // Get name of genre
 export const getGenre = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
-
-  const genre = await genreServices.getGenreById(id, req.getLocale());
+  const genre = await genreServices.getGenreDetails(req);
 
   res.sendOK({
     data: genre

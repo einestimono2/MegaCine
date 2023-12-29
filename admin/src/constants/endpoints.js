@@ -9,4 +9,6 @@ export const ENDPOINTS = {
   ACTIVATE_MANAGER: '/manager/activate',
   DELETE_MANAGER: '/manager/details',
   LISTMOVIE: '/movie/list',
+  UPLOADFILE: '/upload/image',
+  UPLOADFILES: '/upload/images',
 };

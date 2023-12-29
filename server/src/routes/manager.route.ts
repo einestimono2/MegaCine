@@ -85,7 +85,7 @@ export const managerRouter = router;
  * /manager/register:
  *  post:
  *    tags: [Manager]
- *    summary: "[All] Đăng ký tài khoản"
+ *    summary: "[All] Đăng ký rạp thành viên"
  *    parameters:
  *      - in: query
  *        name: hl
@@ -101,6 +101,11 @@ export const managerRouter = router;
  *            required:
  *              - code
  *              - password
+ *              - name
+ *              - email
+ *              - hotline
+ *              - address
+ *              - location
  *            properties:
  *              code:
  *                type: string
@@ -108,6 +113,45 @@ export const managerRouter = router;
  *              password:
  *                type: string
  *                default: 123456
+ *              name:
+ *                type: string
+ *                example: ""
+ *              email:
+ *                type: string
+ *                example: ""
+ *              hotline:
+ *                type: string
+ *                example: ""
+ *              description:
+ *                type: object
+ *                properties:
+ *                  en:
+ *                    type: string
+ *                    example: ''
+ *                  vi:
+ *                    type: string
+ *                    example: ''
+ *              address:
+ *                type: string
+ *                example: ''
+ *              location:
+ *                type: object
+ *                description: "type: Point, coordinates: [long, lat]"
+ *                properties:
+ *                  type:
+ *                    type: string
+ *                    example: 'Point'
+ *                  coordinates:
+ *                    type: array
+ *                    example: [105.804817, 21.028511]
+ *              logo:
+ *                type: string
+ *                example: ""
+ *              images:
+ *                type: array
+ *                items:
+ *                  type: string
+ *                example: []
  *
  *        application/x-www-form-urlencoded:
  *          schema:

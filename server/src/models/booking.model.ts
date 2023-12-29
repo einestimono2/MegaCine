@@ -73,10 +73,7 @@ const bookingSchema: Schema<IBooking> = new mongoose.Schema(
         }
       }
     ],
-    qrcode: {
-      type: String,
-      required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'qrcode'`]
-    },
+    qrcode: String,
     payment: {
       type: paymentSchema,
       required: [true, `'${Message.FIELD_s_EMPTY.msg}', 'payment'`]
@@ -86,7 +83,7 @@ const bookingSchema: Schema<IBooking> = new mongoose.Schema(
 );
 
 bookingSchema.pre('save', async function (next) {
-  this.qrcode = await generateQRCode(this._id);
+  this.qrcode = await generateQRCode(this._id.toString());
   next();
 });
 

@@ -56,6 +56,9 @@ export const Message = {
     ec: 420,
     msg: 'Token is invalid'
   },
+  INVALID_NUMBER_s: {
+    msg: 'Invalid number %s'
+  },
   INVALID_EMAIL: {
     msg: 'Invalid email'
   },

@@ -9,11 +9,10 @@ import { BadRequestError } from '../models';
 
 export const register = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   // Kiểm tra và tạo manager
-  const manager = await managerServices.createManager({ ...req.body });
+  await managerServices.createManagerAndTheater(req);
 
   res.sendCREATED({
-    message: res.translate(Message.WAIT_FOR_REGISTRATION_APPROVAL.msg),
-    data: manager
+    message: res.translate(Message.WAIT_FOR_REGISTRATION_APPROVAL.msg)
   });
 });
 
