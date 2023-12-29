@@ -15,12 +15,17 @@ const initialState = {
     district: '',
     ward: '',
     address: '',
-    addressCode: [],
   },
   addAccount: {},
   addLogo: '',
   addLocation: [],
   addImages: [],
+  city: '',
+  district: '',
+  districts: [],
+  ward: '',
+  wards: [],
+  address: '',
 };
 
 export const signupSlide = createSlice({
@@ -69,10 +74,47 @@ export const signupSlide = createSlice({
       const { addLocation = [] } = action.payload;
       state.addLocation = addLocation;
     },
+    addCity: (state, action) => {
+      const { city = '' } = action.payload;
+      state.city = city;
+    },
+    addDistrict: (state, action) => {
+      const { district = '' } = action.payload;
+      state.district = district;
+    },
+    addWard: (state, action) => {
+      const { ward = '' } = action.payload;
+      state.ward = ward;
+    },
+    addDistricts: (state, action) => {
+      const { districts = [] } = action.payload;
+      state.districts = districts;
+    },
+    addWards: (state, action) => {
+      const { wards = [] } = action.payload;
+      state.wards = wards;
+    },
+    addAddress: (state, action) => {
+      const { address = '' } = action.payload;
+      state.address = address;
+    },
   },
 });
 
-export const { addAddresses, addKeySteps, addTheater, addLogo, addImages, addAccount, addLocation } =
-  signupSlide.actions;
+export const {
+  addAddresses,
+  addKeySteps,
+  addTheater,
+  addLogo,
+  addImages,
+  addAccount,
+  addLocation,
+  addCity,
+  addDistrict,
+  addWard,
+  addAddress,
+  addDistricts,
+  addWards,
+} = signupSlide.actions;
 
 export default signupSlide.reducer;

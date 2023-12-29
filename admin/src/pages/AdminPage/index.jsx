@@ -29,6 +29,7 @@ import PromotionPage from '../PromotionPage';
 import ShowtimePage from '../ShowtimePage';
 import ReviewPage from '../ReviewPage';
 import ManagerPage from '../ManagerPage';
+import { addSelectedKey } from '../../redux/reducer/adminSlide';
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -44,7 +45,7 @@ export default function AdminPage() {
   const selectedKey = useSelector((state) => state.admin.selectedKey);
   const path = useParams().id;
   const handleMenuClick = (key) => {
-    dispatch({ type: 'admin/addSelectedKey', payload: { selectedKey: key } });
+    dispatch(addSelectedKey({ selectedKey: key }));
   };
   const access_token = localStorage.getItem('access_token');
   const navigate = useNavigate();

@@ -7,11 +7,10 @@ import SignUpPage from '../pages/SignUpPage';
 import PrivateRouter from '../components/PrivateRoute';
 
 export default function AppRouter() {
-  const access_token = localStorage.getItem('access_token');
   const routes = [
-    { path: ROUTE.ADMIN, element: AdminPage },
-    { path: ROUTE.SIGNIN, element: SignInPage },
-    { path: ROUTE.SIGNUP, element: SignUpPage },
+    { path: ROUTE.ADMIN, element: AdminPage, isPrivate: true },
+    { path: ROUTE.SIGNIN, element: SignInPage, isPrivate: false },
+    { path: ROUTE.SIGNUP, element: SignUpPage, isPrivate: false },
   ];
   return (
     <Routes>
@@ -22,14 +21,12 @@ export default function AppRouter() {
             key={route.path}
             {...route}
             element={
-              !access_token && route.path === ROUTE.SIGNIN ? (
-                <SignInPage />
-              ) : !access_token && route.path === ROUTE.SIGNUP ? (
-                <SignUpPage />
-              ) : (
+              route.isPrivate ? (
                 <PrivateRouter>
                   <Component />
                 </PrivateRouter>
+              ) : (
+                <Component />
               )
             }
           />

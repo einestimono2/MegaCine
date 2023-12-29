@@ -9,17 +9,22 @@ import apiCaller from '../../apis/apiCaller';
 import { uploadApi } from '../../apis/uploadApi';
 import 'react-toastify/dist/ReactToastify.css';
 import Map from '../../components/Map';
-import { addAddresses, addImages, addLogo, addTheater } from '../../redux/reducer/signupSlide';
+import {
+  addAddress,
+  addAddresses,
+  addCity,
+  addDistrict,
+  addDistricts,
+  addImages,
+  addLogo,
+  addTheater,
+  addWard,
+  addWards,
+} from '../../redux/reducer/signupSlide';
 import './style.css';
 
 export default function TheaterForm(props) {
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [city, setCity] = useState('');
-  const [address, setAddress] = useState('');
-  const [districts, setDistricts] = useState();
-  const [district, setDistrict] = useState();
-  const [ward, setWard] = useState();
-  const [wards, setWards] = useState();
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [fileList1, setFileList1] = useState([]);
@@ -39,6 +44,12 @@ export default function TheaterForm(props) {
   const images = useSelector((state) => state.signup.addImages);
   const thumbnails = useSelector((state) => state.signup.addTheater.thumbnails);
   const listCity = useSelector((state) => state.signup.addresses);
+  const city = useSelector((state) => state.signup.city);
+  const district = useSelector((state) => state.signup.district);
+  const ward = useSelector((state) => state.signup.ward);
+  const districts = useSelector((state) => state.signup.districts);
+  const wards = useSelector((state) => state.signup.wards);
+  const address = useSelector((state) => state.signup.address);
   const handleChange1 = ({ fileList: newFileList }) => {
     if (newFileList.every((file) => checkFile(file))) {
       setFileList1(newFileList);
@@ -131,7 +142,6 @@ export default function TheaterForm(props) {
       dispatch(addLogo({ addLogo: response.data }));
     }
   };
-  console.log(useSelector((state) => state.signup));
   const dummyRequest = ({ onSuccess }) => {
     setTimeout(() => {
       onSuccess('ok');
@@ -160,14 +170,18 @@ export default function TheaterForm(props) {
 
   useEffect(() => {
     if (city) {
-      setDistricts(listCity.filter((element) => element.code === city)[0]?.districts);
+      dispatch(addDistricts({ districts: listCity.filter((element) => element.code === city)[0]?.districts }));
+      dispatch(addDistrict({ district: '' }));
+      dispatch(addWard({ ward: '' }));
     }
   }, [city]);
   useEffect(() => {
     if (district) {
-      setWards(districts.filter((element) => element.code === district)[0]?.wards);
+      dispatch(addWards({ wards: districts.filter((element) => element.code === district)[0]?.wards }));
+      dispatch(addWard({ ward: '' }));
     }
   }, [district]);
+
   return (
     <div>
       <Form
@@ -286,10 +300,10 @@ export default function TheaterForm(props) {
                     value: _city.code,
                     label: _city.name,
                   }))}
-                  // onChange={(value) => {
-                  //   setCity(value);
-                  // }}
-                  // value={city}
+                  onChange={(value) => {
+                    dispatch(addCity({ city: value }));
+                  }}
+                  value={city}
                 />
               </Form.Item>
               <Form.Item
@@ -304,10 +318,10 @@ export default function TheaterForm(props) {
                     value: _city.code,
                     label: _city.name,
                   }))}
-                  // onChange={(value) => {
-                  //   setDistrict(value);
-                  // }}
-                  // value={district}
+                  onChange={(value) => {
+                    dispatch(addDistrict({ district: value }));
+                  }}
+                  value={district}
                 />
               </Form.Item>
               <Form.Item
@@ -322,14 +336,18 @@ export default function TheaterForm(props) {
                     value: val.code,
                     label: val.name,
                   }))}
-                  // onChange={(value) => {
-                  //   setWard(value);
-                  // }}
-                  // value={ward}
+                  onChange={(value) => {
+                    dispatch(addWard({ ward: value }));
+                  }}
+                  value={ward}
                 />
               </Form.Item>
               <Form.Item labelCol={{ span: 6 }} label="Số nhà" name="address">
-                <Input placeholder="Số nhà" onChange={(e) => setAddress(e.target.value)} value={address} />
+                <Input
+                  placeholder="Số nhà"
+                  onChange={(e) => dispatch(addAddress({ address: e.target.value }))}
+                  value={address}
+                />
               </Form.Item>
               <Form.Item
                 labelCol={{ span: 6 }}

@@ -28,7 +28,7 @@ export default function ListManager() {
   const [searching, setSearching] = useState(false);
 
   const [data, setData] = useState([]);
-
+  const [height, setHeight] = useState(0);
   const errorHandler = (error) => {
     setLoading(false);
     if (searching) setSearching(false);
@@ -58,7 +58,25 @@ export default function ListManager() {
       setData(response.data);
     }
   };
+  useEffect(() => {
+    const calculateHeight = () => {
+      const windowHeight = window.innerHeight;
 
+      const heightPercentage = 0.53;
+
+      const calculatedHeight = windowHeight * heightPercentage;
+
+      setHeight(calculatedHeight);
+    };
+
+    calculateHeight();
+
+    window.addEventListener('resize', calculateHeight);
+
+    return () => {
+      window.removeEventListener('resize', calculateHeight);
+    };
+  }, []);
   const handleDelete = async (id, index) => {
     toast.success(id + index, { autoClose: 3000, theme: 'colored' });
     // setDeleteLoading(index);
@@ -97,6 +115,7 @@ export default function ListManager() {
         />
         <div className="!max-h-[80%] !overflow-auto">
           <Table
+            scroll={{ y: height }}
             loading={loading}
             className="!h-fit"
             bordered
@@ -119,15 +138,15 @@ export default function ListManager() {
             <Column title="ID" dataIndex="_id" fixed="left" />
             <Column title="Code" dataIndex="code" fixed="left" />
             <ColumnGroup title="Theater">
-              <Column title="Name" dataIndex="theater" render={(obj) => <div>{obj.name}</div>} />
+              <Column title="Name" dataIndex="theater" render={(obj) => <div>{obj?.name}</div>} />
               <Column
                 title="Logo"
                 dataIndex="theater"
-                render={(obj) => <div>{obj.logo ? <Avatar size="large" src={obj.logo} /> : ''}</div>}
+                render={(obj) => <div>{obj?.logo ? <Avatar size="large" src={obj?.logo} /> : ''}</div>}
               />
-              <Column title="Address" dataIndex="theater" render={(obj) => <div>{obj.address}</div>} />
-              <Column title="Email" dataIndex="theater" render={(obj) => <div>{obj.email}</div>} />
-              <Column title="Hotline" dataIndex="theater" render={(obj) => <div>{obj.hotline}</div>} />
+              <Column title="Address" dataIndex="theater" render={(obj) => <div>{obj?.address}</div>} />
+              <Column title="Email" dataIndex="theater" render={(obj) => <div>{obj?.email}</div>} />
+              <Column title="Hotline" dataIndex="theater" render={(obj) => <div>{obj?.hotline}</div>} />
             </ColumnGroup>
             <Column
               title="Created At"

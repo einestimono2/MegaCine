@@ -12,4 +12,7 @@ export const authApi = {
       },
     });
   },
+  register: (data) => () => {
+    return axiosClient.post(ENDPOINTS.SIGNUP, data);
+  },
 };

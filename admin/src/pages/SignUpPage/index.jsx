@@ -1,11 +1,13 @@
 import React from 'react';
 import './style.css';
-import { Form, Steps } from 'antd';
+import { Form, Steps, message } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import TheaterForm from './TheaterForm';
 import AccountForm from './AccountForm';
 import { addAccount, addKeySteps, addTheater } from '../../redux/reducer/signupSlide';
+import { authApi } from '../../apis/authApi';
+import apiCaller from '../../apis/apiCaller';
 
 export default function SignUpPage() {
   const [theaterForm] = Form.useForm();
@@ -15,7 +17,13 @@ export default function SignUpPage() {
   const theater = useSelector((state) => state.signup.addTheater);
   const imagesForm = useSelector((state) => state.signup.addImages);
   const logoForm = useSelector((state) => state.signup.addLogo);
-
+  const listCity = useSelector((state) => state.signup.addresses);
+  const city = useSelector((state) => state.signup.city);
+  const district = useSelector((state) => state.signup.district);
+  const ward = useSelector((state) => state.signup.ward);
+  const districts = useSelector((state) => state.signup.districts);
+  const wards = useSelector((state) => state.signup.wards);
+  const address = useSelector((state) => state.signup.address);
   const onFinish = (values) => {
     dispatch(
       addTheater({
@@ -28,7 +36,7 @@ export default function SignUpPage() {
     );
     dispatch(addKeySteps({ keySteps: 1 }));
   };
-  const onConfirm = (values) => {
+  const onConfirm = async (values) => {
     const data = {
       code: values.code,
       password: values.password,
@@ -39,7 +47,13 @@ export default function SignUpPage() {
         en: theater.description_en,
         vi: theater.description_vi,
       },
-      address: theater.address + theater.district + theater.city,
+      address: [
+        address,
+        wards?.filter((element) => element.code === ward)[0]?.name,
+        districts?.filter((element) => element.code === district)[0]?.name,
+        listCity?.filter((element) => element.code === city)[0]?.name,
+      ].join(', '),
+      addressCode: [city, district, ward, address],
       location: {
         type: 'Point',
         coordinates: [105.804817, 21.028511],
@@ -47,7 +61,18 @@ export default function SignUpPage() {
       logo: logoForm.path,
       images: imagesForm.map((val) => val.path),
     };
-    console.log(data);
+    const errorHandler = (error) => {
+      console.log('Fail: ', error);
+    };
+    const response = await apiCaller({
+      request: authApi.register(data),
+      errorHandler,
+    });
+    console.log(response);
+    if (response) {
+      console.log(response);
+      message.success(response.message);
+    }
   };
   const steps = [
     {
@@ -85,7 +110,6 @@ export default function SignUpPage() {
       console.error('Validation failed:', error);
     }
   };
-  console.log(accountForm.getFieldsValue());
   return (
     <div className="flex flex-col justify-center items-center mx-8">
       <p className="text-3xl font-bold my-7">ĐĂNG KÝ RẠP THÀNH VIÊN</p>

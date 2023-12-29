@@ -9,7 +9,6 @@ export default function AccountForm(props) {
       props.form.setFieldsValue(accountForm);
     }
   }, [accountForm]);
-  console.log(accountForm);
   return (
     <div className="w-3/5 m-auto">
       <Form

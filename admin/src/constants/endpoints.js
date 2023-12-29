@@ -11,4 +11,5 @@ export const ENDPOINTS = {
   LISTMOVIE: '/movie/list',
   UPLOADFILE: '/upload/image',
   UPLOADFILES: '/upload/images',
+  SIGNUP: '/manager/register',
 };
