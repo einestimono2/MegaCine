@@ -6,5 +6,7 @@ const ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   RESOURCES: '/resources/:tab',
+  MOVIELIST: '/movie-list',
+  MOVIEDETAIL: '/movie-detail',
 };
 export default ROUTES;
