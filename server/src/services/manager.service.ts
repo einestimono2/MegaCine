@@ -15,6 +15,15 @@ export const createManagerAndTheater = async (req: Request) => {
   const newTheater = new TheaterModel(theater);
   await newTheater.validate();
 
+  //! Tạo manager
+  const isCodeExist = await ManagerModel.findOne({ code: manager.code });
+  if (isCodeExist) {
+    throw new NotFoundError(Message.CODE_ALREADY_EXIST);
+  }
+
+  const newManager = new ManagerModel({ ...manager, theater: newTheater._id });
+  await newManager.validate();
+
   // Upload ảnh
   if (theater.logo) {
     newTheater.logo = await cloudinaryServices.uploadImage({
@@ -34,17 +43,8 @@ export const createManagerAndTheater = async (req: Request) => {
     }
   }
 
-  //! Tạo manager
-  const isCodeExist = await ManagerModel.findOne({ code: manager.code });
-  if (isCodeExist) {
-    throw new NotFoundError(Message.CODE_ALREADY_EXIST);
-  }
-
-  const newManager = new ManagerModel({ ...manager, theater: newTheater._id });
-  await newManager.validate();
-
-  await newManager.save();
   await newTheater.save();
+  await newManager.save();
 };
 
 export const getManagerByCode = async (code: string, password: boolean = false) => {

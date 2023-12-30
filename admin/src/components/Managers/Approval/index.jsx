@@ -32,9 +32,9 @@ function Approval() {
 
   const errorHandler = (error) => {
     setLoading(false);
-    if (searching) setSearching(false);
-    if (acceptLoading) setAcceptLoading(undefined);
-    if (refuseLoading) setRefuseLoading(undefined);
+    setSearching(false);
+    setAcceptLoading(undefined);
+    setRefuseLoading(undefined);
 
     toast.error(error.message, { autoClose: 3000, theme: 'colored' });
   };
@@ -100,6 +100,10 @@ function Approval() {
     getApprovalList();
   }, [currentPage]);
 
+  const dataTable = data?.map((e, idx) => {
+    return { ...e, id: idx + 1 };
+  });
+
   return (
     <div>
       <div className="text-3xl text-center font-bold uppercase mb-3">DANH SÁCH PHÊ DUYỆT</div>
@@ -117,7 +121,7 @@ function Approval() {
           loading={loading}
           className="!h-fit"
           bordered
-          dataSource={loading ? undefined : data}
+          dataSource={loading ? undefined : dataTable}
           pagination={
             data.length &&
             totalCount > MANAGER_APPROVAL_LIST_PAGE_SIZE && {
@@ -133,23 +137,24 @@ function Approval() {
             };
           }}
         >
-          <Column title="ID" dataIndex="_id" fixed="left" />
-          <Column title="Code" dataIndex="code" fixed="left" />
+          <Column title="ID" align="center" dataIndex="id" fixed="left" />
+          <Column title="Code" align="center" dataIndex="code" fixed="left" />
           <ColumnGroup title="Theater">
-            <Column title="Name" dataIndex="theater" render={(obj) => <div>{obj.name}</div>} />
+            <Column title="Name" align="center" dataIndex="theater" render={(obj) => <div>{obj?.name}</div>} />
             <Column
+              align="center"
               title="Logo"
               dataIndex="theater"
-              render={(obj) => <div>{obj.logo ? <Avatar size="large" src={obj.logo} /> : ''}</div>}
+              render={(obj) => <div>{obj?.logo ? <Avatar size="large" src={obj?.logo} /> : ''}</div>}
             />
-            <Column title="Address" dataIndex="theater" render={(obj) => <div>{obj.address}</div>} />
-            <Column title="Email" dataIndex="theater" render={(obj) => <div>{obj.email}</div>} />
-            <Column title="Hotline" dataIndex="theater" render={(obj) => <div>{obj.hotline}</div>} />
+            <Column title="Address" align="center" dataIndex="theater" render={(obj) => <div>{obj?.address}</div>} />
+            <Column title="Email" align="center" dataIndex="theater" render={(obj) => <div>{obj?.email}</div>} />
+            <Column title="Hotline" align="center" dataIndex="theater" render={(obj) => <div>{obj?.hotline}</div>} />
           </ColumnGroup>
           <Column
+            align="center"
             title="Created At"
             dataIndex="createdAt"
-            align="center"
             fixed="right"
             render={(date) => <div>{getVietNamFormatDate(date)}</div>}
           />

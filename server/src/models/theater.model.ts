@@ -40,7 +40,22 @@ const theaterSchema: Schema<ITheater> = new mongoose.Schema(
     address: {
       type: String,
       trim: true,
-      required: [true, `'${Message.FIELD_s_EMPTY.msg}','location.address'`]
+      required: [true, `'${Message.FIELD_s_EMPTY.msg}','address'`]
+    },
+    addressCode: {
+      city: {
+        type: Number,
+        required: [true, `'${Message.FIELD_s_EMPTY.msg}','addressCode.city'`]
+      },
+      district: {
+        type: Number,
+        required: [true, `'${Message.FIELD_s_EMPTY.msg}','addressCode.district'`]
+      },
+      ward: {
+        type: Number,
+        required: [true, `'${Message.FIELD_s_EMPTY.msg}','addressCode.ward'`]
+      },
+      detail: String
     },
     location: {
       type: {

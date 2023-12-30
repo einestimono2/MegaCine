@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 
 import apiCaller from '../../apis/apiCaller';
-import { uploadApi } from '../../apis/uploadApi';
+import { uploadApi } from '../../apis/all/uploadApi';
 import 'react-toastify/dist/ReactToastify.css';
 import Map from '../../components/Map';
 import { addAddresses, addImages, addLogo, addTheater } from '../../redux/reducer/signupSlide';
@@ -14,55 +14,77 @@ import './style.css';
 
 export default function TheaterForm(props) {
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [city, setCity] = useState('');
-  const [address, setAddress] = useState('');
-  const [districts, setDistricts] = useState();
+  const [coordinates, setCoordinates] = useState([]);
+  const [city, setCity] = useState();
   const [district, setDistrict] = useState();
   const [ward, setWard] = useState();
+  const [detail, setDetail] = useState();
+  const [districts, setDistricts] = useState();
   const [wards, setWards] = useState();
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [fileList1, setFileList1] = useState([]);
   const [fileList2, setFileList2] = useState([]);
   const dispatch = useDispatch();
-  const res = async () => {
-    const response = await axios.get('https://provinces.open-api.vn/api/?depth=3');
-    if (response) {
-      dispatch(addAddresses({ addresses: response.data }));
-    }
-  };
-  useEffect(() => {
-    res();
-  }, []);
+
   const theaterForm = useSelector((state) => state.signup.addTheater);
   const logo = useSelector((state) => state.signup.addTheater.logo);
   const images = useSelector((state) => state.signup.addImages);
   const thumbnails = useSelector((state) => state.signup.addTheater.thumbnails);
   const listCity = useSelector((state) => state.signup.addresses);
+
+  const getVNAdress = async () => {
+    console.log('Run');
+    const response = await axios.get('https://provinces.open-api.vn/api/?depth=3');
+    if (response) {
+      dispatch(addAddresses({ addresses: response.data }));
+    }
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      await getVNAdress();
+    }
+
+    if (listCity?.length === 0) {
+      fetchData();
+    }
+  }, [listCity]);
+
+  if (coordinates.length !== 2 && theaterForm.coordinates?.length === 2) {
+    setCoordinates([theaterForm.coordinates[1], theaterForm.coordinates[0]]);
+  }
+
   const handleChange1 = ({ fileList: newFileList }) => {
     if (newFileList.every((file) => checkFile(file))) {
       setFileList1(newFileList);
     }
   };
+
   useEffect(() => {
     if (logo) {
       setFileList1(logo);
     }
   }, [logo]);
+
   useEffect(() => {
     if (thumbnails) {
       setFileList2(thumbnails);
     }
   }, [thumbnails]);
+
   const handleChange2 = ({ fileList: newFileList }) => {
     if (newFileList.every((file) => checkFile(file))) {
       setFileList2(newFileList);
-      if (newFileList.length === fileList2.length) {
+
+      if (newFileList.every((file) => file.status === 'done')) {
         handleUploadFiles();
       }
     }
   };
+
   const handleCancel = () => setPreviewOpen(false);
+
   const onRemove = () => {
     dispatch(addLogo({ addLogo: '' }));
     dispatch(
@@ -74,6 +96,7 @@ export default function TheaterForm(props) {
       }),
     );
   };
+
   const onRemoves = (file) => {
     const indexRemove = fileList2.findIndex((val) => val.uid === file.uid);
 
@@ -95,6 +118,7 @@ export default function TheaterForm(props) {
       reader.onload = () => resolve(reader.result);
       reader.onerror = (error) => reject(error);
     });
+
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
@@ -103,11 +127,12 @@ export default function TheaterForm(props) {
     setPreviewOpen(true);
     setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
   };
+
   const handleUploadFiles = async () => {
     const data = new FormData();
     fileList2?.map((file) => data.append(`files`, file.originFileObj));
     const errorHandler = (error) => {
-      console.log('Fail: ', error);
+      toast.error(error);
     };
     const response = await apiCaller({
       request: uploadApi.uploadFiles(data),
@@ -117,11 +142,12 @@ export default function TheaterForm(props) {
       dispatch(addImages({ addImages: response.data }));
     }
   };
+
   const handleUploadFile = async () => {
     const data = new FormData();
     data.append('file', fileList1[0].originFileObj);
     const errorHandler = (error) => {
-      console.log('Fail: ', error);
+      toast.error(error);
     };
     const response = await apiCaller({
       request: uploadApi.uploadFile(data),
@@ -131,7 +157,7 @@ export default function TheaterForm(props) {
       dispatch(addLogo({ addLogo: response.data }));
     }
   };
-  console.log(useSelector((state) => state.signup));
+
   const dummyRequest = ({ onSuccess }) => {
     setTimeout(() => {
       onSuccess('ok');
@@ -140,6 +166,7 @@ export default function TheaterForm(props) {
       }
     }, 0);
   };
+
   const checkFile = (file) => {
     if (file && file.name) {
       const isImage = /\.(jpg|jpeg|png)$/.test(file.name.toLowerCase());
@@ -154,6 +181,7 @@ export default function TheaterForm(props) {
 
       return isImage && isLt2M;
     }
+
     toast.error('Tệp tin không hợp lệ!');
     return false;
   };
@@ -163,11 +191,22 @@ export default function TheaterForm(props) {
       setDistricts(listCity.filter((element) => element.code === city)[0]?.districts);
     }
   }, [city]);
+
+  if (theaterForm.city && !districts) {
+    const _districts = listCity.filter((element) => element.code === theaterForm.city)[0]?.districts;
+    setDistricts(_districts);
+
+    if (theaterForm.district && !wards) {
+      setWards(_districts.filter((element) => element.code === theaterForm.district)[0]?.wards);
+    }
+  }
+
   useEffect(() => {
     if (district) {
       setWards(districts.filter((element) => element.code === district)[0]?.wards);
     }
   }, [district]);
+
   return (
     <div>
       <Form
@@ -186,7 +225,7 @@ export default function TheaterForm(props) {
             className="col-span-3"
             label="Logo"
             name="logo"
-            rules={[{ required: true, message: 'Hãy chọn logo!' }]}
+            // rules={[{ required: true, message: 'Hãy chọn logo!' }]}
           >
             <Upload
               customRequest={dummyRequest}
@@ -229,15 +268,9 @@ export default function TheaterForm(props) {
           labelCol={{ span: 3 }}
           label="Tên rạp"
           name="name"
-          rules={[{ required: true, message: 'Please input theater name!' }]}
+          rules={[{ required: true, message: 'Hãy điền tên rạp!' }]}
         >
           <Input placeholder="Tên rạp" />
-        </Form.Item>
-        <Form.Item labelCol={{ span: 3 }} label="Mô tả (vi)" name="description_vi">
-          <Input.TextArea placeholder="Mô tả bằng tiếng việt" style={{ width: '100%' }} />
-        </Form.Item>
-        <Form.Item labelCol={{ span: 3 }} label="Mô tả (en)" name="description_en">
-          <Input.TextArea placeholder="Mô tả bằng tiếng anh" style={{ width: '100%' }} />
         </Form.Item>
         <div className="grid grid-cols-2 gap-5">
           <Form.Item
@@ -271,84 +304,106 @@ export default function TheaterForm(props) {
             <Input placeholder="Số điện thoại" />
           </Form.Item>
         </div>
-        <div className="grid grid-cols-2 gap-5">
-          <div>
-            <div>
-              <Form.Item
-                labelCol={{ span: 6 }}
-                label="Tỉnh/TP"
-                name="city"
-                rules={[{ required: true, message: 'Hãy chọn tỉnh/thành phố!' }]}
-              >
-                <Select
-                  placeholder="Tình/Thành phố"
-                  options={listCity?.map((_city) => ({
-                    value: _city.code,
-                    label: _city.name,
-                  }))}
-                  // onChange={(value) => {
-                  //   setCity(value);
-                  // }}
-                  // value={city}
-                />
-              </Form.Item>
-              <Form.Item
-                labelCol={{ span: 6 }}
-                label="Quận/Huyện"
-                name="district"
-                rules={[{ required: true, message: 'Hãy chọn quận/huyện!' }]}
-              >
-                <Select
-                  placeholder="Quận/Huyện"
-                  options={districts?.map((_city) => ({
-                    value: _city.code,
-                    label: _city.name,
-                  }))}
-                  // onChange={(value) => {
-                  //   setDistrict(value);
-                  // }}
-                  // value={district}
-                />
-              </Form.Item>
-              <Form.Item
-                label="Xã/Phường"
-                labelCol={{ span: 6 }}
-                name="ward"
-                rules={[{ required: true, message: 'Hãy chọn xã/phường!' }]}
-              >
-                <Select
-                  placeholder="Xã/Phường"
-                  options={wards?.map((val) => ({
-                    value: val.code,
-                    label: val.name,
-                  }))}
-                  // onChange={(value) => {
-                  //   setWard(value);
-                  // }}
-                  // value={ward}
-                />
-              </Form.Item>
-              <Form.Item labelCol={{ span: 6 }} label="Số nhà" name="address">
-                <Input placeholder="Số nhà" onChange={(e) => setAddress(e.target.value)} value={address} />
-              </Form.Item>
-              <Form.Item
-                labelCol={{ span: 6 }}
-                name="location"
-                label="Tọa độ"
-                initialValue={[105.84713, 21.030653]}
-                rules={[{ required: true, message: 'Hãy chọn tọa độ!' }]}
-              >
-                <Input disabled />
-              </Form.Item>
-            </div>
+        <Form.Item labelCol={{ span: 3 }} label="Mô tả (vi)" name="description_vi">
+          <Input.TextArea placeholder="Mô tả bằng tiếng việt" style={{ width: '100%' }} />
+        </Form.Item>
+        <Form.Item labelCol={{ span: 3 }} label="Mô tả (en)" name="description_en">
+          <Input.TextArea placeholder="Mô tả bằng tiếng anh" style={{ width: '100%' }} />
+        </Form.Item>
+        <div className="mt-8 grid grid-cols-2 gap-5">
+          <div className="h-full justify-around">
+            <Form.Item
+              labelCol={{ span: 6 }}
+              label="Tỉnh/TP"
+              name="city"
+              rules={[{ required: true, message: 'Hãy chọn tỉnh/thành phố!' }]}
+            >
+              <Select
+                placeholder="Tình/Thành phố"
+                options={listCity?.map((_city) => ({
+                  value: _city.code,
+                  label: _city.name,
+                }))}
+                onChange={(_value) => {
+                  setCity(_value);
+                }}
+                value={city}
+              />
+            </Form.Item>
+            <Form.Item
+              labelCol={{ span: 6 }}
+              label="Quận/Huyện"
+              name="district"
+              rules={[{ required: true, message: 'Hãy chọn quận/huyện!' }]}
+            >
+              <Select
+                placeholder="Quận/Huyện"
+                options={districts?.map((_city) => ({
+                  value: _city.code,
+                  label: _city.name,
+                }))}
+                onChange={(_value) => {
+                  setDistrict(_value);
+                }}
+                value={district}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Xã/Phường"
+              labelCol={{ span: 6 }}
+              name="ward"
+              rules={[{ required: true, message: 'Hãy chọn xã/phường!' }]}
+            >
+              <Select
+                placeholder="Xã/Phường"
+                options={wards?.map((val) => ({
+                  value: val.code,
+                  label: val.name,
+                }))}
+                onChange={(_value) => {
+                  setWard(_value);
+                }}
+                value={ward}
+              />
+            </Form.Item>
+            <Form.Item labelCol={{ span: 6 }} label="Chi tiết" name="detail">
+              <Input
+                placeholder="Số nhà, phố, tổ dân phố/thôn/đội"
+                onChange={(e) => {
+                  setDetail(e.target.value);
+                }}
+                value={detail}
+              />
+            </Form.Item>
+            <Form.Item
+              labelCol={{ span: 6 }}
+              label="Tọa độ"
+              name="coordinates"
+              rules={[{ required: true, message: 'Chọn vị trí của rạp trên bản đồ!' }]}
+            >
+              <Input placeholder="Chọn tọa độ của rạp trên bản đồ" disabled />
+            </Form.Item>
           </div>
-          <div className="w-[96%] ml-[15px] h-[92.5%] relative">
-            <Map />
+
+          <div className="w-[100%] h-[92.5%] relative">
+            <Map
+              lat={coordinates[0]}
+              lng={coordinates[1]}
+              onChangeCoordinates={async (lat, lng) => {
+                props.form.setFieldValue('coordinates', [lng, lat]);
+                setCoordinates([lat, lng]);
+                try {
+                  await props.form.validateFields();
+                } catch (_) {
+                  //
+                }
+              }}
+            />
           </div>
         </div>
-        <Form.Item className="text-center">
-          <Button type="primary" htmlType="submit" className="w-3/12">
-            Next
+        <Form.Item className="text-center mt-12">
+          <Button type="primary" htmlType="submit" className="w-3/6">
+            Tiếp theo
           </Button>
         </Form.Item>
       </Form>

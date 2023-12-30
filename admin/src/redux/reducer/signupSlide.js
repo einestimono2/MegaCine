@@ -10,16 +10,14 @@ const initialState = {
     thumbnails: [],
     description: '',
     hotline: '',
-    location: '',
+    coordinates: [],
     city: '',
     district: '',
     ward: '',
-    address: '',
-    addressCode: [],
+    detail: '',
   },
   addAccount: {},
   addLogo: '',
-  addLocation: [],
   addImages: [],
 };
 
@@ -44,13 +42,13 @@ export const signupSlide = createSlice({
           thumbnails: [],
           description: '',
           hotline: '',
-          location: '',
+          coordinates: [],
           city: '',
           district: '',
           ward: '',
-          address: '',
         },
       } = action.payload;
+
       state.addTheater = addTheater;
     },
     addLogo: (state, action) => {
@@ -64,10 +62,6 @@ export const signupSlide = createSlice({
     addAccount: (state, action) => {
       const { addAccount = {} } = action.payload;
       state.addAccount = addAccount;
-    },
-    addLocation: (state, action) => {
-      const { addLocation = [] } = action.payload;
-      state.addLocation = addLocation;
     },
   },
 });
