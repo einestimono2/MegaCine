@@ -78,6 +78,18 @@ export const updateMovie = async (id: string, newMovie: IUpdateMovieRequest) => 
   return movie;
 };
 
+export const getMovieDetailsByAdmin = async (req: Request) => {
+  const movie = await MovieModel.findById(req.params.id)
+    .populate('directors', { fullName: 1, avatar: 1 })
+    .populate('actors', { fullName: 1, avatar: 1 })
+    .populate('genres', { name: 1 });
+  if (!movie) {
+    throw new NotFoundError(Message.MOVIE_NOT_FOUND);
+  }
+
+  return movie;
+};
+
 export const getMovieDetails = async (id: string, lang: string) => {
   const [movie] = await MovieModel.aggregate([
     { $match: { _id: convertToMongooseId(id) } },
@@ -418,15 +430,33 @@ export const getMovies = async (req: Request) => {
         pipeline: [{ $project: { name: 1 } }]
       }
     },
-    { $set: { genres: `$genres.name.${req.getLocale()}` } },
+    {
+      $lookup: {
+        from: 'people',
+        localField: 'directors',
+        foreignField: '_id',
+        pipeline: [{ $project: { fullName: 1, avatar: 1 } }],
+        as: 'directors'
+      }
+    },
+    {
+      $lookup: {
+        from: 'people',
+        localField: 'actors',
+        foreignField: '_id',
+        pipeline: [{ $project: { fullName: 1, avatar: 1 } }],
+        as: 'actors'
+      }
+    }
+    // { $set: { genres: `$genres.name.${req.getLocale()}` } },
     // Ẩn trường không cần
-    { $project: { trailer: 0, directors: 0, actors: 0 } }
+    // { $project: { trailer: 0, directors: 0, actors: 0 } }
   ];
 
   const options = convertRequestToPipelineStages({
     req,
-    fieldsApplySearch: ['title', 'originalTitle'],
-    localizationFields: ['overview']
+    fieldsApplySearch: ['title', 'originalTitle']
+    // localizationFields: ['overview']
   });
 
   return await MovieModel.aggregate(query).append(...options);

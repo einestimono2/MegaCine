@@ -105,5 +105,6 @@
 	"Manager validation failed: password: 'Password too short %s', '6'": "Manager validation failed: password: 'Password too short %s', '6'",
 	"E11000 duplicate key error collection: test.theaters index: email_1 dup key: { email: \"tue.nd198270@sis.hust.edu.vn\" }": "E11000 duplicate key error collection: test.theaters index: email_1 dup key: { email: \"tue.nd198270@sis.hust.edu.vn\" }",
 	"E11000 duplicate key error collection: test.theaters index: hotline_1 dup key: { hotline: \"0132456789\" }": "E11000 duplicate key error collection: test.theaters index: hotline_1 dup key: { hotline: \"0132456789\" }",
-	"E11000 duplicate key error collection: test.theaters index: name_1 dup key: { name: \"Nguyễn Đức Tuệ\" }": "E11000 duplicate key error collection: test.theaters index: name_1 dup key: { name: \"Nguyễn Đức Tuệ\" }"
+	"E11000 duplicate key error collection: test.theaters index: name_1 dup key: { name: \"Nguyễn Đức Tuệ\" }": "E11000 duplicate key error collection: test.theaters index: name_1 dup key: { name: \"Nguyễn Đức Tuệ\" }",
+	"jwt expired": "jwt expired"
 }

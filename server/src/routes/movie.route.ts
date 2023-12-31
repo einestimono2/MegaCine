@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { isAuthenticated, authorizeRoles } from '../middlewares';
+import { isAuthenticated, authorizeRoles, isAuthenticatedOrNot } from '../middlewares';
 import { movieController } from '../controllers';
 import { Roles } from '../constants';
 
@@ -21,7 +21,7 @@ router
   .route('/details/:id')
   .put(isAuthenticated, authorizeRoles(...adminRoles), movieController.updateMovie)
   .delete(isAuthenticated, authorizeRoles(...adminRoles), movieController.deleteMovie)
-  .get(movieController.getMovieDetails);
+  .get(isAuthenticatedOrNot, movieController.getMovieDetails);
 
 export const movieRouter = router;
 
@@ -312,6 +312,8 @@ export const movieRouter = router;
  *  get:
  *    tags: [Movie]
  *    summary: "[All] Thông tin chi tiết phim"
+ *    security:
+ *      - BearerToken: []
  *    parameters:
  *      - in: query
  *        name: hl
