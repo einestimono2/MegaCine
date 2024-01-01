@@ -225,7 +225,7 @@ export default function TheaterForm(props) {
             className="col-span-3"
             label="Logo"
             name="logo"
-            // rules={[{ required: true, message: 'Hãy chọn logo!' }]}
+            rules={[{ required: true, message: 'Hãy chọn logo!' }]}
           >
             <Upload
               customRequest={dummyRequest}

@@ -1,20 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Button, Upload } from 'antd';
+import { Modal, Form, Input, Button, Upload, Avatar } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import apiCaller from '../../../apis/apiCaller';
+import { uploadApi } from '../../../apis/all/uploadApi';
 import { peopleApi } from '../../../apis/all/peopleApi';
 
 export default function CreatePerson(props) {
+  const [avatar, setAvatar] = useState();
   const [form] = Form.useForm();
   const [createLoading, setCreateLoading] = useState(false);
 
-  const dummyRequest = ({ file, onSuccess }) => {
+  const dummyRequest = ({ onSuccess }) => {
     setTimeout(() => {
       onSuccess('ok');
     }, 0);
+  };
+
+  const getBase64 = (img, callback) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
   };
 
   const errorHandler = (error) => {
@@ -26,10 +34,12 @@ export default function CreatePerson(props) {
   const handleSubmit = async (values) => {
     setCreateLoading(true);
     const body = {
-      name: {
+      fullName: values.fullName,
+      summary: {
         en: values.en,
         vi: values.vi,
       },
+      avatar: avatar.path,
     };
 
     const response = await apiCaller({
@@ -45,12 +55,60 @@ export default function CreatePerson(props) {
     }
   };
 
+  const handleUploadFile = async (info) => {
+    if (info?.file?.status === 'done') {
+      const data = new FormData();
+      data.append('file', info.file.originFileObj);
+
+      const response = await apiCaller({
+        request: uploadApi.uploadFile(data),
+        errorHandler,
+      });
+
+      if (response) {
+        getBase64(info.file.originFileObj, (url) => {
+          setAvatar({ url, path: response.data.path });
+        });
+      }
+    }
+  };
+
+  const checkFile = (file) => {
+    if (file && file.name) {
+      const isImage = /\.(jpg|jpeg|png)$/.test(file.name.toLowerCase());
+      if (!isImage) {
+        toast.error('Chỉ được tải lên các tệp tin có đuôi là .jpg, .jpeg hoặc .png!');
+      }
+
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        toast.error('Kích thước tệp tin phải nhỏ hơn 2MB!');
+      }
+
+      return isImage && isLt2M;
+    }
+
+    toast.error('Tệp tin không hợp lệ!');
+    return false;
+  };
+
   useEffect(() => {
-    form.setFieldsValue({
-      en: props.person?.name?.en ?? '',
-      vi: props.person?.name?.vi ?? '',
-    });
-  }, [props.person]);
+    if (props.person && props.open) {
+      form.setFieldsValue({
+        fullName: props.person?.fullName,
+        en: props.person?.summary?.en ?? '',
+        vi: props.person?.summary?.vi ?? '',
+      });
+      setAvatar({ url: props.person?.avatar });
+    } else if (props.open) {
+      setAvatar();
+      form.setFieldsValue({
+        fullName: '',
+        en: '',
+        vi: '',
+      });
+    }
+  }, [props.open]);
 
   return (
     <Modal
@@ -75,40 +133,36 @@ export default function CreatePerson(props) {
           <Upload
             name="avatar"
             listType="picture-circle"
-            className="avatar-uploader"
-            showUploadList={false}
             action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+            showUploadList={false}
+            maxCount={1}
+            fileList={undefined}
             customRequest={dummyRequest}
-            // onChange={handleChange}
+            beforeUpload={checkFile}
+            onChange={handleUploadFile}
           >
-            <div>
-              <PlusOutlined />
-              <div
-                style={{
-                  marginTop: 8,
-                }}
-              >
-                Upload
+            {avatar?.url ? (
+              <Avatar src={avatar.url} alt="" size="large" style={{ width: '100%', height: '100%' }} />
+            ) : (
+              <div>
+                <PlusOutlined />
+                <div className="ant-upload-text">Upload</div>
               </div>
-            </div>
+            )}
           </Upload>
         </Form.Item>
         <Form.Item label="Họ tên" name="fullName" rules={[{ required: true, message: 'Nhập họ tên!' }]}>
           <Input />
         </Form.Item>
-        <Form.Item label="Sơ lược (en)" name="en" rules={[{ required: true, message: 'Nhập tên thể loại (English)!' }]}>
-          <Input />
+        <Form.Item label="Sơ lược (en)" name="en">
+          <Input.TextArea />
         </Form.Item>
-        <Form.Item
-          name="vi"
-          label="Sơ lược (vi)"
-          rules={[{ required: true, message: 'Nhập tên thể loại (Vietnames)!' }]}
-        >
-          <Input />
+        <Form.Item name="vi" label="Sơ lược (vi)">
+          <Input.TextArea />
         </Form.Item>
         <Form.Item className="text-center mt-12">
           <Button type="primary" htmlType="submit" loading={createLoading} className="w-[50%]">
-            {props.person ? 'Cập nhật' : 'Thêm mới'}
+            {props.person?._id ? 'Cập nhật' : 'Thêm mới'}
           </Button>
         </Form.Item>
       </Form>

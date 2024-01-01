@@ -10,6 +10,7 @@ import './style.css';
 import { peopleApi } from '../../../apis/all/peopleApi';
 import apiCaller from '../../../apis/apiCaller';
 import CreatePerson from '../Create';
+import PersonDetails from '../Details';
 
 const { Column, ColumnGroup } = Table;
 
@@ -146,8 +147,8 @@ export default function People() {
                 icon={<FontAwesomeIcon color="white" size="sm" icon={faPenToSquare} />}
               />
               <Popconfirm
-                title="Xóa thể loại"
-                description="Bạn có chắc xóa thể loại?"
+                title="Xóa đạo diễn/diễn viên"
+                description="Bạn có chắc xóa không?"
                 onConfirm={(e) => {
                   e.stopPropagation();
                   handleDelete(record._id, index);
@@ -172,14 +173,14 @@ export default function People() {
           )}
         />
       </Table>
-      {/* <GenreDetails
+      <PersonDetails
         open={isModalOpen}
         onCancel={() => {
           setSelectedId('');
           setIsModalOpen(false);
         }}
         id={selectedId}
-      /> */}
+      />
       <CreatePerson
         open={isCreateOrUpdate}
         onCancel={() => {

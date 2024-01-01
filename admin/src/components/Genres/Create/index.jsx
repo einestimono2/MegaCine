@@ -39,11 +39,18 @@ export default function CreateGenre(props) {
   };
 
   useEffect(() => {
-    form.setFieldsValue({
-      en: props.genre?.name?.en ?? '',
-      vi: props.genre?.name?.vi ?? '',
-    });
-  }, [props.genre]);
+    if (props.open && props.genre) {
+      form.setFieldsValue({
+        en: props.genre?.name?.en ?? '',
+        vi: props.genre?.name?.vi ?? '',
+      });
+    } else if (props.open) {
+      form.setFieldsValue({
+        en: '',
+        vi: '',
+      });
+    }
+  }, [props.open]);
 
   return (
     <Modal
@@ -80,7 +87,7 @@ export default function CreateGenre(props) {
         </Form.Item>
         <Form.Item className="text-center mt-12">
           <Button type="primary" htmlType="submit" loading={createLoading} className="w-[50%]">
-            {props.genre ? 'Cập nhật' : 'Thêm mới'}
+            {props.genre?._id ? 'Cập nhật' : 'Thêm mới'}
           </Button>
         </Form.Item>
       </Form>

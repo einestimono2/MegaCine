@@ -3,7 +3,7 @@ import axiosClient from '../axiosClient';
 
 export const peopleApi = {
   listPeople: () => () => {
-    return axiosClient.get(ENDPOINTS.LIST_PEOPLE);
+    return axiosClient.get(ENDPOINTS.LIST_PEOPLE, { params: { sort: '-createdAt' } });
   },
   createPeople: (data) => () => {
     return axiosClient.post(ENDPOINTS.CREATE_PEOPLE, data);

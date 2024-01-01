@@ -1,0 +1,7 @@
+.custom-table > div > table > tbody > tr > th {
+  padding: 0 !important;
+}
+
+.custom-table > div > table > tbody > tr > td {
+  padding: 0 !important;
+}

@@ -143,7 +143,7 @@ export default function AdminPage() {
           />
         </div>
         <Button type="primary" size="large" onClick={logOut} className="m-4">
-          Logout
+          Đăng xuất
         </Button>
       </div>
       <div className="col-span-4 p-5">
