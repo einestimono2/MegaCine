@@ -31,6 +31,7 @@ import ShowtimePage from '../ShowtimePage';
 import ReviewPage from '../ReviewPage';
 import ManagerPage from '../ManagerPage';
 import GenrePeoplePage from '../GenrePeoplePage';
+import MapPage from '../MapPage';
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -66,6 +67,8 @@ export default function AdminPage() {
         return <MoviePage mode="list" />;
       case '7':
         return <GenrePeoplePage />;
+      case '8':
+        return <MapPage />;
       default:
         return <></>;
     }

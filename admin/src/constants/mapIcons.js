@@ -11,7 +11,9 @@ export const iconMark = L.icon({
 export const theaterMarker = L.icon({
   iconSize: [25, 41],
   popupAnchor: [0, -35],
-  iconUrl: 'https://cdn3.iconfinder.com/data/icons/movies-3/32/theatre-cinema-movie-location-map-marker-pin-512.png',
+  // iconUrl: 'https://cdn-icons-png.flaticon.com/512/1916/1916362.png',
+  // iconUrl: 'https://cdn-icons-png.flaticon.com/512/2411/2411395.png',
+  iconUrl: 'https://cdn-icons-png.flaticon.com/512/2798/2798007.png',
 });
 
 // https://cdn3.iconfinder.com/data/icons/pin-3/100/pin_6-512.png
