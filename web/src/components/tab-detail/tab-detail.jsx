@@ -2,8 +2,8 @@ import React from 'react'
 import './tab-detail.scss'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { Link } from 'react-router-dom';
-import { Rate } from 'antd';
-
+import ReviewList from './review-list';
+import Schedule from '../../pages/Schedule/schedule';
 
 function TabDetail() {
     return (
@@ -23,20 +23,18 @@ function TabDetail() {
                     <div className='container'>
                         <div className='review w-100'>
                             <p className='review-title'>Cộng đồng</p>
-                            <div class="card">
-                                <div class="card-header">
-                                    <div className='d-flex user-review' style={{ alignItems: 'center' }}>
-                                        <i class="fa-solid fa-user"></i>&nbsp; Đức Tuệ
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title">Thương nam chính Bách Ruồi quá</h5>
-                                    <p class="card-text">1 giờ trước</p>
-                                    <div className='d-flex'>
-                                        <Rate allowHalf defaultValue={2.5} />
-                                    </div>
-                                </div>
-                            </div>
+                           <ReviewList></ReviewList>
+                        </div>
+                    </div>
+                </TabPanel>
+                <TabPanel>
+                    <Schedule></Schedule>
+                </TabPanel>
+                <TabPanel>
+                    <div className='container'>
+                        <div className='review w-100'>
+                            <p className='review-title'>Cộng đồng</p>
+                           <ReviewList></ReviewList>
                         </div>
                     </div>
                 </TabPanel>
