@@ -1,0 +1,14 @@
+.review-title{
+    color: var(--second-color);
+    font-weight: 600;
+    font-size: 2rem;
+    text-align: center;
+    margin-top: 10px;
+}
+.user-review{
+    color: var(--second-color);
+    font-size: 1.2rem;
+}
+.card:hover{
+    box-shadow: 3px 3px 3px var(--background-color);
+}

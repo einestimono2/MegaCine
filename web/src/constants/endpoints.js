@@ -9,5 +9,7 @@ const ENDPOINTS = {
   UPDATE_USER: '/users/:userId',
   DELETE_USER: '/users/:userId',
   GET_LIST_USER: '/users/list',
+  MOVIE_NOW_SHOWING: '/movie/now-showing',
+  MOVIE_COMING_SOON: '/movie/coming-soon',
 };
 export default ENDPOINTS;
