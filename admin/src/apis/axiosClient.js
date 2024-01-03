@@ -1,5 +1,8 @@
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { authApi } from './authApi';
 import { REACT_APP_BASE_URL } from '../configs';
+import { ROUTE } from '../constants/router';
 
 const axiosClient = axios.create({
   baseURL: REACT_APP_BASE_URL,
@@ -22,18 +25,34 @@ axiosClient.interceptors.response.use(
     }
     return response;
   },
-  (error) => {
+
+  async (error) => {
+    const originalRequest = error.config;
     if (!error.response) {
       console.error('Unknown error:', error.message);
-      return;
+    } else if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const refresh_token = localStorage.getItem('refresh_token');
+        const data = {
+          refreshToken: refresh_token,
+        };
+        const response = await authApi.refreshToken(data);
+        console.log('Access token refreshed:', response.data);
+        const { accessToken } = response.data;
+
+        localStorage.setItem('access_token', accessToken);
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        return axios(originalRequest);
+      } catch (_error) {
+        console.error('Refresh token failed:', _error);
+        const navigate = useNavigate();
+        navigate(ROUTE.SIGNIN);
+      }
     }
 
-    const { status, data } = error.response;
-    if (status >= 500) {
-      // TODO: Show server error message
-    } else if (status >= 400 && status < 500) {
-      throw data;
-    }
+    return Promise.reject(error);
   },
 );
 

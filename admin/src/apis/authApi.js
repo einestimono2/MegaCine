@@ -15,4 +15,7 @@ export const authApi = {
   register: (data) => () => {
     return axiosClient.post(ENDPOINTS.SIGNUP, data);
   },
+  refreshToken: (data) => () => {
+    return axiosClient.get(ENDPOINTS.REFRESH_TOKEN, data);
+  },
 };
