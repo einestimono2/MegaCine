@@ -11,5 +11,7 @@ const ENDPOINTS = {
   GET_LIST_USER: '/users/list',
   MOVIE_NOW_SHOWING: '/movie/now-showing',
   MOVIE_COMING_SOON: '/movie/coming-soon',
+  THEATER_NEARBY: '/theater/nearby',
+  THEATER_MOST_RATE: '/theater/most-rate',
 };
 export default ENDPOINTS;

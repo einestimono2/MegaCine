@@ -1,10 +1,11 @@
 import axiosClient from './axiosClient';
 import ENDPOINTS from '../constants/endpoints';
+
 export const movieApi = {
-  listMovieNowShowing: (data) => () => {
-    return axiosClient.get(ENDPOINTS.MOVIE_NOW_SHOWING, data);
+  listMovieNowShowing: (params) => () => {
+    return axiosClient.get(ENDPOINTS.MOVIE_NOW_SHOWING, { params });
   },
-  listMovieComingSoon: (data) => () => {
-    return axiosClient.get(ENDPOINTS.MOVIE_COMING_SOON, data);
+  listMovieComingSoon: (params) => () => {
+    return axiosClient.get(ENDPOINTS.MOVIE_COMING_SOON, { params });
   },
 };

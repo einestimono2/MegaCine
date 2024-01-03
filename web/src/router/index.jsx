@@ -11,12 +11,40 @@ import MovieList from '../pages/Movies/movie-list';
 import MovieDetail from '../pages/MovieDetail/movie-detail';
 
 const routes = [
-  { path: ROUTES.HOME, element: <BaseLayout><HomePage /></BaseLayout> },
-  { path: ROUTES.SCHEDULE, element: <BaseLayout><Schedule /></BaseLayout>},
-  {path: ROUTES.LOGIN, element: <Login/>},
-  {path: ROUTES.REGISTER, element: <Register></Register>},
-  {path: ROUTES.MOVIELIST, element: <BaseLayout><MovieList /></BaseLayout>},
-  {path: ROUTES.MOVIEDETAIL, element: <BaseLayout><MovieDetail /></BaseLayout>},
+  {
+    path: ROUTES.HOME,
+    element: (
+      <BaseLayout>
+        <HomePage />
+      </BaseLayout>
+    ),
+  },
+  {
+    path: ROUTES.SCHEDULE,
+    element: (
+      <BaseLayout>
+        <Schedule />
+      </BaseLayout>
+    ),
+  },
+  { path: ROUTES.LOGIN, element: <Login /> },
+  { path: ROUTES.REGISTER, element: <Register></Register> },
+  {
+    path: ROUTES.MOVIELIST,
+    element: (
+      <BaseLayout>
+        <MovieList />
+      </BaseLayout>
+    ),
+  },
+  {
+    path: ROUTES.MOVIEDETAIL,
+    element: (
+      <BaseLayout>
+        <MovieDetail />
+      </BaseLayout>
+    ),
+  },
   {
     path: '*',
     element: <NotFoundPage />,

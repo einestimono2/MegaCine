@@ -178,6 +178,7 @@ export const getNowShowingMovies = async (req: Request) => {
         _id: 1,
         title: 1,
         originalTitle: 1,
+        trailer: 1,
         poster: 1,
         duration: 1,
         releaseDate: 1,
@@ -261,6 +262,7 @@ export const getComingSoonMovies = async (req: Request) => {
       $project: {
         _id: 1,
         title: 1,
+        trailer: 1,
         originalTitle: 1,
         poster: 1,
         duration: 1,
@@ -328,6 +330,7 @@ export const getSneakShowMovies = async (req: Request) => {
         duration: 1,
         releaseDate: 1,
         ageType: 1,
+        trailer: 1,
         genres: 1
       }
     },
@@ -406,6 +409,7 @@ export const getMostRateMovies = async (req: Request) => {
         originalTitle: 1,
         poster: 1,
         duration: 1,
+        trailer: 1,
         releaseDate: 1,
         ageType: 1,
         genres: 1

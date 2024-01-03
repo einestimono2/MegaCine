@@ -99,5 +99,6 @@
 	"Response timeout": "Server không phản hồi, vui lòng thử lại!",
 	"Upload Failed": "Upload thất bại. Vui lòng kiểm tra lại đường dẫn file!",
 	"": "",
-	"Invalid $project :: caused by :: Cannot do exclusion on field nowShowing in inclusion projection": "Invalid $project :: caused by :: Cannot do exclusion on field nowShowing in inclusion projection"
+	"Invalid $project :: caused by :: Cannot do exclusion on field nowShowing in inclusion projection": "Invalid $project :: caused by :: Cannot do exclusion on field nowShowing in inclusion projection",
+	"Đường dẫn '/api/v1' không tồn tại!": "Đường dẫn '/api/v1' không tồn tại!"
 }
