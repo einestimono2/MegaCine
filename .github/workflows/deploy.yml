@@ -152,7 +152,7 @@ jobs:
               run: docker compose up -d --pull=always --force-recreate --no-deps --build admin
 
             - name: Update nginx container
-              if: steps.filter.outputs.nginx == 'true'
+              if: steps.filter.outputs.web == 'true' || steps.filter.outputs.server == 'true' || steps.filter.outputs.admin == 'true'
               run: |
                   docker compose up -d --pull=always --force-recreate --no-deps --build nginx
                   docker compose up -d --force-recreate --no-deps --build certbot

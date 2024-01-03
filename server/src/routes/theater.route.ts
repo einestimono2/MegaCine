@@ -205,6 +205,7 @@ export const theaterRouter = router;
  *              - email
  *              - hotline
  *              - address
+ *              - addressCode
  *              - location
  *            properties:
  *              name:
@@ -228,6 +229,21 @@ export const theaterRouter = router;
  *              address:
  *                type: string
  *                example: ''
+ *              addressCode:
+ *                type: object
+ *                properties:
+ *                  city:
+ *                    type: number
+ *                    example: 1
+ *                  district:
+ *                    type: number
+ *                    example: 1
+ *                  ward:
+ *                    type: number
+ *                    example: 1
+ *                  detail:
+ *                    type: string
+ *                    example: "Số nhà"
  *              location:
  *                type: object
  *                description: "type: Point, coordinates: [long, lat]"
@@ -303,6 +319,21 @@ export const theaterRouter = router;
  *              address:
  *                type: string
  *                example: ""
+ *              addressCode:
+ *                type: object
+ *                properties:
+ *                  city:
+ *                    type: number
+ *                    example: 1
+ *                  district:
+ *                    type: number
+ *                    example: 1
+ *                  ward:
+ *                    type: number
+ *                    example: 1
+ *                  detail:
+ *                    type: string
+ *                    example: "Số nhà"
  *              location:
  *                type: object
  *                description: "type: Point, coordinates: [long, lat]"

@@ -18,7 +18,6 @@ const managerSchema: Schema<IManager> = new mongoose.Schema(
     password: {
       type: String,
       select: false,
-      minlength: [6, `'${Message.PASSWORD_TOO_SHORT_s.msg}', '6'`],
       required: [true, `'${Message.PASSWORD_EMPTY.msg}'`]
     },
     role: {

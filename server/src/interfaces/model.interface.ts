@@ -47,6 +47,12 @@ export interface IReview extends Document {
 export interface ITheater extends Document {
   name: string;
   address: string;
+  addressCode: {
+    city: number;
+    district: number;
+    ward: number;
+    detail: string;
+  };
   location: {
     type: string;
     coordinates: [number, number];

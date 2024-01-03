@@ -41,8 +41,8 @@ export default function UserPage() {
 
   const errorHandler = (error) => {
     setLoading(false);
-    if (searching) setSearching(false);
-    if (blockLoading) setBlockLoading(undefined);
+    setSearching(false);
+    setBlockLoading(undefined);
 
     toast.error(error.message, { autoClose: 3000, theme: 'colored' });
   };
@@ -72,10 +72,15 @@ export default function UserPage() {
     getListUser();
   }, [currentPage]);
 
+  const dataTable = data?.map((e, idx) => {
+    return { ...e, id: idx + 1 };
+  });
+
   const columns = [
     {
       title: 'ID',
-      dataIndex: '_id',
+      dataIndex: 'id',
+      align: 'center',
     },
     {
       title: 'Avatar',
@@ -85,14 +90,17 @@ export default function UserPage() {
       render: (url) => <Avatar size="large" src={url} />,
     },
     {
+      align: 'center',
       title: 'Email',
       dataIndex: 'email',
     },
     {
       title: 'Name',
+      align: 'center',
       dataIndex: 'name',
     },
     {
+      align: 'center',
       title: 'Phone Number',
       dataIndex: 'phoneNumber',
     },
@@ -152,7 +160,7 @@ export default function UserPage() {
           className="!h-fit"
           bordered
           columns={columns}
-          dataSource={loading ? undefined : data}
+          dataSource={loading ? undefined : dataTable}
           pagination={
             data.length &&
             totalCount > USER_LIST_PAGE_SIZE && {

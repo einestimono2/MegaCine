@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Table, Avatar, Button, Input, Popconfirm } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { SearchOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { MANAGER_LIST_PAGE_SIZE } from '../../../constants/pagination';
-import { managerApi } from '../../../apis/admin/managerApi';
 import ManagerDetails from '../Details';
 import { getVietNamFormatDate } from '../../../utils/formatDate';
+import { managerApi } from '../../../apis/admin/managerApi';
 import apiCaller from '../../../apis/apiCaller';
 
 const { Search } = Input;
@@ -31,8 +31,8 @@ export default function ListManager() {
 
   const errorHandler = (error) => {
     setLoading(false);
-    if (searching) setSearching(false);
-    if (deleteLoading) setDeleteLoading(undefined);
+    setSearching(false);
+    setDeleteLoading(undefined);
 
     toast.error(error.message, { autoClose: 3000, theme: 'colored' });
   };
@@ -60,17 +60,16 @@ export default function ListManager() {
   };
 
   const handleDelete = async (id, index) => {
-    toast.success(id + index, { autoClose: 3000, theme: 'colored' });
-    // setDeleteLoading(index);
-    // const response = await apiCaller({
-    //   request: managerApi.deleteManager(id),
-    //   errorHandler,
-    // });
-    // if (response) {
-    //   toast.success(response.message, { autoClose: 3000, theme: 'colored' });
-    //   setDeleteLoading(undefined);
-    //   await getManagerList();
-    // }
+    setDeleteLoading(index);
+    const response = await apiCaller({
+      request: managerApi.deleteManager(id),
+      errorHandler,
+    });
+    if (response) {
+      toast.success(response.message, { autoClose: 3000, theme: 'colored' });
+      setDeleteLoading(undefined);
+      await getManagerList();
+    }
   };
 
   const showModalDetails = async (id) => {
@@ -81,6 +80,10 @@ export default function ListManager() {
   useEffect(() => {
     getManagerList();
   }, [currentPage, keyword]);
+
+  const dataTable = data?.map((e, idx) => {
+    return { ...e, id: idx + 1 };
+  });
 
   return (
     <div>
@@ -95,83 +98,78 @@ export default function ListManager() {
           onSearch={(e) => setKeyword(e)}
           placeholder="ID | Code | Theater (Name | Address | Email | Hotline)"
         />
-        <div className="!max-h-[80%] !overflow-auto">
-          <Table
-            loading={loading}
-            className="!h-fit"
-            bordered
-            dataSource={loading ? undefined : data}
-            pagination={
-              data.length &&
-              totalCount > MANAGER_LIST_PAGE_SIZE && {
-                pageSize: MANAGER_LIST_PAGE_SIZE,
-                current: currentPage,
-                total: totalCount,
-                onChange: (page) => setCurrrentPage(page),
-              }
+        <Table
+          loading={loading}
+          className="!h-fit"
+          bordered
+          dataSource={loading ? undefined : dataTable}
+          pagination={
+            data.length &&
+            totalCount > MANAGER_LIST_PAGE_SIZE && {
+              pageSize: MANAGER_LIST_PAGE_SIZE,
+              current: currentPage,
+              total: totalCount,
+              onChange: (page) => setCurrrentPage(page),
             }
-            onRow={(row) => {
-              return {
-                onClick: () => showModalDetails(row._id), // click row
-              };
-            }}
-          >
-            <Column title="ID" dataIndex="_id" fixed="left" />
-            <Column title="Code" dataIndex="code" fixed="left" />
-            <ColumnGroup title="Theater">
-              <Column title="Name" dataIndex="theater" render={(obj) => <div>{obj.name}</div>} />
-              <Column
-                title="Logo"
-                dataIndex="theater"
-                render={(obj) => <div>{obj.logo ? <Avatar size="large" src={obj.logo} /> : ''}</div>}
-              />
-              <Column title="Address" dataIndex="theater" render={(obj) => <div>{obj.address}</div>} />
-              <Column title="Email" dataIndex="theater" render={(obj) => <div>{obj.email}</div>} />
-              <Column title="Hotline" dataIndex="theater" render={(obj) => <div>{obj.hotline}</div>} />
-            </ColumnGroup>
+          }
+          onRow={(row) => {
+            return {
+              onClick: () => showModalDetails(row._id), // click row
+            };
+          }}
+        >
+          <Column title="ID" dataIndex="id" align="center" fixed="left" />
+          <Column title="Code" dataIndex="code" align="center" fixed="left" />
+          <ColumnGroup title="Theater">
+            <Column title="Name" align="center" dataIndex="theater" render={(obj) => <div>{obj?.name}</div>} />
             <Column
-              title="Created At"
-              dataIndex="createdAt"
+              title="Logo"
+              dataIndex="theater"
               align="center"
-              fixed="right"
-              render={(date) => <div>{getVietNamFormatDate(date)}</div>}
+              render={(obj) => <div>{obj?.logo ? <Avatar size="large" src={obj.logo} /> : ''}</div>}
             />
-            <Column
-              title="Actions"
-              fixed="right"
-              align="center"
-              render={(_text, record, index) => (
-                <div className="flex gap-2">
-                  {
-                    <Popconfirm
-                      title="Xóa quản lý"
-                      description="Bạn có chắc xóa quản lý?"
-                      onConfirm={(e) => {
-                        e.stopPropagation();
-                        handleDelete(record._id, index);
-                      }}
-                      onCancel={(e) => e.stopPropagation()}
-                      okText="Yes"
-                      cancelText="No"
-                      icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                    >
-                      <Button
-                        loading={deleteLoading === index}
-                        onClick={
-                          (e) => e.stopPropagation() // Tắt sự kiện click vào row
-                        }
-                        shape="circle"
-                        color="red"
-                        style={{ background: 'red', opacity: 0.75 }}
-                        icon={<FontAwesomeIcon color="white" size="xl" icon={faTrash} />}
-                      />
-                    </Popconfirm>
+            <Column title="Address" align="center" dataIndex="theater" render={(obj) => <div>{obj?.address}</div>} />
+            <Column title="Email" align="center" dataIndex="theater" render={(obj) => <div>{obj?.email}</div>} />
+            <Column title="Hotline" align="center" dataIndex="theater" render={(obj) => <div>{obj?.hotline}</div>} />
+          </ColumnGroup>
+          <Column
+            title="Created At"
+            dataIndex="createdAt"
+            align="center"
+            fixed="right"
+            render={(date) => <div>{getVietNamFormatDate(date)}</div>}
+          />
+          <Column
+            title="Actions"
+            fixed="right"
+            align="center"
+            render={(_text, record, index) => (
+              <Popconfirm
+                title="Xóa quản lý"
+                description="Bạn có chắc xóa quản lý?"
+                onConfirm={(e) => {
+                  e.stopPropagation();
+                  handleDelete(record._id, index);
+                }}
+                onCancel={(e) => e.stopPropagation()}
+                okText="Yes"
+                cancelText="No"
+                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+              >
+                <Button
+                  loading={deleteLoading === index}
+                  onClick={
+                    (e) => e.stopPropagation() // Tắt sự kiện click vào row
                   }
-                </div>
-              )}
-            />
-          </Table>
-        </div>
+                  shape="circle"
+                  color="red"
+                  style={{ background: 'red', opacity: 0.75 }}
+                  icon={<FontAwesomeIcon color="white" size="xl" icon={faTrash} />}
+                />
+              </Popconfirm>
+            )}
+          />
+        </Table>
       </div>
       <ToastContainer theme="colored" newestOnTop />
       <ManagerDetails

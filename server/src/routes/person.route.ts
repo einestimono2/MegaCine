@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { createPerson, updatePerson, deletePerson, getPerson, getPersons } from '../controllers/person.controller';
-import { isAuthenticated, authorizeRoles } from '../middlewares';
+import { isAuthenticated, authorizeRoles, isAuthenticatedOrNot } from '../middlewares';
 import { Roles } from '../constants';
 
 const router = express.Router();
@@ -15,7 +15,7 @@ router
   .route('/details/:id')
   .put(isAuthenticated, authorizeRoles(...adminRoles), updatePerson)
   .delete(isAuthenticated, authorizeRoles(...adminRoles), deletePerson)
-  .get(getPerson);
+  .get(isAuthenticatedOrNot, getPerson);
 
 export const personRouter = router;
 
@@ -181,6 +181,8 @@ export const personRouter = router;
  *        type: string
  *        required: true
  *        description: ID nghệ sỹ
+ *    security:
+ *      - BearerToken: []
  *    responses:
  *      200:
  *        description: Success

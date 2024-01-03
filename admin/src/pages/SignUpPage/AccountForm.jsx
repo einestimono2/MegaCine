@@ -4,12 +4,13 @@ import { useSelector } from 'react-redux';
 
 export default function AccountForm(props) {
   const accountForm = useSelector((state) => state.signup.addAccount);
+
   useEffect(() => {
     if (accountForm.code && accountForm.password) {
       props.form.setFieldsValue(accountForm);
     }
   }, [accountForm]);
-  console.log(accountForm);
+
   return (
     <div className="w-3/5 m-auto">
       <Form
@@ -17,6 +18,7 @@ export default function AccountForm(props) {
         form={props.form}
         labelAlign="left"
         colon={false}
+        size="large"
         className="custom-form"
         onFinish={props.onFinish}
       >
@@ -65,8 +67,8 @@ export default function AccountForm(props) {
         >
           <Input.Password placeholder="Nhập lại mật khẩu" />
         </Form.Item>
-        <Form.Item className="text-center">
-          <Button className="w-1/3" size="large" type="primary" htmlType="submit">
+        <Form.Item className="text-center mt-12">
+          <Button className="w-3/6" size="large" type="primary" htmlType="submit" loading={props.loading}>
             Đăng ký
           </Button>
         </Form.Item>

@@ -4,7 +4,7 @@ import { type Types, isValidObjectId } from 'mongoose';
 import { Message, PERSON_UPLOAD_FOLDER, Roles } from '../constants';
 import { type IUpdatePersonRequest, type IPerson } from '../interfaces';
 import { NotFoundError, PersonModel } from '../models';
-import { convertRequestToPipelineStages, convertToMongooseId } from '../utils';
+import { convertRequestToPipelineStages } from '../utils';
 import { cloudinaryServices } from '.';
 
 export const createPerson = async (person: IPerson) => {
@@ -64,11 +64,26 @@ export const getPersonById = async (id: string) => {
 };
 
 // Xử lý các trường đa ngữ
-export const getPersonDetails = async (id: string, lang?: string) => {
-  const [person] = await PersonModel.aggregate([
-    { $match: { _id: convertToMongooseId(id) } },
-    { $set: { summary: lang ? `$summary.${lang}` : `$summary` } }
-  ]);
+export const getPersonDetails = async (req: Request) => {
+  const id = req.params.id;
+  const lang = req.getLocale();
+  const isManagerOrAdmin = req.userPayload?.role === Roles.Manager || req.userPayload?.role === Roles.Admin;
+
+  const person = await PersonModel.findById(id, {
+    fullName: 1,
+    avatar: 1,
+    summary: isManagerOrAdmin ? 1 : `$summary.${lang}`,
+    createdAt: 1
+  })
+    .populate('movies', {
+      title: 1,
+      originalTitle: 1,
+      poster: 1,
+      releaseDate: 1,
+      duration: 1,
+      ageType: 1
+    })
+    .lean();
   if (!person) {
     throw new NotFoundError(Message.PERSON_NOT_FOUND);
   }

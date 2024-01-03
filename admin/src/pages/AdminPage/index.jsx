@@ -11,6 +11,7 @@ import {
   faShapes,
   faCheck,
   faPlus,
+  faMapLocation,
   faTags,
 } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -21,7 +22,7 @@ import ProductPage from '../ProductPage';
 import DashboardAdmin from '../../components/Dashboard/Admin';
 import DashboardManager from '../../components/Dashboard/Manager';
 import apiCaller from '../../apis/apiCaller';
-import { authApi } from '../../apis/authApi';
+import { authApi } from '../../apis/all/authApi';
 import { ROUTE } from '../../constants/router';
 import UserPage from '../UserPage';
 import CategoryPage from '../CategoryPage';
@@ -29,6 +30,8 @@ import PromotionPage from '../PromotionPage';
 import ShowtimePage from '../ShowtimePage';
 import ReviewPage from '../ReviewPage';
 import ManagerPage from '../ManagerPage';
+import GenrePeoplePage from '../GenrePeoplePage';
+import MapPage from '../MapPage';
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -62,6 +65,10 @@ export default function AdminPage() {
         return <MoviePage mode="create" />;
       case '6':
         return <MoviePage mode="list" />;
+      case '7':
+        return <GenrePeoplePage />;
+      case '8':
+        return <MapPage />;
       default:
         return <></>;
     }
@@ -77,7 +84,8 @@ export default function AdminPage() {
       getItem('Create Movie', '5', <FontAwesomeIcon icon={faPlus} />),
       getItem('List Movie', '6', <FontAwesomeIcon icon={faListUl} />),
     ]),
-    getItem('Categories', '7', <FontAwesomeIcon icon={faShapes} />),
+    getItem('Genres & People', '7', <FontAwesomeIcon icon={faShapes} />),
+    getItem('Maps', '8', <FontAwesomeIcon icon={faMapLocation} />),
   ];
   const renderManagerPage = (key) => {
     switch (key) {
@@ -120,7 +128,7 @@ export default function AdminPage() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
       localStorage.removeItem('user');
-      navigate(ROUTE.SIGNIN);
+      navigate(`../${ROUTE.SIGNIN}`, { replace: true });
     }
   };
   return (
@@ -138,7 +146,7 @@ export default function AdminPage() {
           />
         </div>
         <Button type="primary" size="large" onClick={logOut} className="m-4">
-          Logout
+          Đăng xuất
         </Button>
       </div>
       <div className="col-span-4 p-5">

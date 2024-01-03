@@ -1,5 +1,5 @@
-import { ENDPOINTS } from '../constants/endpoints';
-import axiosClient from './axiosClient';
+import { ENDPOINTS } from '../../constants/endpoints';
+import axiosClient from '../axiosClient';
 
 export const authApi = {
   login: (data) => () => {
@@ -11,5 +11,8 @@ export const authApi = {
         Authorization: `Bearer ${access_token}`,
       },
     });
+  },
+  register: (data) => () => {
+    return axiosClient.post(ENDPOINTS.SIGNUP, data);
   },
 };

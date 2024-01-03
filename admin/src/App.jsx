@@ -3,7 +3,7 @@ import AppRouter from './router';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/admin">
       <AppRouter />
     </BrowserRouter>
   );

@@ -62,6 +62,7 @@ export interface IUpdateProductRequest {
 export interface IUpdateTheaterRequest {
   name?: string;
   address?: string;
+  addressCode?: Record<string, any>;
   location?: string;
   email?: string;
   description?: string;

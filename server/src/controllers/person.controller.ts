@@ -30,7 +30,7 @@ export const deletePerson = CatchAsyncError(async (req: Request, res: Response, 
 
 //! Get Person Info
 export const getPerson = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const person = await personServices.getPersonDetails(req.params.id, req.getLocale());
+  const person = await personServices.getPersonDetails(req);
 
   res.sendOK({
     data: person

@@ -1,6 +1,7 @@
 export const ENDPOINTS = {
   LOGIN: '/manager/login',
   LOGOUT: '/logout',
+  SIGNUP: '/manager/register',
   LIST_USER: '/user/list',
   TOGGLE_BLOCK_USER: '/user/toggle-block',
   APPROVAL_LIST_MANAGER: '/manager/approval-list',
@@ -11,4 +12,10 @@ export const ENDPOINTS = {
   LISTMOVIE: '/movie/list',
   UPLOADFILE: '/upload/image',
   UPLOADFILES: '/upload/images',
+  LIST_GENRE: '/genre/list',
+  CREATE_GENRE: '/genre/create',
+  GENRE_DETAILS: '/genre/details',
+  LIST_PEOPLE: '/person/list',
+  CREATE_PEOPLE: '/person/create',
+  PEOPLE_DETAILS: '/person/details',
 };
