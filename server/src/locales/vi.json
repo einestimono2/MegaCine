@@ -100,5 +100,9 @@
 	"Upload Failed": "Upload thất bại. Vui lòng kiểm tra lại đường dẫn file!",
 	"": "",
 	"Invalid $project :: caused by :: Cannot do exclusion on field nowShowing in inclusion projection": "Invalid $project :: caused by :: Cannot do exclusion on field nowShowing in inclusion projection",
-	"Đường dẫn '/api/v1' không tồn tại!": "Đường dẫn '/api/v1' không tồn tại!"
+	"Đường dẫn '/api/v1' không tồn tại!": "Đường dẫn '/api/v1' không tồn tại!",
+	"jwt expired": "jwt expired",
+	"Argument passed in must be a string of 12 bytes or a string of 24 hex characters or an integer": "Argument passed in must be a string of 12 bytes or a string of 24 hex characters or an integer",
+	"PlanExecutor error during aggregation :: caused by :: $first's argument must be an array, but is object": "PlanExecutor error during aggregation :: caused by :: $first's argument must be an array, but is object",
+	"PlanExecutor error during aggregation :: caused by :: $first's argument must be an array, but is string": "PlanExecutor error during aggregation :: caused by :: $first's argument must be an array, but is string"
 }

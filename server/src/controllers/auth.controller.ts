@@ -153,9 +153,13 @@ export const updateAccessToken = CatchAsyncError(async (req: Request, res: Respo
   // blacklist current access token
   if (req.accessToken) await redis.set(`BL_${req.userPayload?.id}`, req.accessToken);
 
-  const accessToken = jwt.sign({ id: req.userPayload?.id }, process.env.ACCESS_TOKEN_SECRET as string, {
-    expiresIn: process.env.ACCESS_TOKEN_EXPIRE
-  });
+  const accessToken = jwt.sign(
+    { id: req.userPayload?.id, role: req.userPayload?.role },
+    process.env.ACCESS_TOKEN_SECRET as string,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRE
+    }
+  );
   const refreshToken = req.body.refreshToken;
   // Giữ nguyên refreshToken nếu không thì không bao giờ phải đăng nhập lại
   // const refreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_TOKEN_SECRET as string, {

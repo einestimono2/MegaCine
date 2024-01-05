@@ -73,16 +73,20 @@ export const isAuthenticatedOrNot = CatchAsyncError(async (req: Request, res: Re
   }
 
   // Giải mã lấy id
-  const payload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET as string) as JwtPayload;
-  if (!payload) {
+  try {
+    const payload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET as string) as JwtPayload;
+    if (!payload) {
+      next();
+      return;
+    }
+
+    req.userPayload = payload;
+    req.accessToken = accessToken;
+
     next();
-    return;
+  } catch (_) {
+    next();
   }
-
-  req.userPayload = payload;
-  req.accessToken = accessToken;
-
-  next();
 });
 
 export const verifyRefreshToken = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
